@@ -29,14 +29,20 @@ public class BlockMover : MonoBehaviour
 
         Cell targetCell = GetTargetCell(side);
 
-        if (targetCell != null && !targetCell.IsOccupied())
-            _coroutine = StartCoroutine(Move(targetCell));
+        if(targetCell != null && !targetCell.IsOccupied())
+        {
+            _coroutine = StartCoroutine(MoveToTarget(targetCell));
+        }
+        else if (targetCell == null)
+        {
+            _coroutine = StartCoroutine(MoveInDirection(side));
+        }
     }
 
-    private IEnumerator Move(Cell targetCell)
+    private IEnumerator MoveToTarget(Cell target)
     {
         Vector3 startPosition = _transform.position;
-        Vector3 endPosition = targetCell.transform.position; 
+        Vector3 endPosition = target.transform.position; 
 
         float timer = 0;
 
@@ -53,14 +59,39 @@ public class BlockMover : MonoBehaviour
 
         _transform.position = endPosition;
 
-        TryMove(targetCell);
+        TryMove(target);
+    }
+
+    private IEnumerator MoveInDirection(DirectionType direction)
+    {
+        Vector3 startPosition = _transform.position;
+        Vector3Int moveDirection = DirectionToVector3Int(direction);
+        Vector3 targetPosition = startPosition + (Vector3)moveDirection * _distance;
+
+        float timer = 0;
+
+        while (timer < _time)
+        {
+            float way = timer / _time;
+            float wayCurve = _curve.Evaluate(way);
+
+            _transform.position = Vector3.Lerp(startPosition, targetPosition, wayCurve);
+            timer += Time.deltaTime;
+
+            yield return null;
+        }
+
+        _transform.position = targetPosition;
+
+        _cell.SetFree();
+        Destroy(gameObject);
     }
 
     private void TryMove(Cell targetCell)
     {
         if (targetCell != null && !targetCell.IsOccupied())
         {
-            _cell.SetFree(); 
+            _cell.SetFree();
             targetCell.SetOccupy(GetComponent<Block>()); 
             _cell = targetCell;
         }
@@ -76,28 +107,15 @@ public class BlockMover : MonoBehaviour
 
     private Vector3Int DirectionToVector3Int(DirectionType direction)
     {
-        switch (direction)
+        return direction switch
         {
-            case DirectionType.Left:
-                return new Vector3Int(1, 0, 0);
-
-            case DirectionType.Right:
-                return new Vector3Int(-1, 0, 0);
-
-            case DirectionType.Forward:
-                return new Vector3Int(0, 0, -1);
-
-            case DirectionType.Back:
-                return new Vector3Int(0, 0, 1);
-
-            case DirectionType.Up:
-                return new Vector3Int(0, 1, 0);
-
-            case DirectionType.Down:
-                return new Vector3Int(0, -1, 0);
-
-            default:
-                return Vector3Int.zero;
-        }
+            DirectionType.Left => new Vector3Int(1, 0, 0),
+            DirectionType.Right => new Vector3Int(-1, 0, 0),
+            DirectionType.Forward => new Vector3Int(0, 0, -1),
+            DirectionType.Back => new Vector3Int(0, 0, 1),
+            DirectionType.Up => new Vector3Int(0, 1, 0),
+            DirectionType.Down => new Vector3Int(0, -1, 0),
+            _ => Vector3Int.zero,
+        };
     }
 }
