@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(CursorConverter))]
 public class InputSwipeHandler : MonoBehaviour
 {
     [SerializeField] private float _minDistance = 1f;
