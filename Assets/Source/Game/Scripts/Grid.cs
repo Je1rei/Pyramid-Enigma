@@ -1,49 +1,55 @@
 ﻿using UnityEngine;
 
+[RequireComponent(typeof(CellFactory))]
 public class Grid : MonoBehaviour
 {
     [SerializeField] private GridData _data;
 
-    private Cell[,] _grid;
+    private Cell[,,] _grid;
+    private CellFactory _cellFactory;
 
-    private void Awake() // разделить на фабрику
+    private void Awake()
     {
-        CreateGrid();
+        _cellFactory = GetComponent<CellFactory>();
+        Create();
     }
 
     public Cell GetCell(Vector3Int position)
     {
-        if (position.x >= 0 && position.x < _data.Width && position.z >= 0 && position.z < _data.Height)
+        if (position.x >= 0 && position.x < _data.Width &&
+            position.y >= 0 && position.y < _data.Height &&
+            position.z >= 0 && position.z < _data.Length)
         {
-            return _grid[position.x, position.z];
+            return _grid[position.x, position.y, position.z];
         }
         return null;
     }
 
-    private void CreateGrid()
+    private void Create()
     {
-        _grid = new Cell[_data.Width, _data.Height];
+        _grid = new Cell[_data.Width, _data.Length, _data.Height];
         int blockCount = _data.BlockCount;
 
         for (int x = 0; x < _data.Width; x++)
         {
-            for (int z = 0; z < _data.Height; z++)
+            for (int z = 0; z < _data.Length; z++)
             {
-                GameObject cellObj = new GameObject($"Cell_{x}_{z}"); // заменить
-                Cell cell = cellObj.AddComponent<Cell>();
-
-                Vector3Int position = new Vector3Int(x, 0, z);
-                cell.Initialize(position, this);
-                cellObj.transform.position = new Vector3(x * _data.CellSize, 0, z * _data.CellSize);
-                _grid[x, z] = cell;
-
-                if (blockCount > 0)
+                for (int y = 0; y < _data.Height; y++)
                 {
-                    Block block = Instantiate(_data.Prefab, cellObj.transform);
-                    block.SetCurrentCell(cell);
-                    cell.SetOccupy(block); 
+                    Vector3Int position = new Vector3Int(x, y, z);
+                    Cell cell = _cellFactory.Create(_data.CellPrefab, position, this);
 
-                    blockCount--;
+                    cell.transform.position = new Vector3(x * _data.CellSize, y * _data.CellSize, z * _data.CellSize);
+                    _grid[x, y, z] = cell;
+
+                    if (blockCount > 0)
+                    {
+                        Block block = Instantiate(_data.BlockPrefab, cell.transform);
+                        block.SetCurrentCell(cell);
+                        cell.SetOccupy(block);
+
+                        blockCount--;
+                    }
                 }
             }
         }

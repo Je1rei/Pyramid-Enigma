@@ -69,7 +69,7 @@ public class BlockMover : MonoBehaviour
     private Cell GetTargetCell(DirectionType direction)
     {
         Vector3Int moveDirection = DirectionToVector3Int(direction);
-        Vector3Int newPosition = new Vector3Int((int)_cell.Position.x + moveDirection.x, 0, (int)_cell.Position.z + moveDirection.z);
+        Vector3Int newPosition = new Vector3Int(_cell.Position.x + moveDirection.x, _cell.Position.y + moveDirection.y, _cell.Position.z + moveDirection.z);
 
         return _cell.GetGrid().GetCell(newPosition); 
     }

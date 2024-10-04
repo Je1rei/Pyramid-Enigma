@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b805d873cb530354c80959c078d2a375, type: 3}
   m_Name: Grid_2x2
   m_EditorClassIdentifier: 
+  BlockPrefab: {fileID: 3131810772467227892, guid: 7651637ab259b164483083e5902c26b1, type: 3}
+  CellPrefab: {fileID: 0}
   Width: 2
   Height: 2
+  Length: 2
   CellSize: 1
-  Prefab: {fileID: 3131810772467227892, guid: 7651637ab259b164483083e5902c26b1, type: 3}
-  BlockCount: 2
+  BlockCount: 8
