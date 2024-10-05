@@ -22,6 +22,7 @@ public class Grid : MonoBehaviour
         {
             return _grid[position.x, position.y, position.z];
         }
+
         return null;
     }
 

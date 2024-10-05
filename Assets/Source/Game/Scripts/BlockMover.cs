@@ -65,7 +65,7 @@ public class BlockMover : MonoBehaviour
     private IEnumerator MoveInDirection(DirectionType direction)
     {
         Vector3 startPosition = _transform.position;
-        Vector3Int moveDirection = DirectionToVector3Int(direction);
+        Vector3Int moveDirection = direction.ToVector3Int();
         Vector3 targetPosition = startPosition + (Vector3)moveDirection * _distance;
 
         float timer = 0;
@@ -99,23 +99,9 @@ public class BlockMover : MonoBehaviour
 
     private Cell GetTargetCell(DirectionType direction)
     {
-        Vector3Int moveDirection = DirectionToVector3Int(direction);
+        Vector3Int moveDirection = direction.ToVector3Int();
         Vector3Int newPosition = new Vector3Int(_cell.Position.x + moveDirection.x, _cell.Position.y + moveDirection.y, _cell.Position.z + moveDirection.z);
 
         return _cell.GetGrid().GetCell(newPosition); 
-    }
-
-    private Vector3Int DirectionToVector3Int(DirectionType direction)
-    {
-        return direction switch
-        {
-            DirectionType.Left => new Vector3Int(1, 0, 0),
-            DirectionType.Right => new Vector3Int(-1, 0, 0),
-            DirectionType.Forward => new Vector3Int(0, 0, -1),
-            DirectionType.Back => new Vector3Int(0, 0, 1),
-            DirectionType.Up => new Vector3Int(0, 1, 0),
-            DirectionType.Down => new Vector3Int(0, -1, 0),
-            _ => Vector3Int.zero,
-        };
     }
 }
