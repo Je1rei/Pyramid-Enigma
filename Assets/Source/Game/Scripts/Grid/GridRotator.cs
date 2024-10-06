@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.IO.Pipes;
 using UnityEngine;
 
 public class GridRotator : MonoBehaviour
@@ -12,18 +11,18 @@ public class GridRotator : MonoBehaviour
 
     private void Awake()
     {
-        transform.rotation = Quaternion.identity;   
+        transform.rotation = Quaternion.identity;
     }
 
     public void SetupRotate(DirectionType direction)
     {
         if (_coroutine != null)
-            StopCoroutine(_coroutine); 
+            StopCoroutine(_coroutine);
 
         _coroutine = StartCoroutine(Rotate(direction));
     }
 
-    private IEnumerator Rotate(DirectionType direction) 
+    private IEnumerator Rotate(DirectionType direction)
     {
         Vector3Int rotateDirection = direction.ToVector3Int() * _endAngleRotation;
 

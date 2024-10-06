@@ -55,4 +55,31 @@ public class Grid : MonoBehaviour
             }
         }
     }
+
+    private Vector3 CalculateCenter()
+    {
+        if (_grid.Length > 0)
+        {
+            Vector3 min = _grid[0, 0, 0].transform.position;
+            Vector3 max = _grid[0, 0, 0].transform.position;
+
+            for (int x = 0; x < _data.Width; x++)
+            {
+                for (int z = 0; z < _data.Length; z++)
+                {
+                    for (int y = 0; y < _data.Height; y++)
+                    {
+                        Vector3 pos = _grid[x, y, z].transform.position;
+
+                        min = new Vector3(Mathf.Min(min.x, pos.x), Mathf.Min(min.y, pos.y), Mathf.Min(min.z, pos.z));
+                        max = new Vector3(Mathf.Max(max.x, pos.x), Mathf.Max(max.y, pos.y), Mathf.Max(max.z, pos.z));
+                    }
+                }
+            }
+
+            return (min + max) / 2f;
+        }
+
+        return Vector3.zero;
+    }
 }

@@ -132,9 +132,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 647698483}
-  - component: {fileID: 647698485}
   - component: {fileID: 647698484}
   - component: {fileID: 647698482}
+  - component: {fileID: 647698485}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
