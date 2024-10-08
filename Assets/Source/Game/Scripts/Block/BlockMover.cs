@@ -12,6 +12,8 @@ public class BlockMover : MonoBehaviour
 
     private Cell _cell;
 
+    public bool IsMoving { get; private set; } = false;
+
     private void Start()
     {
         _transform = transform;
@@ -41,6 +43,7 @@ public class BlockMover : MonoBehaviour
 
     private IEnumerator MoveToTarget(Cell target)
     {
+        IsMoving = true;
         Vector3 startPosition = _transform.position;
         Vector3 endPosition = target.transform.position; 
 
@@ -60,10 +63,13 @@ public class BlockMover : MonoBehaviour
         _transform.position = endPosition;
 
         TryMove(target);
+
+        IsMoving = false;
     }
 
     private IEnumerator MoveInDirection(DirectionType direction)
     {
+        IsMoving = true;
         Vector3 startPosition = _transform.position;
         Vector3Int moveDirection = direction.ToVector3Int();
         Vector3 targetPosition = startPosition + (Vector3)moveDirection * _distance;
@@ -84,6 +90,8 @@ public class BlockMover : MonoBehaviour
         _transform.position = targetPosition;
 
         _cell.SetFree();
+
+        IsMoving = false;
         Destroy(gameObject);
     }
 

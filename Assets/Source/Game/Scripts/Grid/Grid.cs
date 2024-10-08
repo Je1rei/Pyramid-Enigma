@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 [RequireComponent(typeof(CellFactory))]
 public class Grid : MonoBehaviour
@@ -7,11 +9,17 @@ public class Grid : MonoBehaviour
 
     private Cell[,,] _grid;
     private CellFactory _cellFactory;
+    private Vector3 _center;
+
+    public Vector3 Center => _center;
+
+    public event Action<BlockMover> BlockCreated;
 
     private void Awake()
     {
         _cellFactory = GetComponent<CellFactory>();
         Create();
+        _center = Vector3.zero.CalculateCenter(_data.Width, _data.Height, _data.Length, _data.CellSize);
     }
 
     public Cell GetCell(Vector3Int position)
@@ -29,7 +37,6 @@ public class Grid : MonoBehaviour
     private void Create()
     {
         _grid = new Cell[_data.Width, _data.Length, _data.Height];
-        int blockCount = _data.BlockCount;
 
         for (int x = 0; x < _data.Width; x++)
         {
@@ -43,43 +50,27 @@ public class Grid : MonoBehaviour
                     cell.transform.position = new Vector3(x * _data.CellSize, y * _data.CellSize, z * _data.CellSize);
                     _grid[x, y, z] = cell;
 
-                    if (blockCount > 0)
-                    {
-                        Block block = Instantiate(_data.BlockPrefab, cell.transform);
-                        block.SetCurrentCell(cell);
-                        cell.SetOccupy(block);
+                    Block block = Instantiate(_data.BlockPrefab, cell.transform);
+                    block.SetCurrentCell(cell);
+                    cell.SetOccupy(block);
+                    block.Init();
 
-                        blockCount--;
+                    if (block.TryGetComponent(out BlockMover mover))
+                    {
+                        BlockCreated?.Invoke(mover);
                     }
                 }
             }
         }
+
     }
 
     private Vector3 CalculateCenter()
     {
-        if (_grid.Length > 0)
-        {
-            Vector3 min = _grid[0, 0, 0].transform.position;
-            Vector3 max = _grid[0, 0, 0].transform.position;
+        float centerX = (_data.Width - 1) * 0.5f * _data.CellSize;
+        float centerY = (_data.Height - 1) * 0.5f * _data.CellSize;
+        float centerZ = (_data.Length - 1) * 0.5f * _data.CellSize;
 
-            for (int x = 0; x < _data.Width; x++)
-            {
-                for (int z = 0; z < _data.Length; z++)
-                {
-                    for (int y = 0; y < _data.Height; y++)
-                    {
-                        Vector3 pos = _grid[x, y, z].transform.position;
-
-                        min = new Vector3(Mathf.Min(min.x, pos.x), Mathf.Min(min.y, pos.y), Mathf.Min(min.z, pos.z));
-                        max = new Vector3(Mathf.Max(max.x, pos.x), Mathf.Max(max.y, pos.y), Mathf.Max(max.z, pos.z));
-                    }
-                }
-            }
-
-            return (min + max) / 2f;
-        }
-
-        return Vector3.zero;
+        return new Vector3(centerX, centerY, centerZ);
     }
 }

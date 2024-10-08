@@ -1,33 +1,43 @@
 ﻿using UnityEngine;
 using UnityEngine.UIElements;
 
+[RequireComponent(typeof(InputPause))]
 public class SwipeInputHandler : MonoBehaviour
 {
     [SerializeField] private float _minDistance = 1f;
     [SerializeField] private float _directionTolerance = 0.2f;
     [SerializeField] private GridRotator _rotator;
 
+    private InputPause _inputPause;
     private Vector3 _mousePositionStart;
     private Vector3 _mousePositionEnd;
 
+    private void Awake()
+    {
+        _inputPause = GetComponent<InputPause>();
+    }
+
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (_inputPause.CanInput())
         {
-            _mousePositionStart = Input.mousePosition;
-        }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            _mousePositionEnd = Input.mousePosition;
-
-            if (_mousePositionStart.SqrDistance(_mousePositionEnd) > _minDistance)
+            if (Input.GetMouseButtonDown(0))
             {
-                SwipeDetect();
+                _mousePositionStart = Input.mousePosition;
             }
-            else
+
+            if (Input.GetMouseButtonUp(0))
             {
-                HandleClick();
+                _mousePositionEnd = Input.mousePosition;
+
+                if (_mousePositionStart.SqrDistance(_mousePositionEnd) > _minDistance)
+                {
+                    SwipeDetect();
+                }
+                else
+                {
+                    HandleClick();
+                }
             }
         }
     }
@@ -38,7 +48,7 @@ public class SwipeInputHandler : MonoBehaviour
 
         DirectionType swipeDirection = CalculateDirection(delta);
 
-        _rotator.SetupRotate(swipeDirection);
+        _rotator.Rotate(swipeDirection);
     }
 
     private void HandleClick()
@@ -58,11 +68,11 @@ public class SwipeInputHandler : MonoBehaviour
 
     private DirectionType CalculateDirection(Vector3 delta)
     {
-        if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y) + _directionTolerance && Mathf.Abs(delta.x) > Mathf.Abs(delta.z) + _directionTolerance)
-            return delta.x > 0 ? DirectionType.Right : DirectionType.Left;
-        else if (Mathf.Abs(delta.y) > Mathf.Abs(delta.x) + _directionTolerance && Mathf.Abs(delta.y) > Mathf.Abs(delta.z) + _directionTolerance)
-            return delta.y > 0 ? DirectionType.Up : DirectionType.Down;
-
-        return DirectionType.None;
+        if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y) + _directionTolerance)
+            return delta.x > 0 ? DirectionType.Up : DirectionType.Down;
+        else if (Mathf.Abs(delta.y) > Mathf.Abs(delta.x) + _directionTolerance)
+            return delta.y > 0 ? DirectionType.Right : DirectionType.Left;
+        else
+            return DirectionType.None;
     }
 }

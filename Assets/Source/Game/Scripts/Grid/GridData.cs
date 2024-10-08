@@ -11,5 +11,4 @@ public class GridData : ScriptableObject
     public int Length = 2;
 
     public float CellSize = 1f;
-    public int BlockCount = 2;
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using DG.Tweening;
 
 public class GridRotator : MonoBehaviour
 {
@@ -7,40 +8,37 @@ public class GridRotator : MonoBehaviour
     [SerializeField] private float _duration = 1f;
     [SerializeField] private int _endAngleRotation = 90;
 
-    private Coroutine _coroutine;
+    private Grid _grid;
+
+    public bool IsRotating { get; private set; } = false;
 
     private void Awake()
     {
-        transform.rotation = Quaternion.identity;
+        _grid = GetComponent<Grid>();
+        transform.position += _grid.Center;
     }
 
-    public void SetupRotate(DirectionType direction)
+    public void Rotate(DirectionType direction)
     {
-        if (_coroutine != null)
-            StopCoroutine(_coroutine);
+        IsRotating = true;
+        Vector3 rotateDirection = direction.ToVector3Int();
 
-        _coroutine = StartCoroutine(Rotate(direction));
-    }
+        float fixedZRotation = transform.eulerAngles.z;
 
-    private IEnumerator Rotate(DirectionType direction)
-    {
-        Vector3Int rotateDirection = direction.ToVector3Int() * _endAngleRotation;
+        Vector3 rotationAxis = rotateDirection.normalized;
 
-        Quaternion startRotation = transform.rotation;
-        Quaternion endRotation = startRotation * Quaternion.Euler(rotateDirection);
+        float currentAngle = 0f;
+        float targetAngle = _endAngleRotation;
 
-        float elapsed = 0f;
-
-        while (elapsed < _duration)
+        DOTween.To(() => currentAngle, x =>
         {
-            elapsed += Time.deltaTime;
-            float timer = elapsed / _duration;
+            float deltaAngle = x - currentAngle;
+            currentAngle = x;
 
-            transform.localRotation = Quaternion.Slerp(startRotation, endRotation, timer);
+            transform.RotateAround(_grid.Center, rotationAxis, deltaAngle);
 
-            yield return null;
-        }
-
-        transform.rotation = endRotation;
+        }, targetAngle, _duration)
+        .SetEase(Ease.InOutQuad)
+        .OnComplete(() => IsRotating = false);
     }
 }
