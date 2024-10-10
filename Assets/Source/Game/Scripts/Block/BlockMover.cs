@@ -1,5 +1,8 @@
 ﻿using System.Collections;
+using TMPro;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
+using static YG.LangYGAdditionalText;
 
 public class BlockMover : MonoBehaviour
 {
@@ -18,9 +21,9 @@ public class BlockMover : MonoBehaviour
     {
         _transform = transform;
 
-        if(TryGetComponent(out Block block))
+        if (TryGetComponent(out Block block))
         {
-            _cell = block.CurrentCell;
+            _cell = block.Cell;
         }
     }
 
@@ -31,7 +34,7 @@ public class BlockMover : MonoBehaviour
 
         Cell targetCell = GetTargetCell(side);
 
-        if(targetCell != null && !targetCell.IsOccupied())
+        if (targetCell != null && !targetCell.IsOccupied())
         {
             _coroutine = StartCoroutine(MoveToTarget(targetCell));
         }
@@ -39,13 +42,18 @@ public class BlockMover : MonoBehaviour
         {
             _coroutine = StartCoroutine(MoveInDirection(side));
         }
+        else if (targetCell.IsOccupied())
+        {
+            BlockShaker shaker = GetComponent<BlockShaker>();
+            shaker.Shake();
+        }
     }
 
     private IEnumerator MoveToTarget(Cell target)
     {
         IsMoving = true;
         Vector3 startPosition = _transform.position;
-        Vector3 endPosition = target.transform.position; 
+        Vector3 endPosition = target.transform.position;
 
         float timer = 0;
 
@@ -88,7 +96,6 @@ public class BlockMover : MonoBehaviour
         }
 
         _transform.position = targetPosition;
-
         _cell.SetFree();
 
         IsMoving = false;
@@ -100,7 +107,7 @@ public class BlockMover : MonoBehaviour
         if (targetCell != null && !targetCell.IsOccupied())
         {
             _cell.SetFree();
-            targetCell.SetOccupy(GetComponent<Block>()); 
+            targetCell.SetOccupy(GetComponent<Block>());
             _cell = targetCell;
         }
     }
@@ -110,6 +117,6 @@ public class BlockMover : MonoBehaviour
         Vector3Int moveDirection = direction.ToVector3Int();
         Vector3Int newPosition = new Vector3Int(_cell.Position.x + moveDirection.x, _cell.Position.y + moveDirection.y, _cell.Position.z + moveDirection.z);
 
-        return _cell.GetGrid().GetCell(newPosition); 
+        return _cell.GetGrid().GetCell(newPosition);
     }
 }

@@ -34,6 +34,31 @@ public class Grid : MonoBehaviour
         return null;
     }
 
+    public void UpdateBlockDirections(Transform transform) 
+    {
+        Debug.Log("=== Starting block direction update ===");
+
+        foreach (var cell in _grid)
+        {
+            Block block = cell.Occupied;
+
+            if(block != null)
+            {
+                Vector3Int localDirection = block.AllowedDirection.ToVector3Int();
+                Debug.Log($"Block at {block.transform.position}: current local direction = {localDirection}");
+
+                Vector3 worldDirection = transform.TransformDirection(localDirection);
+                Debug.Log($"Block at {block.transform.position}: transformed world direction = {worldDirection}");
+
+                DirectionType newDirection = worldDirection.ToDirectionType();
+                Debug.Log($"Block at {block.transform.position}: new direction = {newDirection}");
+
+                block.SetAllowedDirection(newDirection);
+                Debug.Log($"Block at {block.transform.position}: allowed direction updated to {block.AllowedDirection}");
+            }
+        }
+    }
+
     private void Create()
     {
         _grid = new Cell[_data.Width, _data.Length, _data.Height];
@@ -62,15 +87,6 @@ public class Grid : MonoBehaviour
                 }
             }
         }
-
     }
 
-    private Vector3 CalculateCenter()
-    {
-        float centerX = (_data.Width - 1) * 0.5f * _data.CellSize;
-        float centerY = (_data.Height - 1) * 0.5f * _data.CellSize;
-        float centerZ = (_data.Length - 1) * 0.5f * _data.CellSize;
-
-        return new Vector3(centerX, centerY, centerZ);
-    }
 }

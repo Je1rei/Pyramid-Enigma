@@ -12,6 +12,8 @@ public class SwipeInputHandler : MonoBehaviour
     private Vector3 _mousePositionStart;
     private Vector3 _mousePositionEnd;
 
+    private bool _isSwiping;
+
     private void Awake()
     {
         _inputPause = GetComponent<InputPause>();
@@ -24,13 +26,25 @@ public class SwipeInputHandler : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 _mousePositionStart = Input.mousePosition;
+                _isSwiping = false;
+            }
+
+            if (Input.GetMouseButton(0))
+            {
+                _mousePositionEnd = Input.mousePosition;
+                float distance = _mousePositionStart.SqrDistance(_mousePositionEnd); // ДОДЕЛАТЬ ПЕРЕДЕЛАТЬ
+
+                if (distance > _minDistance)
+                {
+                    _isSwiping = true;
+                }
             }
 
             if (Input.GetMouseButtonUp(0))
             {
                 _mousePositionEnd = Input.mousePosition;
 
-                if (_mousePositionStart.SqrDistance(_mousePositionEnd) > _minDistance)
+                if (_isSwiping)
                 {
                     SwipeDetect();
                 }
@@ -68,10 +82,10 @@ public class SwipeInputHandler : MonoBehaviour
 
     private DirectionType CalculateDirection(Vector3 delta)
     {
-        if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y) + _directionTolerance)
-            return delta.x > 0 ? DirectionType.Up : DirectionType.Down;
-        else if (Mathf.Abs(delta.y) > Mathf.Abs(delta.x) + _directionTolerance)
-            return delta.y > 0 ? DirectionType.Right : DirectionType.Left;
+        if (Mathf.Abs(delta.y) > Mathf.Abs(delta.x) + _directionTolerance)
+            return delta.y > 0 ? DirectionType.Left : DirectionType.Right;
+        else if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y) + _directionTolerance)
+            return delta.x > 0 ? DirectionType.Down : DirectionType.Up;
         else
             return DirectionType.None;
     }

@@ -9,13 +9,14 @@ public class GridRotator : MonoBehaviour
     [SerializeField] private int _endAngleRotation = 90;
 
     private Grid _grid;
+    private Vector3 _center;
 
     public bool IsRotating { get; private set; } = false;
 
     private void Awake()
     {
         _grid = GetComponent<Grid>();
-        transform.position += _grid.Center;
+        _center = transform.position + _grid.Center;
     }
 
     public void Rotate(DirectionType direction)
@@ -35,10 +36,14 @@ public class GridRotator : MonoBehaviour
             float deltaAngle = x - currentAngle;
             currentAngle = x;
 
-            transform.RotateAround(_grid.Center, rotationAxis, deltaAngle);
+            transform.RotateAround(_center, rotationAxis, deltaAngle);
 
         }, targetAngle, _duration)
         .SetEase(Ease.InOutQuad)
-        .OnComplete(() => IsRotating = false);
+        .OnComplete(() =>
+        {
+            IsRotating = false;
+            _grid.UpdateBlockDirections(transform);
+        });
     }
 }
