@@ -16,9 +16,6 @@ public class Block : MonoBehaviour
 
         Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
         transform.rotation = targetRotation;
-
-        //_allowedDirection = RandomizeDirection();
-        //transform.rotation = Quaternion.Euler(_allowedDirection.ToVector3Int() * _angleOffset);
     }
 
     public void SetAllowedDirection(DirectionType newDirection)

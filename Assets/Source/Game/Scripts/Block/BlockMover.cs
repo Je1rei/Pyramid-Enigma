@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
@@ -7,7 +8,7 @@ using static YG.LangYGAdditionalText;
 public class BlockMover : MonoBehaviour
 {
     [SerializeField] private float _time = 1f;
-    [SerializeField] private float _distance = 2f;
+    [SerializeField] private float _distance = 1f;
     [SerializeField] private AnimationCurve _curve = new AnimationCurve(new[] { new Keyframe(0, 0, 2, 2), new Keyframe(1, 1, 0, 0) });
 
     private Transform _transform;
@@ -27,60 +28,29 @@ public class BlockMover : MonoBehaviour
         }
     }
 
-    public void SetupMove(DirectionType side)
+    public void SetupMove() // что-то с обработкой перемещения в клетку, проверка на свободную клетку, непонятно что
     {
+        if (IsMoving) return;
+
         if (_coroutine != null)
             StopCoroutine(_coroutine);
 
-        Cell targetCell = GetTargetCell(side);
-
-        if (targetCell != null && !targetCell.IsOccupied())
+        if (CanMoveForward())
         {
-            _coroutine = StartCoroutine(MoveToTarget(targetCell));
+            _coroutine = StartCoroutine(MoveForward());
         }
-        else if (targetCell == null)
-        {
-            _coroutine = StartCoroutine(MoveInDirection(side));
-        }
-        else if (targetCell.IsOccupied())
+        else
         {
             BlockShaker shaker = GetComponent<BlockShaker>();
             shaker.Shake();
         }
     }
 
-    private IEnumerator MoveToTarget(Cell target)
+    private IEnumerator MoveForward()
     {
         IsMoving = true;
         Vector3 startPosition = _transform.position;
-        Vector3 endPosition = target.transform.position;
-
-        float timer = 0;
-
-        while (timer < _time)
-        {
-            float way = timer / _time;
-            float wayCurve = _curve.Evaluate(way);
-
-            _transform.position = Vector3.Lerp(startPosition, endPosition, wayCurve);
-            timer += Time.deltaTime;
-
-            yield return null;
-        }
-
-        _transform.position = endPosition;
-
-        TryMove(target);
-
-        IsMoving = false;
-    }
-
-    private IEnumerator MoveInDirection(DirectionType direction)
-    {
-        IsMoving = true;
-        Vector3 startPosition = _transform.position;
-        Vector3Int moveDirection = direction.ToVector3Int();
-        Vector3 targetPosition = startPosition + (Vector3)moveDirection * _distance;
+        Vector3 targetPosition = _transform.position + _transform.forward * _distance;
 
         float timer = 0;
 
@@ -96,26 +66,46 @@ public class BlockMover : MonoBehaviour
         }
 
         _transform.position = targetPosition;
-        _cell.SetFree();
+
+        TryMove(GetTargetCell());
 
         IsMoving = false;
-        Destroy(gameObject);
+    }
+
+    private bool CanMoveForward()
+    {
+        RaycastHit hit;
+
+        if (Physics.Raycast(_transform.position, _transform.forward, out _, _distance))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private void TryMove(Cell targetCell)
     {
-        if (targetCell != null && !targetCell.IsOccupied())
+        if (targetCell != null)
+        {
+            if (!targetCell.IsOccupied())
+            {
+                _cell.SetFree();
+                targetCell.SetOccupy(GetComponent<Block>());
+                _cell = targetCell;
+            }
+        }
+        else if(targetCell == null)
         {
             _cell.SetFree();
-            targetCell.SetOccupy(GetComponent<Block>());
-            _cell = targetCell;
+            Destroy(gameObject);
         }
     }
 
-    private Cell GetTargetCell(DirectionType direction)
+    private Cell GetTargetCell()
     {
-        Vector3Int moveDirection = direction.ToVector3Int();
-        Vector3Int newPosition = new Vector3Int(_cell.Position.x + moveDirection.x, _cell.Position.y + moveDirection.y, _cell.Position.z + moveDirection.z);
+        Vector3Int offset = Vector3Int.RoundToInt(_transform.forward);
+        Vector3Int newPosition = new Vector3Int(_cell.Position.x + offset.x, _cell.Position.y + offset.y, _cell.Position.z + offset.z);
 
         return _cell.GetGrid().GetCell(newPosition);
     }

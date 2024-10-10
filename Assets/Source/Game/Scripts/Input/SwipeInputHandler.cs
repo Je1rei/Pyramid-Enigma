@@ -75,7 +75,7 @@ public class SwipeInputHandler : MonoBehaviour
             if (hit.collider.TryGetComponent(out BlockMover mover))
             {
                 mover.TryGetComponent(out Block block);
-                mover.SetupMove(block.AllowedDirection);
+                mover.SetupMove();
             }
         }
     }
