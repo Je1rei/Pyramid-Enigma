@@ -7,7 +7,7 @@ public class Cell : MonoBehaviour
 
     private Grid _grid;
 
-    public void Initialize(Vector3Int position, Grid grid)
+    public void Init(Vector3Int position, Grid grid)
     {
         Position = position;
         _grid = grid;
@@ -26,6 +26,7 @@ public class Cell : MonoBehaviour
 
     public void SetOccupy(Block block)
     {
+        block.transform.SetParent(transform);
         Occupied = block;
         block.SetCurrentCell(this);
     }

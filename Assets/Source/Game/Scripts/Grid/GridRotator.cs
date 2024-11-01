@@ -1,22 +1,19 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using DG.Tweening;
 
 public class GridRotator : MonoBehaviour
 {
-    [SerializeField] private float _speed = 10f;
-    [SerializeField] private float _duration = 1f;
+    [SerializeField] private float _duration = 0.5f;
     [SerializeField] private int _endAngleRotation = 90;
 
-    private Grid _grid;
     private Vector3 _center;
 
     public bool IsRotating { get; private set; } = false;
+    public float Duration => _duration;
 
-    private void Awake()
+    public void Init(Vector3 center)
     {
-        _grid = GetComponent<Grid>();
-        _center = transform.position + _grid.Center;
+        _center = transform.position + center;
     }
 
     public void Rotate(DirectionType direction)
@@ -40,10 +37,6 @@ public class GridRotator : MonoBehaviour
 
         }, targetAngle, _duration)
         .SetEase(Ease.InOutQuad)
-        .OnComplete(() =>
-        {
-            IsRotating = false;
-            _grid.UpdateBlockDirections(transform);
-        });
+        .OnComplete(() => IsRotating = false);
     }
 }

@@ -1,27 +1,29 @@
 ﻿using UnityEngine;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof(InputPause))]
-public class SwipeInputHandler : MonoBehaviour
+public class SwipeInputHandler : MonoBehaviour, IService
 {
-    [SerializeField] private float _minDistance = 1f;
+    [SerializeField] private float _minSwipeDistance = 50f;
     [SerializeField] private float _directionTolerance = 0.2f;
-    [SerializeField] private GridRotator _rotator;
 
+    private GridRotator _rotator;
     private InputPause _inputPause;
+
     private Vector3 _mousePositionStart;
     private Vector3 _mousePositionEnd;
 
     private bool _isSwiping;
 
-    private void Awake()
+    public void Init(Grid grid)
     {
         _inputPause = GetComponent<InputPause>();
+
+        _rotator = grid.Rotator;
     }
 
-    private void Update()
+    public void Tick()
     {
-        if (_inputPause.CanInput())
+        if (_inputPause.CanInput)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -32,9 +34,8 @@ public class SwipeInputHandler : MonoBehaviour
             if (Input.GetMouseButton(0))
             {
                 _mousePositionEnd = Input.mousePosition;
-                float distance = _mousePositionStart.SqrDistance(_mousePositionEnd); // ДОДЕЛАТЬ ПЕРЕДЕЛАТЬ
 
-                if (distance > _minDistance)
+                if ((_mousePositionEnd - _mousePositionStart).magnitude > _minSwipeDistance)
                 {
                     _isSwiping = true;
                 }
@@ -63,20 +64,18 @@ public class SwipeInputHandler : MonoBehaviour
         DirectionType swipeDirection = CalculateDirection(delta);
 
         _rotator.Rotate(swipeDirection);
+
+        _inputPause.StartCooldown(_rotator.Duration);
     }
 
     private void HandleClick()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.TryGetComponent(out Block block))
         {
-            if (hit.collider.TryGetComponent(out BlockMover mover))
-            {
-                mover.TryGetComponent(out Block block);
+            if (block.TryGetComponent(out BlockMover mover))
                 mover.SetupMove();
-            }
         }
     }
 

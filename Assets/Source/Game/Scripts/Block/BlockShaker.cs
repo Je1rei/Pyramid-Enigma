@@ -8,16 +8,20 @@ public class BlockShaker : MonoBehaviour
     [SerializeField] private int _countVibration = 10;
     [SerializeField] private float _randomAngle = 0f;
 
-    private Vector3 _position;
-
-    private void Awake()
-    {
-        _position = transform.position;
-    }
+    private Vector3 _initialPosition;
+    private Tween _tween;
 
     public void Shake()
     {
-        transform.DOShakePosition(_duration, _strength, _countVibration, _randomAngle, false, true)
-            .OnComplete(() => transform.position = _position);
+        if (_tween != null && _tween.IsActive())
+        {
+            _tween.Kill();
+            transform.position = _initialPosition;
+        }
+
+        _initialPosition = transform.position;
+
+        _tween = transform.DOShakePosition(_duration, _strength, _countVibration, _randomAngle, false, true)
+            .OnComplete(() => transform.position = _initialPosition); 
     }
 }

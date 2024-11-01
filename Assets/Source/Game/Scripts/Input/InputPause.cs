@@ -1,74 +1,24 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
+using DG.Tweening;
 
-public class InputPause : MonoBehaviour
+public class InputPause : MonoBehaviour, IService
 {
-    [SerializeField] private GridRotator _rotator;
-    [SerializeField] private Grid _grid;
-    
-    private List<BlockMover> _blockMovers = new List<BlockMover>();
+    public bool CanInput { get; private set; } = true;
 
-    private readonly float _delay = 0.02f;
+    public void ActivateInputCooldown() => StartCooldown(3f);
 
-    private float _currentDelay = 0;
-    private bool _canMove = true;
+    public void DeactivateInput() => CanInput = false;
 
-    public bool CanMove => _canMove;
-
-    private void OnEnable()
+    public void StartCooldown(float duration)
     {
-        _grid.BlockCreated += AddBlock;
-    }
+        if (CanInput == false)
+            return;
 
-    private void Update()
-    {
-        if (_currentDelay > 0)
+        CanInput = false;
+
+        DOVirtual.DelayedCall(duration, () =>
         {
-            _currentDelay -= Time.deltaTime;
-        }
-
-        if (_canMove != TryCanInput())
-        {
-            if (_canMove)
-            {
-                _canMove = false;
-            }
-            else
-            {
-                _canMove = true;
-                Detain();
-            }
-        }
-    }
-
-    private void OnDisable()
-    {
-        _grid.BlockCreated -= AddBlock;
-    }
-
-    public bool CanInput() => _canMove && _currentDelay <= 0;
-
-    private void AddBlock(BlockMover mover)
-    {
-        _blockMovers.Add(mover);
-    }
-
-    private void Detain()
-    {
-        _currentDelay = _delay;
-    }
-
-    private bool TryCanInput()
-    {
-        foreach (BlockMover blockMover in _blockMovers)
-        {
-            if (blockMover.IsMoving)
-                return false;
-        }
-
-        if (_rotator.IsRotating)
-            return false;
-
-        return true;
+            CanInput = true;
+        });
     }
 }

@@ -1,21 +1,17 @@
-﻿using UnityEngine;
-
-public class CompositeRootMainMenu : MonoBehaviour
+﻿public class CompositeRootMainMenu : CompositeRoot
 {
+    private AudioService _audioService;
+
+    private ServiceLocator _serviceLocator;
+
     private void Awake()
     {
-        // сюда прописать зависимости
+        _serviceLocator = ServiceLocator.Current;
+        Compose();
     }
 
-    private void RegisterServices()
+    public override void Compose()
     {
-        ServiceLocator.Initialize();
-
-        // ServiceLocator.Locator.Register...
-    }
-
-    private void Init() 
-    {
-        //Init всех сущностей
+        _audioService = _serviceLocator.Get<AudioService>();
     }
 }

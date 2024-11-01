@@ -6,12 +6,12 @@ public static class Vector3IntExtensions
     {
         return direction switch
         {
-            DirectionType.Left => new Vector3Int(1, 0, 0),
-            DirectionType.Right => new Vector3Int(-1, 0, 0),
-            DirectionType.Forward => new Vector3Int(0, 0, 1),
-            DirectionType.Back => new Vector3Int(0, 0, -1),
-            DirectionType.Up => new Vector3Int(0, 1, 0),
-            DirectionType.Down => new Vector3Int(0, -1, 0),
+            DirectionType.Left => Vector3Int.left,
+            DirectionType.Right => Vector3Int.right,
+            DirectionType.Forward => Vector3Int.forward,
+            DirectionType.Back => Vector3Int.back,
+            DirectionType.Up => Vector3Int.up,
+            DirectionType.Down => Vector3Int.down,
             _ => Vector3Int.zero,
         };
     }
