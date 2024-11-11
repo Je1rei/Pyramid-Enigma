@@ -12,7 +12,7 @@ public class ServiceLocator
     {
         Current = this;
     }
-
+        
     public TService Get<TService>() where TService : IService
     {
         if (_services.TryGetValue(typeof(TService), out IService service))

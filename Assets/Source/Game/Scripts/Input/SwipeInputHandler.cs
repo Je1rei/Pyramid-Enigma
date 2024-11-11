@@ -23,7 +23,7 @@ public class SwipeInputHandler : MonoBehaviour, IService
 
     public void Tick()
     {
-        if (_inputPause.CanInput)
+        if (_inputPause.CanInput && _rotator != null)
         {
             if (Input.GetMouseButtonDown(0))
             {

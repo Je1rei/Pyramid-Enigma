@@ -2,5 +2,15 @@
 
 public class AudioService : MonoBehaviour, IService
 {
-    public void Init() { }
+    private AudioSource _uiAudioSource;
+
+    public void Init(AudioSource uiAudioSource) // прочитать про аудиосервисы и посмотреть у других челиксов
+    {
+        _uiAudioSource = uiAudioSource;
+    }
+
+    public void PlaySound()
+    {
+        _uiAudioSource.Play();
+    }
 }
