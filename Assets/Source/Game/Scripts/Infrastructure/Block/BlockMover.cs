@@ -8,7 +8,6 @@ public class BlockMover : MonoBehaviour
     [SerializeField] private float _distance = 1f;
     [SerializeField] private float _destroyDelay = 1f;
 
-    private float _distanceMoveOut = 15f;
     private Cell _cell;
     private Block _block;
 
@@ -39,7 +38,7 @@ public class BlockMover : MonoBehaviour
         }
     }
 
-    private void MoveForward()
+    private void MoveForward() // полностью предеелать
     {
         IsMoving = true;
         Vector3 targetPosition = transform.position + transform.forward * _distance;
@@ -47,25 +46,19 @@ public class BlockMover : MonoBehaviour
         transform.DOMove(targetPosition, _time).SetEase(Ease.OutQuad).OnComplete(() =>
         {
             Cell targetCell = GetTargetCell();
+            TryMove(targetCell);
 
             if (targetCell == null) 
             {
-                MoveOutOfBounds();
+                DestroyAfterDelay(); 
             }
             else
             {
-                TryMove(targetCell);
                 IsMoving = false;
             }
 
             Moved?.Invoke();
         });
-    }
-
-    private void MoveOutOfBounds()
-    {
-        Vector3 farPosition = transform.position + transform.forward * _distanceMoveOut;
-        transform.DOMove(farPosition, _destroyDelay).SetEase(Ease.Linear).OnComplete(DestroyBlock);
     }
 
     private bool CanMoveForward()
@@ -106,7 +99,7 @@ public class BlockMover : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private Cell GetTargetCell()
+    private Cell GetTargetCell() // чекнуть у челы на гите
     {
         Vector3Int offset = _block.ForwardDirection;
         Vector3Int newPosition = _cell.Position + offset;

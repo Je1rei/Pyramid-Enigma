@@ -5,6 +5,7 @@ using UnityEngine;
 public class Block : MonoBehaviour
 {
     private DirectionType _allowedDirection;
+    private TrailRenderer _trailRenderer;
 
     public Cell Cell { get; private set; }
     public Vector3Int ForwardDirection { get; private set; }
@@ -17,7 +18,7 @@ public class Block : MonoBehaviour
 
     public void SetCurrentCell(Cell cell) => Cell = cell;
 
-    public void SetAllowedDirection(DirectionType allowedDirection) => _allowedDirection = allowedDirection;    
+    public void SetAllowedDirection(DirectionType allowedDirection) => _allowedDirection = allowedDirection;
 
     public void UpdateForwardDirection()
     {
