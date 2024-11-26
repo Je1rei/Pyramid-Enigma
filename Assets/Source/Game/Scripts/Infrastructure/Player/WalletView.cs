@@ -1,5 +1,6 @@
 ﻿using TMPro;
 using UnityEngine;
+using YG;
 
 public class WalletView : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class WalletView : MonoBehaviour
     public void Init()
     {
         _wallet = ServiceLocator.Current.Get<Wallet>();
+
         Change(_wallet.Score);
         _wallet.Changed += Change;
     }

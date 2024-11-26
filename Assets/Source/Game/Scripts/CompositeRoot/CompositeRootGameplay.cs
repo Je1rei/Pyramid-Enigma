@@ -37,11 +37,6 @@ public class CompositeRootGameplay : CompositeRoot
 
         _timerService.Tick();
     }
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-
-        Compose();
-    }
 
     public override void Compose()
     {

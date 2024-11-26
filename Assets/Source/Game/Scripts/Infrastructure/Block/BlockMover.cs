@@ -40,25 +40,25 @@ public class BlockMover : MonoBehaviour
 
     private void MoveForward() // полностью предеелать
     {
-        IsMoving = true;
-        Vector3 targetPosition = transform.position + transform.forward * _distance;
+        //IsMoving = true;
+        //Vector3 targetPosition = transform.position + transform.forward * _distance;
 
-        transform.DOMove(targetPosition, _time).SetEase(Ease.OutQuad).OnComplete(() =>
-        {
-            Cell targetCell = GetTargetCell();
-            TryMove(targetCell);
+        //transform.DOMove(targetPosition, _time).SetEase(Ease.OutQuad).OnComplete(() =>
+        //{
+        //    Cell targetCell = GetTargetCell();
+        //    TryMove(targetCell);
 
-            if (targetCell == null) 
-            {
-                DestroyAfterDelay(); 
-            }
-            else
-            {
-                IsMoving = false;
-            }
+        //    if (targetCell == null) 
+        //    {
+        //        DestroyAfterDelay(); 
+        //    }
+        //    else
+        //    {
+        //        IsMoving = false;
+        //    }
 
-            Moved?.Invoke();
-        });
+        //    Moved?.Invoke();
+        //});
     }
 
     private bool CanMoveForward()
@@ -99,7 +99,7 @@ public class BlockMover : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private Cell GetTargetCell() // чекнуть у челы на гите
+    private Cell GetTargetCell()
     {
         Vector3Int offset = _block.ForwardDirection;
         Vector3Int newPosition = _cell.Position + offset;

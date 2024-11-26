@@ -140,6 +140,7 @@ GameObject:
   - component: {fileID: 170238456}
   - component: {fileID: 170238458}
   - component: {fileID: 170238457}
+  - component: {fileID: 170238459}
   m_Layer: 0
   m_Name: GameLoader
   m_TagString: Untagged
@@ -178,6 +179,7 @@ MonoBehaviour:
   _rewardService: {fileID: 170238458}
   _wallet: {fileID: 170238457}
   _timeService: {fileID: 170238456}
+  _settingsService: {fileID: 170238459}
   _levelService: {fileID: 170238455}
   _audioService: {fileID: 170238452}
   _swipeInputHandler: {fileID: 170238453}
@@ -194,6 +196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4572f758482eed643a09ceab5855b2fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _mainAudioSource: {fileID: 2065807911}
 --- !u!114 &170238453
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,6 +239,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f0c3838d4755f354bab409451669acb4, type: 2}
   - {fileID: 11400000, guid: ad0a440d17d3cea4ea0584103b0409e1, type: 2}
   - {fileID: 11400000, guid: a1cb18fd9f7cf8e47b824048410a10b3, type: 2}
+  - {fileID: 11400000, guid: bb9a5de768b40a842a598323eb14238e, type: 2}
+  - {fileID: 11400000, guid: 21a20f73d2592964ca6d97405a7bfe79, type: 2}
+  - {fileID: 11400000, guid: 5c01bb06b6b854d4fa5ee8def293cb3a, type: 2}
+  - {fileID: 11400000, guid: a61b21c9e54f1264481b3eacc70d72d7, type: 2}
+  - {fileID: 11400000, guid: ead3d3519579bce47ae3beb54f076afc, type: 2}
+  - {fileID: 11400000, guid: 843f24c06aa0c47448831fe13a499410, type: 2}
+  - {fileID: 11400000, guid: 848b8584fc61bbe49a59df156df9ab0c, type: 2}
+  - {fileID: 11400000, guid: a8adc5d550453bd40aa771dfe343e207, type: 2}
+  - {fileID: 11400000, guid: e138eff69cd09714ba2ecfdb6859f1bc, type: 2}
 --- !u!114 &170238456
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -270,6 +282,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 248bf4d921c2b9740848de590e5ecb08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &170238459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 170238448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a25783c8422df34090add7cb67e1c53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2038507148
@@ -375,7 +399,7 @@ GameObject:
   - component: {fileID: 2065807910}
   - component: {fileID: 2065807911}
   m_Layer: 0
-  m_Name: AudioSource
+  m_Name: MainAudioSource
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

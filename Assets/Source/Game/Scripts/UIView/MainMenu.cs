@@ -1,10 +1,12 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MainMenu : UIPanel
+public class MainMenuPanel : UIPanel
 {
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _settingsButton;
+    [SerializeField] private TMP_Text _scoreText;
     [SerializeField] private UIPanel _levels;
     [SerializeField] private UIPanel _settings;
 
@@ -24,13 +26,13 @@ public class MainMenu : UIPanel
 
     private void OnClickPlay()
     {
-        Hide();
         _levels.Show();
+        Hide();
     }
 
     private void OnClickSettings()
     {
-        Hide();
         _settings.Show();
+        Hide();
     }
 }

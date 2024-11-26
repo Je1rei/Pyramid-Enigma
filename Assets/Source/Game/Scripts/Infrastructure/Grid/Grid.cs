@@ -3,7 +3,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-[RequireComponent(typeof(GridFactory))]
+[RequireComponent(typeof(GridFactory), typeof(AudioSource))]
 public class Grid : MonoBehaviour
 {
     private GridData _data;
@@ -12,6 +12,7 @@ public class Grid : MonoBehaviour
     private Cell[,,] _grid;
     private Vector3 _center;
     private GridRotator _rotator;
+    private AudioSource _audioSource;
 
     public GridRotator Rotator => _rotator;
     public GridData Data => _data;
@@ -22,6 +23,7 @@ public class Grid : MonoBehaviour
     public void Init(GridData data)
     {
         _data = data;
+        _audioSource = GetComponent<AudioSource>();
         _rotator = GetComponent<GridRotator>();
         _factory = GetComponent<GridFactory>();
         _center = Vector3.zero.CalculateCenter(_data.Width, _data.Height, _data.Length, _data.CellSize);
@@ -38,6 +40,8 @@ public class Grid : MonoBehaviour
         {
             if (cell.IsOccupied())
             {
+                _audioSource.Play();
+
                 return;
             }
         }

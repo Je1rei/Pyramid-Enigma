@@ -1,17 +1,18 @@
-using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(BlockMover), typeof(BlockShaker))]
+[RequireComponent(typeof(BlockMover), typeof(BlockShaker), typeof(TrailRenderer))]
 public class Block : MonoBehaviour
 {
     private DirectionType _allowedDirection;
     private TrailRenderer _trailRenderer;
 
+    public TrailRenderer TrailRenderer => _trailRenderer;
     public Cell Cell { get; private set; }
     public Vector3Int ForwardDirection { get; private set; }
 
     public void Init()
     {
+        _trailRenderer = GetComponent<TrailRenderer>();
         _allowedDirection = RandomizeDirection();
         UpdateForwardDirection();
     }

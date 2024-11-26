@@ -2,146 +2,189 @@
 using UnityEngine.Events;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityToolbag;
+using YG.Insides;
 using YG.Utils.LB;
+using System.Collections.Generic;
+
+#if Localization_yg
 using YG.Utils.Lang;
+#endif
 
 namespace YG
 {
-    [DefaultExecutionOrder(-99), HelpURL("https://www.notion.so/PluginYG-d457b23eee604b7aa6076116aab647ed#7f075606f6c24091926fa3ad7ab59d10")]
     public class LeaderboardYG : MonoBehaviour
     {
-        [Tooltip("Техническое название соревновательной таблицы")]
+#if UNITY_EDITOR
+        [Tooltip(Langs.t_nameLB)]
+#endif
         public string nameLB;
-
-        [Tooltip("Максимальное кол-во получаемых игроков")]
+#if UNITY_EDITOR
+        [Tooltip(Langs.t_maxQuantityPlayers)]
+#endif
         public int maxQuantityPlayers = 20;
-
-        [Tooltip("Кол-во получения верхних топ игроков")]
-        [Range(1, 20)]
+#if UNITY_EDITOR
+        [Range(1, 20), Tooltip(Langs.t_quantityTop)]
+#endif
         public int quantityTop = 3;
-
-        [Tooltip("Кол-во получаемых записей возле пользователя")]
-        [Range(1, 10)]
+#if UNITY_EDITOR
+        [Range(1, 10), Tooltip(Langs.t_quantityAround)]
+#endif
         public int quantityAround = 6;
 
         public enum UpdateLBMethod { Start, OnEnable, DoNotUpdate };
-        [Tooltip("Когда следует обновлять лидерборд?\nStart - Обновлять в методе Start.\nOnEnable - Обновлять при каждой активации объекта (в методе OnEnable)\nDoNotUpdate - Не обновлять лидерборд с помощью данного скрипта (подразоумивается, что метод обновления 'UpdateLB' вы будете запускать сами, когда вам потребуется.")]
+#if UNITY_EDITOR
+        [Tooltip(Langs.t_updateLBMethod)]
+#endif
         public UpdateLBMethod updateLBMethod = UpdateLBMethod.OnEnable;
-
-        [Tooltip("Перетащите компонент Text для записи описания таблицы, если вы не выбрали продвинутую таблицу (advanced)")]
+#if UNITY_EDITOR
+        [Tooltip(Langs.t_entriesText)]
+#endif
         public Text entriesText;
-
-        [SerializeField, Tooltip("Продвинутая таблица. Поддерживает подгрузку авата и конвертацию рекордов в тип Time. Подгружает все данные в отдельные элементы интерфейса.")]
-        private bool advanced;
-
-        [SerializeField, ConditionallyVisible(nameof(advanced)), Tooltip("Родительский объект для спавна в нём объектов 'playerDataPrefab'")]
-        private Transform rootSpawnPlayersData;
-        [ConditionallyVisible(nameof(advanced)), Tooltip("Префаб отображаемых данных игрока (объект со компонентом LBPlayerDataYG)")]
+#if UNITY_EDITOR
+        [Tooltip(Langs.t_advanced)]
+#endif
+        public bool advanced;
+#if UNITY_EDITOR
+        [NestedYG(nameof(advanced)), Tooltip(Langs.t_rootSpawnPlayersData)]
+#endif
+        public Transform rootSpawnPlayersData;
+#if UNITY_EDITOR
+        [NestedYG(nameof(advanced)), Tooltip(Langs.t_playerDataPrefab)]
+#endif
         public GameObject playerDataPrefab;
 
-        public enum PlayerPhoto
-        { NonePhoto, Small, Medium, Large };
-        [Tooltip("Размер подгружаемых изображений игроков. NonePhoto = не подгружать изображение.")]
-        [ConditionallyVisible(nameof(advanced))]
+        public enum PlayerPhoto { NonePhoto, Small, Medium, Large };
+#if UNITY_EDITOR
+        [NestedYG(nameof(advanced)), Tooltip(Langs.t_playerPhoto)]
+#endif
         public PlayerPhoto playerPhoto = PlayerPhoto.Small;
-
-        [Tooltip("Использовать кастомный спрайт для отображения пользователей без аватаров.")]
-        [ConditionallyVisible(nameof(advanced))]
+#if UNITY_EDITOR
+        [NestedYG(nameof(advanced)), Tooltip(Langs.t_isHiddenPlayerPhoto)]
+#endif
         public Sprite isHiddenPlayerPhoto;
+#if UNITY_EDITOR
+        [NestedYG(nameof(advanced)), Tooltip(Langs.t_timeTypeConvert)]
+#endif
+        public bool timeTypeConvert;
+#if UNITY_EDITOR
+        [NestedYG("timeTypeConvert"), Range(0, 3), Tooltip(Langs.t_decimalSize)]
+#endif
+        public int decimalSize = 1;
 
-        [SerializeField, ConditionallyVisible(nameof(advanced)), Tooltip("Конвертация полученных рекордов в Time тип")]
-        private bool timeTypeConvert;
+        public UnityEvent onUpdateData;
 
-        [SerializeField, ConditionallyVisible("timeTypeConvert"),
-            Range(0, 3), Tooltip("Размер десятичной части счёта (при использовании Time type).\n  Например:\n  0 = 00:00\n  1 = 00:00.0\n  2 = 00:00.00\n  3 = 00:00.000\nВы можете проверить это в Unity не прибегая к тестированию в сборке.")]
-        private int decimalSize = 1;
-
-        [SerializeField]
-        private UnityEvent onUpdateData;
-
-        private string photoSize;
         private LBPlayerDataYG[] players = new LBPlayerDataYG[0];
-
-        void Start()
-        {
-            if (playerPhoto == PlayerPhoto.NonePhoto)
-                photoSize = "nonePhoto";
-            if (playerPhoto == PlayerPhoto.Small)
-                photoSize = "small";
-            else if (playerPhoto == PlayerPhoto.Medium)
-                photoSize = "medium";
-            else if (playerPhoto == PlayerPhoto.Large)
-                photoSize = "large";
-
-            if (updateLBMethod == UpdateLBMethod.Start)
-            {
-                UpdateLB();
-            }
-        }
 
         private void OnEnable()
         {
-            YandexGame.onGetLeaderboard += OnUpdateLB;
+            YG2.onGetLeaderboard += OnUpdateLB;
 
             if (updateLBMethod == UpdateLBMethod.OnEnable)
-            {
                 UpdateLB();
-            }
+        }
+        private void OnDisable()
+        {
+            YG2.onGetLeaderboard -= OnUpdateLB;
         }
 
-        private void OnDisable() => YandexGame.onGetLeaderboard -= OnUpdateLB;
-
-        void OnUpdateLB(LBData lbData)
+        private void Start()
         {
-            if (lbData.technoName == nameLB)
-            {
-                string noData = "...";
+            if (updateLBMethod == UpdateLBMethod.Start)
+                UpdateLB();
+        }
 
-                if (lbData.entries == "no data")
+        private void OnUpdateLB(LBData lbData)
+        {
+            if (lbData.technoName != nameLB)
+                return;
+
+            string noData = string.Empty;
+#if Localization_yg
+            if (lbData.entries == InfoYG.NO_DATA)
+            {
+                noData = YG2.lang switch
                 {
-                    noData = YandexGame.savesData.language switch
-                    {
-                        "ru" => "Нет данных",
-                        "en" => "No data",
-                        "tr" => "Veri yok",
-                        _ => "...",
-                    };
-                }
-                if (!advanced)
+                    "ru" => "Нет данных",
+                    "en" => "No data",
+                    "tr" => "Veri yok",
+                    _ => string.Empty,
+                };
+            }
+#endif
+            if (!advanced)
+            {
+#if Localization_yg
+                lbData.entries = lbData.entries.Replace(InfoYG.ANONYMOUS, UtilsLang.IsHiddenTextTranslate());
+#else
+                lbData.entries = lbData.entries.Replace(InfoYG.ANONYMOUS, "---");
+#endif
+                entriesText.text = lbData.entries;
+            }
+            else
+            {
+                DestroyLBList();
+
+                if (lbData.entries == InfoYG.NO_DATA)
                 {
-                    lbData.entries = lbData.entries.Replace("anonymous", LangMethods.IsHiddenTextTranslate(YandexGame.Instance.infoYG));
-                    entriesText.text = lbData.entries;
+                    players = new LBPlayerDataYG[1];
+                    GameObject playerObj = Instantiate(playerDataPrefab, rootSpawnPlayersData);
+
+                    players[0] = playerObj.GetComponent<LBPlayerDataYG>();
+                    players[0].data.name = noData;
+                    players[0].data.photoUrl = null;
+                    players[0].data.rank = null;
+                    players[0].data.score = null;
+                    players[0].data.inTop = false;
+                    players[0].data.currentPlayer = false;
+                    players[0].data.photoSprite = null;
+                    players[0].UpdateEntries();
                 }
                 else
                 {
-                    DestroyLBList();
-
-                    if (lbData.entries == "no data")
-                    {
-                        players = new LBPlayerDataYG[1];
-                        GameObject playerObj = Instantiate(playerDataPrefab, rootSpawnPlayersData);
-
-                        players[0] = playerObj.GetComponent<LBPlayerDataYG>();
-                        players[0].data.name = noData;
-                        players[0].data.photoUrl = null;
-                        players[0].data.rank = null;
-                        players[0].data.score = null;
-                        players[0].data.inTop = false;
-                        players[0].data.thisPlayer = false;
-                        players[0].data.photoSprite = null;
-                        players[0].UpdateEntries();
-                    }
-                    else
-                    {
 #if UNITY_EDITOR
-                        lbData = LBMethods.SortLB(lbData, quantityTop, quantityAround, maxQuantityPlayers);
-#endif
-                        SpawnPlayersList(lbData);
+                    lbData = LBMethods.SortLB(lbData, maxQuantityPlayers, quantityTop, quantityAround);
+#else
+                    if (lbData.players.Length > maxQuantityPlayers)
+                    {
+                        int currentPlayer = -1;
+
+                        for (int i = 0; i < lbData.players.Length; i++)
+                        {
+                            if (lbData.players[i].uniqueID == YG2.player.id)
+                            {
+                                currentPlayer = i;
+                                break;
+                            }
+                        }
+                        
+                        if (currentPlayer >= maxQuantityPlayers)
+                        {
+                            List<LBPlayerData> topPlayers = new List<LBPlayerData>();
+
+                            for (int i = 0; i < quantityTop; i++)
+                                topPlayers.Add(lbData.players[i]);
+
+                            int minusPlayers = lbData.players.Length - maxQuantityPlayers;
+                            List<LBPlayerData> otherPlayers = new List<LBPlayerData>();
+
+                            for (int i = quantityTop + minusPlayers; i < lbData.players.Length; i++)
+                                otherPlayers.Add(lbData.players[i]);
+
+                            List<LBPlayerData> finalPlayers = topPlayers;
+                            finalPlayers.AddRange(otherPlayers);
+
+                            lbData.players = finalPlayers.ToArray();
+                        }
+                        else
+                        {
+                            Array.Resize(ref lbData.players, maxQuantityPlayers);
+                        }
                     }
+#endif
+                    SpawnPlayersList(lbData);
                 }
-                onUpdateData.Invoke();
             }
+            onUpdateData?.Invoke();
         }
 
         private void DestroyLBList()
@@ -156,6 +199,7 @@ namespace YG
         private void SpawnPlayersList(LBData lb)
         {
             players = new LBPlayerDataYG[lb.players.Length];
+
             for (int i = 0; i < players.Length; i++)
             {
                 GameObject playerObj = Instantiate(playerDataPrefab, rootSpawnPlayersData);
@@ -164,7 +208,7 @@ namespace YG
 
                 int rank = lb.players[i].rank;
 
-                players[i].data.name = LBMethods.AnonimName(lb.players[i].name);
+                players[i].data.name = LBMethods.AnonymousName(lb.players[i].name);
                 players[i].data.rank = rank.ToString();
 
                 if (rank <= quantityTop)
@@ -176,13 +220,13 @@ namespace YG
                     players[i].data.inTop = false;
                 }
 
-                if (lb.players[i].uniqueID == YandexGame.playerId)
+                if (lb.players[i].uniqueID == YG2.player.id)
                 {
-                    players[i].data.thisPlayer = true;
+                    players[i].data.currentPlayer = true;
                 }
                 else
                 {
-                    players[i].data.thisPlayer = false;
+                    players[i].data.currentPlayer = false;
                 }
 
                 if (timeTypeConvert)
@@ -197,7 +241,7 @@ namespace YG
 
                 if (playerPhoto != PlayerPhoto.NonePhoto)
                 {
-                    if (isHiddenPlayerPhoto && lb.players[i].photo.Contains("/avatar/0/"))
+                    if (isHiddenPlayerPhoto && (lb.players[i].photo.Contains("/avatar/0/") || lb.players[i].photo == InfoYG.ANONYMOUS))
                     {
                         players[i].data.photoSprite = isHiddenPlayerPhoto;
                     }
@@ -213,21 +257,31 @@ namespace YG
 
         public void UpdateLB()
         {
-            YandexGame.GetLeaderboard(nameLB, maxQuantityPlayers, quantityTop, quantityAround, photoSize);
+            string photoSize = "nonePhoto";
+
+            switch (playerPhoto)
+            {
+                case PlayerPhoto.Small:
+                    photoSize = "small";
+                    break;
+                case PlayerPhoto.Medium:
+                    photoSize = "medium";
+                    break;
+                case PlayerPhoto.Large:
+                    photoSize = "large";
+                    break;
+            }
+
+            YG2.GetLeaderboard(nameLB, quantityTop, quantityAround, photoSize);
         }
 
-        public void NewScore(long score) => YandexGame.NewLeaderboardScores(nameLB, score);
+        public void SetLeaderboard(int score) => YG2.SetLeaderboard(nameLB, score);
 
-        public void NewScoreTimeConvert(float score) => YandexGame.NewLBScoreTimeConvert(nameLB, score);
+        public void SetLBTimeConvert(float score) => YG2.SetLBTimeConvert(nameLB, score);
 
         public string TimeTypeConvert(int score)
         {
             return LBMethods.TimeTypeConvertStatic(score, decimalSize);
-        }
-
-        public void SetNameLB(string name)
-        {
-            nameLB = name;
         }
     }
 }

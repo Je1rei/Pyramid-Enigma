@@ -1,20 +1,59 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
+using YG;
 
 public class LevelService : MonoBehaviour, IService
 {
     [SerializeField] private LevelData[] _levels;
 
     private LevelData _current;
+    private int _index;
 
+    public int Index => _index;
     public LevelData Current => _current;
 
-    public LevelData LoadLevel(int index)
+    public void Init()
+    {
+        for (int i = 0; i < _levels.Length; i++)
+        {
+            if (i < YG2.saves.OpenLevels.Count)
+            {
+                _levels[i].IsOpen = YG2.saves.OpenLevels[i];
+            }
+        }
+    }
+
+    public LevelData Load(int index)
     {
         if (index < 0 || index >= _levels.Length)
             return null;
 
         _current = _levels[index];
+        _index = index;
 
         return _current;
+    }    
+
+    public void Complete()
+    {
+        if (_index < _levels.GetLength(0))
+        {
+            YG2.saves.OpenLevels[_index] = true;
+            YG2.SaveProgress();
+        }
+    }
+}
+
+namespace YG
+{
+    public partial class SavesYG
+    {
+        public List<bool> OpenLevels = new List<bool>(new bool[12]);
+
+        public void Init()
+        {
+            OpenLevels[0] = true;
+        }
     }
 }

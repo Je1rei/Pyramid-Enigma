@@ -43,6 +43,8 @@ public class GridFactory : MonoBehaviour
 
                     sequence.Insert(delay, cell.transform.DOMove(targetPosition, _spawnDuration).SetEase(Ease.OutBack));
                     sequence.Insert(delay, cell.transform.DORotate(Vector3.one * 360, _spawnDuration, RotateMode.FastBeyond360));
+
+                    block.TrailRenderer.enabled = true;
                 }
             }
         }

@@ -1,18 +1,15 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
-#if YG_TEXT_MESH_PRO
+#if TMP_YG2
 using TMPro;
 #endif
 
 namespace YG
 {
-    [HelpURL("https://www.notion.so/PluginYG-d457b23eee604b7aa6076116aab647ed#7f075606f6c24091926fa3ad7ab59d10")]
     public class LBPlayerDataYG : MonoBehaviour
     {
         public ImageLoadYG imageLoad;
-        public MonoBehaviour[] topPlayerActivityComponents = new MonoBehaviour[0];
-        public MonoBehaviour[] thisPlayerActivityComponents = new MonoBehaviour[0];
 
         [Serializable]
         public struct TextLegasy
@@ -21,7 +18,7 @@ namespace YG
         }
         public TextLegasy textLegasy;
 
-#if YG_TEXT_MESH_PRO
+#if TMP_YG2
         [Serializable]
         public struct TextMP
         {
@@ -29,6 +26,9 @@ namespace YG
         }
         public TextMP textMP;
 #endif
+        [Space(10)]
+        public MonoBehaviour[] topPlayerActivityComponents = new MonoBehaviour[0];
+        public MonoBehaviour[] currentPlayerActivityComponents = new MonoBehaviour[0];
 
         public class Data
         {
@@ -37,22 +37,20 @@ namespace YG
             public string score;
             public string photoUrl;
             public bool inTop;
-            public bool thisPlayer;
+            public bool currentPlayer;
             public Sprite photoSprite;
         }
 
         [HideInInspector]
         public Data data = new Data();
 
-
-        [ContextMenu(nameof(UpdateEntries))]
         public void UpdateEntries()
         {
             if (textLegasy.rank && data.rank != null) textLegasy.rank.text = data.rank.ToString();
             if (textLegasy.name && data.name != null) textLegasy.name.text = data.name;
             if (textLegasy.score && data.score != null) textLegasy.score.text = data.score.ToString();
 
-#if YG_TEXT_MESH_PRO
+#if TMP_YG2
             if (textMP.rank && data.rank != null) textMP.rank.text = data.rank.ToString();
             if (textMP.name && data.name != null) textMP.name.text = data.name;
             if (textMP.score && data.score != null) textMP.score.text = data.score.ToString();
@@ -61,11 +59,11 @@ namespace YG
             {
                 if (data.photoSprite)
                 {
-                    imageLoad.PutSprite(data.photoSprite);
+                    imageLoad.SetTexture(data.photoSprite.texture);
                 }
                 else if (data.photoUrl == null)
                 {
-                    imageLoad.ClearImage();
+                    imageLoad.ClearTexture();
                 }
                 else
                 {
@@ -85,15 +83,15 @@ namespace YG
                 }
             }
 
-            if (thisPlayerActivityComponents.Length > 0)
+            if (currentPlayerActivityComponents.Length > 0)
             {
-                if (data.thisPlayer)
+                if (data.currentPlayer)
                 {
-                    ActivityMomoObjects(thisPlayerActivityComponents, true);
+                    ActivityMomoObjects(currentPlayerActivityComponents, true);
                 }
                 else
                 {
-                    ActivityMomoObjects(thisPlayerActivityComponents, false);
+                    ActivityMomoObjects(currentPlayerActivityComponents, false);
                 }
             }
 

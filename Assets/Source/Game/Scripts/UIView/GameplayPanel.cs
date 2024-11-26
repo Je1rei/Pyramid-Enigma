@@ -20,6 +20,9 @@ public class GameplayPanel : UIPanel
 
         AddButtonListener(_backButton, Pause);
         AddButtonListener(_resetButton, OnClickReset);
+
+        if (_timerService != null)
+            _timerService.Changed += OnChangedTime;
     }
 
     private void OnDisable()
@@ -36,7 +39,6 @@ public class GameplayPanel : UIPanel
 
         SetAudioService();
         Show();
-
         _timerService.Changed += OnChangedTime;
     }
 

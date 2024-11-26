@@ -5,6 +5,8 @@ public class RewardService : MonoBehaviour, IService
 {
     private Grid _grid;
     private Wallet _wallet;
+
+    private LevelService _levelService;
     private TimerService _timerService;
     private TreasureFactory _factory;
     private Treasure _prefab;
@@ -25,6 +27,7 @@ public class RewardService : MonoBehaviour, IService
     {
         _timerService = ServiceLocator.Current.Get<TimerService>();
         _wallet = ServiceLocator.Current.Get<Wallet>();
+        _levelService = ServiceLocator.Current.Get<LevelService>();
 
         _grid = grid;
         _factory = factory;
@@ -39,6 +42,7 @@ public class RewardService : MonoBehaviour, IService
         Treasure treasure = _factory.Create(_prefab);
         treasure.Init();
 
+        _levelService.Complete();
         _timerService.Deactivate();
         _wallet.Increase();
         Rewarded?.Invoke();

@@ -8,7 +8,7 @@ public class CompositeRootMainMenu : CompositeRoot
     private Wallet _wallet;
     private AudioService _audioService;
     private LevelService _levelService;
-
+    private SettingsService _settingsService;
     private ServiceLocator _serviceLocator;
 
     private void Awake()
@@ -22,8 +22,13 @@ public class CompositeRootMainMenu : CompositeRoot
         _wallet = _serviceLocator.Get<Wallet>();    
         _levelService = _serviceLocator.Get<LevelService>();
         _audioService = _serviceLocator.Get<AudioService>();
+        _settingsService = _serviceLocator.Get<SettingsService>();
 
+        _wallet.Init();
         _walletView.Init();
         _audioService.Init(_uiAudioSource);
+
+        _settingsService.Init();
+        _levelService.Init();
     }
 }
