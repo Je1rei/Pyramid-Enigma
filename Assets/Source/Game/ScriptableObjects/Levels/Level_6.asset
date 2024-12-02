@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2874c2345708474d8c2329061f11614, type: 3}
   m_Name: Level_6
   m_EditorClassIdentifier: 
-  IsOpen: 0
-  GridData: {fileID: 11400000, guid: b308e64ea4fcc6a488d927abee8673db, type: 2}
-  RewardedPrefab: {fileID: -2158394785042400396, guid: 4e6f3ad9368ac004facab39eb194d10a, type: 3}
+  IsOpen: 1
+  GridData: {fileID: 11400000, guid: 11786bb7f4b908247b1634fee9a53a2a, type: 2}
+  RewardedPrefab: {fileID: 7517226035916756559, guid: 34499ccb3dbe436439379dfecc884bd2, type: 3}
   TimeLimit: 44
+  Background: {fileID: 2739680675103838179, guid: a9b08443f18044d4091fcd359fcd6ab8, type: 3}

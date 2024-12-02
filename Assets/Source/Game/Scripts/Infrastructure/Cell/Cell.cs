@@ -2,10 +2,10 @@
 
 public class Cell : MonoBehaviour
 {
+    private Grid _grid;
+
     public Vector3Int Position { get; private set; }
     public Block Occupied { get; private set; }
-
-    private Grid _grid;
 
     public void Init(Vector3Int position, Grid grid)
     {

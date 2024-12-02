@@ -1,24 +1,26 @@
 ﻿using DG.Tweening;
-using System;
 using UnityEngine;
 
 [RequireComponent(typeof(CellFactory))]
 public class GridFactory : MonoBehaviour
 {
+    [SerializeField] private float _rotateAngle = 360;
     [SerializeField] private float _spawnDuration = 1f;
     [SerializeField] private float _delay = 0.1f;
+    [SerializeField] private float _multiplierStartPosition = 30;
 
     private CellFactory _cellFactory;
+    private Sequence _sequence;
 
     public void Init()
     {
         _cellFactory = GetComponent<CellFactory>(); 
+        _sequence = DOTween.Sequence();
     }
 
     public Cell[,,] Create(GridData data, Grid gridParent,  Vector3 center)
     {
         Cell[,,] grid = new Cell[data.Width, data.Length, data.Height];
-        Sequence sequence = DOTween.Sequence();
 
         for (int x = 0; x < data.Width; x++)
         {
@@ -29,20 +31,22 @@ public class GridFactory : MonoBehaviour
                     Vector3Int position = new Vector3Int(x, y, z);
                     Cell cell = _cellFactory.Create(data.CellPrefab, position, gridParent);
 
-                    Vector3 randomStartPosition = center + UnityEngine.Random.onUnitSphere * data.CellSize * 10;
+                    Vector3 randomStartPosition = center + Random.onUnitSphere * data.CellSize * _multiplierStartPosition;
                     cell.transform.position = randomStartPosition;
 
                     Block block = Instantiate(data.BlockPrefab, cell.transform);
                     block.SetCurrentCell(cell);
                     block.Init();
+                    block.RandomizeColor(data.PaletteData.Palette);
+
                     cell.SetOccupy(block);
                     grid[x, y, z] = cell;
 
                     Vector3 targetPosition = new Vector3(x * data.CellSize, y * data.CellSize, z * data.CellSize);
                     float delay = _delay * (x + y + z);
 
-                    sequence.Insert(delay, cell.transform.DOMove(targetPosition, _spawnDuration).SetEase(Ease.OutBack));
-                    sequence.Insert(delay, cell.transform.DORotate(Vector3.one * 360, _spawnDuration, RotateMode.FastBeyond360));
+                    _sequence.Insert(delay, cell.transform.DOMove(targetPosition, _spawnDuration).SetEase(Ease.OutBack));
+                    _sequence.Insert(delay, cell.transform.DORotate(Vector3.one * _rotateAngle, _spawnDuration, RotateMode.FastBeyond360));
 
                     block.TrailRenderer.enabled = true;
                 }

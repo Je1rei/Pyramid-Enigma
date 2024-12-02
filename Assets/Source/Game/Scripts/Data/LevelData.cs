@@ -7,4 +7,5 @@ public class LevelData : ScriptableObject
     public GridData GridData;
     public Treasure RewardedPrefab;
     public int TimeLimit;
+    public Background Background;
 }

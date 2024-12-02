@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7c2c532cdd93fa41bf3873030cfe94d, type: 3}
+  m_Name: Dark purple - Light blue
+  m_EditorClassIdentifier: 
+  Palette:
+  - {r: 0.15294118, g: 0.027450982, b: 0.13333334, a: 0}
+  - {r: 0.92549026, g: 0.8078432, b: 0.5568628, a: 0}
+  - {r: 0.8588236, g: 0.8117648, b: 0.5882353, a: 0}
+  - {r: 0.7607844, g: 0.77647066, b: 0.654902, a: 0}
+  - {r: 0.6039216, g: 0.7607844, b: 0.7725491, a: 0}

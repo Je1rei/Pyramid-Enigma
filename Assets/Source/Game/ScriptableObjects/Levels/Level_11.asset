@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Level_11
   m_EditorClassIdentifier: 
   IsOpen: 0
-  GridData: {fileID: 11400000, guid: b308e64ea4fcc6a488d927abee8673db, type: 2}
-  RewardedPrefab: {fileID: -2158394785042400396, guid: 4e6f3ad9368ac004facab39eb194d10a, type: 3}
-  TimeLimit: 34
+  GridData: {fileID: 11400000, guid: c994aa9f1da351e449d6440938c73d10, type: 2}
+  RewardedPrefab: {fileID: 7517226035916756559, guid: 34499ccb3dbe436439379dfecc884bd2, type: 3}
+  TimeLimit: 55
+  Background: {fileID: 6867897091860411633, guid: 1e4ddc006c81f1a4e8c148577857c398, type: 3}

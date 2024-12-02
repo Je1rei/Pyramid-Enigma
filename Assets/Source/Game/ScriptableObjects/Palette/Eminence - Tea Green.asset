@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7c2c532cdd93fa41bf3873030cfe94d, type: 3}
+  m_Name: Eminence - Tea Green
+  m_EditorClassIdentifier: 
+  Palette:
+  - {r: 0.49411768, g: 0.18039216, b: 0.5176471, a: 0}
+  - {r: 0.8196079, g: 0.2509804, b: 0.5058824, a: 0}
+  - {r: 0.93725497, g: 0.47450984, b: 0.5411765, a: 0}
+  - {r: 0.97647065, g: 0.9607844, b: 0.89019614, a: 0}
+  - {r: 0.8000001, g: 0.9607844, b: 0.6745098, a: 0}

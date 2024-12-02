@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7c2c532cdd93fa41bf3873030cfe94d, type: 3}
+  m_Name: Space Cadet - Flax
+  m_EditorClassIdentifier: 
+  Palette:
+  - {r: 0.13333334, g: 0.18039216, b: 0.3137255, a: 0}
+  - {r: 0, g: 0.47450984, b: 0.5686275, a: 0}
+  - {r: 0.2627451, g: 0.6039216, b: 0.5254902, a: 0}
+  - {r: 0.7372549, g: 0.8470589, b: 0.7568628, a: 0}
+  - {r: 0.91372555, g: 0.85098046, b: 0.52156866, a: 0}

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using YG;
 
@@ -30,7 +29,7 @@ public class LevelService : MonoBehaviour, IService
             return null;
 
         _current = _levels[index];
-        _index = index;
+        _index = ++index;
 
         return _current;
     }    
@@ -42,6 +41,12 @@ public class LevelService : MonoBehaviour, IService
             YG2.saves.OpenLevels[_index] = true;
             YG2.SaveProgress();
         }
+    }
+
+    public void CreateBackground(RectTransform parent)
+    {
+        Background background = Instantiate(_current.Background, parent);
+        background.transform.SetAsFirstSibling();
     }
 }
 

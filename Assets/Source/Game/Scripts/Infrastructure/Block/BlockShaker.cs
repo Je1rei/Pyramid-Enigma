@@ -20,7 +20,6 @@ public class BlockShaker : MonoBehaviour
         }
 
         _initialPosition = transform.position;
-
         _tween = transform.DOShakePosition(_duration, _strength, _countVibration, _randomAngle, false, true)
             .OnComplete(() => transform.position = _initialPosition); 
     }

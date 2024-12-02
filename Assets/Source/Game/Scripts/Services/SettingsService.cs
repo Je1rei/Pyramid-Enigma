@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using YG;
+﻿using UnityEngine;
 
 public class SettingsService : MonoBehaviour, IService
 {
     private AudioService _audioService;
 
-    private string[] _languages = new string[] { "ru", "en", "tr" };
+    private readonly string[] _languages = new string[] { "ru", "en", "tr" };
 
     public void Init()
     {

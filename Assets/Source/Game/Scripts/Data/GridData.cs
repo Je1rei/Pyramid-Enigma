@@ -11,4 +11,5 @@ public class GridData : ScriptableObject
     public int Width = 2;
     public int Height = 2;
     public int Length = 2;
+    public PaletteData PaletteData;
 }

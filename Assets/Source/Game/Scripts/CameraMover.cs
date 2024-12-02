@@ -1,6 +1,3 @@
-using DG.Tweening;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraMover : MonoBehaviour
@@ -12,20 +9,26 @@ public class CameraMover : MonoBehaviour
 
     private float _multiplier = 4f;
     private Vector3 _targetPosition;
+    private Vector3 _gridCenter;
 
     public void Init()
     {
         SetupCameraPosition();
     }
 
+    public float GetDistance()
+    {
+        return Vector3.Distance(_cameraTransform.position, _gridCenter);
+    }
+
     private void SetupCameraPosition()
     {
-        Vector3 gridCenter = _grid.Center;
+         _gridCenter = _grid.Center;
 
         float gridSize = Mathf.Max(_grid.Data.Width, _grid.Data.Height, _grid.Data.Length) * _grid.Data.CellSize;
         float distance = gridSize * _multiplier;
 
-        _targetPosition = gridCenter - Quaternion.Euler(_angleX, _angleY, 0) * Vector3.forward * distance;
+        _targetPosition = _gridCenter - Quaternion.Euler(_angleX, _angleY, 0) * Vector3.forward * distance;
         _cameraTransform.position = _targetPosition;
         _cameraTransform.rotation = Quaternion.Euler(_angleX, _angleY, 0);
     }

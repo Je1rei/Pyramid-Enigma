@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class GameplayPanel : UIPanel
 {
+    [SerializeField] private RectTransform _parentBackground;
+    [SerializeField] private TutorialPanel _tutorialPanel;
     [SerializeField] private PausePanel _pausePanel;
     [SerializeField] private Button _backButton;
     [SerializeField] private Button _resetButton;
@@ -40,6 +42,8 @@ public class GameplayPanel : UIPanel
         SetAudioService();
         Show();
         _timerService.Changed += OnChangedTime;
+        _tutorialPanel.Init();
+        ServiceLocator.Current.Get<LevelService>().CreateBackground(_parentBackground);
     }
 
     public void Pause()

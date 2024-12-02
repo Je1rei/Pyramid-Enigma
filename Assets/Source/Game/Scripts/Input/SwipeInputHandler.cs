@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 [RequireComponent(typeof(InputPause))]
 public class SwipeInputHandler : MonoBehaviour, IService
@@ -6,18 +7,20 @@ public class SwipeInputHandler : MonoBehaviour, IService
     [SerializeField] private float _minSwipeDistance = 50f;
     [SerializeField] private float _directionTolerance = 0.2f;
 
+    private TutorialService _tutorialService;
     private GridRotator _rotator;
     private InputPause _inputPause;
 
     private Vector3 _mousePositionStart;
     private Vector3 _mousePositionEnd;
-
     private bool _isSwiping;
+
+    public event Action Clicked;
 
     public void Init(Grid grid)
     {
         _inputPause = GetComponent<InputPause>();
-
+        _tutorialService = ServiceLocator.Current.Get<TutorialService>();
         _rotator = grid.Rotator;
     }
 
@@ -72,11 +75,13 @@ public class SwipeInputHandler : MonoBehaviour, IService
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.TryGetComponent(out Block block))
+        if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.TryGetComponent(out Block block) && _tutorialService.IsActive == false)
         {
             if (block.TryGetComponent(out BlockMover mover))
                 mover.SetupMove();
         }
+
+        Clicked?.Invoke();
     }
 
     private DirectionType CalculateDirection(Vector3 delta)

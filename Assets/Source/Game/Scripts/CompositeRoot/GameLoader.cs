@@ -1,5 +1,4 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using YG;
 
@@ -12,6 +11,7 @@ public class GameLoader : MonoBehaviour
     [SerializeField] private LevelService _levelService;
     [SerializeField] private AudioService _audioService;
     [SerializeField] private SwipeInputHandler _swipeInputHandler;
+    [SerializeField] private TutorialService _tutorialService;
     [SerializeField] private InputPause _inputPauser;
 
     private ServiceLocator _serviceLocator;
@@ -36,6 +36,7 @@ public class GameLoader : MonoBehaviour
         _serviceLocator.Register(_levelService);
         _serviceLocator.Register(_audioService);
         _serviceLocator.Register(_swipeInputHandler);
+        _serviceLocator.Register(_tutorialService);
         _serviceLocator.Register(_inputPauser);
     }
 }

@@ -8,49 +8,49 @@ public class RewardService : MonoBehaviour, IService
 
     private LevelService _levelService;
     private TimerService _timerService;
-    private TreasureFactory _factory;
-    private Treasure _prefab;
+    private Treasure _treasure;
+    private CameraMover _cameraMover;
 
     public event Action Rewarded;
     public event Action Losed;
 
-    private void OnDisable()
-    {
-        if (_grid != null)
-            _grid.BlocksMoved -= Reward;
-
-        if (_timerService != null)
-            _timerService.Ended -= Lose;
-    }
-
-    public void Init(Grid grid, TreasureFactory factory, Treasure prefab)
+    public void Init(Grid grid,Treasure prefab, CameraMover cameraMover)
     {
         _timerService = ServiceLocator.Current.Get<TimerService>();
         _wallet = ServiceLocator.Current.Get<Wallet>();
         _levelService = ServiceLocator.Current.Get<LevelService>();
+        _cameraMover = cameraMover;
 
         _grid = grid;
-        _factory = factory;
-        _prefab = prefab;
+        _treasure = prefab;
 
-        _grid.BlocksMoved += Reward;
+        _grid.AllBlocksMoved += Reward;
         _timerService.Ended += Lose;
     }
 
     public void Reward()
     {
-        Treasure treasure = _factory.Create(_prefab);
-        treasure.Init();
-
         _levelService.Complete();
         _timerService.Deactivate();
-        _wallet.Increase();
+        _wallet.Increase(_treasure.Value);
         Rewarded?.Invoke();
+
+        UnSubscribe();
     }
 
     public void Lose()
     {
         _timerService.Deactivate();
         Losed?.Invoke();
+        UnSubscribe();
+    }
+
+    private void UnSubscribe()
+    {
+        if (_grid != null)
+            _grid.AllBlocksMoved -= Reward;
+
+        if (_timerService != null)
+            _timerService.Ended -= Lose;
     }
 }

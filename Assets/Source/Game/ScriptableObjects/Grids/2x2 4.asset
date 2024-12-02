@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b805d873cb530354c80959c078d2a375, type: 3}
-  m_Name: 2x2
+  m_Name: 2x2 4
   m_EditorClassIdentifier: 
   BlockPrefab: {fileID: 3131810772467227892, guid: 7651637ab259b164483083e5902c26b1, type: 3}
   CellPrefab: {fileID: 3315523507370816485, guid: 18434c3be06decd49ad00f9c5c7403c1, type: 3}
   Width: 2
   Height: 2
   Length: 2
-  CellSize: 1
+  PaletteData: {fileID: 11400000, guid: 0924542ad06ed8148851364a78bb104b, type: 2}

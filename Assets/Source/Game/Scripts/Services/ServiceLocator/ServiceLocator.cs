@@ -28,10 +28,4 @@ public class ServiceLocator
         else
             Debug.LogError($"Service {typeof(TService).Name} is already registered");
     }
-
-    public void UnRegister<TService>() where TService : IService
-    {
-        if (_services.Remove(typeof(TService)) == false)
-            Debug.LogError($"Attempted to unregister service of type {typeof(TService)} which is not registered with the {GetType().Name}");
-    }
 }

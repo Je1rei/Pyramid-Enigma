@@ -1,6 +1,4 @@
-﻿using DG.Tweening;
-using System;
-using UnityEditor;
+﻿using System;
 using UnityEngine;
 
 [RequireComponent(typeof(GridFactory), typeof(AudioSource))]
@@ -8,22 +6,20 @@ public class Grid : MonoBehaviour
 {
     private GridData _data;
     private GridFactory _factory;
+    private GridRotator _rotator;
 
     private Cell[,,] _grid;
     private Vector3 _center;
-    private GridRotator _rotator;
-    private AudioSource _audioSource;
 
     public GridRotator Rotator => _rotator;
     public GridData Data => _data;
     public Vector3 Center => _center;
 
-    public event Action BlocksMoved;
+    public event Action AllBlocksMoved;
 
     public void Init(GridData data)
     {
         _data = data;
-        _audioSource = GetComponent<AudioSource>();
         _rotator = GetComponent<GridRotator>();
         _factory = GetComponent<GridFactory>();
         _center = Vector3.zero.CalculateCenter(_data.Width, _data.Height, _data.Length, _data.CellSize);
@@ -32,21 +28,6 @@ public class Grid : MonoBehaviour
         Create();
 
         _rotator.Init(_center);
-    }
-
-    public void BlocksIsEmpty()
-    {
-        foreach (Cell cell in _grid)
-        {
-            if (cell.IsOccupied())
-            {
-                _audioSource.Play();
-
-                return;
-            }
-        }
-
-        BlocksMoved?.Invoke();
     }
 
     public Cell GetCell(Vector3Int position)
@@ -59,6 +40,19 @@ public class Grid : MonoBehaviour
         }
 
         return null;
+    }
+
+    private void BlocksIsEmpty()
+    {
+        foreach (Cell cell in _grid)
+        {
+            if (cell.IsOccupied())
+            {
+                return;
+            }
+        }
+
+        AllBlocksMoved?.Invoke();
     }
 
     private void Create()

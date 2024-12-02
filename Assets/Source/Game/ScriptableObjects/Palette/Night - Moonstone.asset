@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7c2c532cdd93fa41bf3873030cfe94d, type: 3}
+  m_Name: Night - Moonstone
+  m_EditorClassIdentifier: 
+  Palette:
+  - {r: 0.04705883, g: 0.03529412, b: 0.050980397, a: 0}
+  - {r: 0.87843144, g: 0.10196079, b: 0.30980393, a: 0}
+  - {r: 0.9450981, g: 0.34901962, b: 0.27450982, a: 0}
+  - {r: 0.97647065, g: 0.7607844, b: 0.18039216, a: 0}
+  - {r: 0.3254902, g: 0.7019608, b: 0.7960785, a: 0}
