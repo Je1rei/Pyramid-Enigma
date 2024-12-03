@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DG.Tweening;
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(InputPause))]
@@ -14,6 +15,7 @@ public class SwipeInputHandler : MonoBehaviour, IService
     private Vector3 _mousePositionStart;
     private Vector3 _mousePositionEnd;
     private bool _isSwiping;
+    private bool _isMoving;
 
     public event Action Clicked;
 
@@ -22,11 +24,13 @@ public class SwipeInputHandler : MonoBehaviour, IService
         _inputPause = GetComponent<InputPause>();
         _tutorialService = ServiceLocator.Current.Get<TutorialService>();
         _rotator = grid.Rotator;
+        _isMoving = false;
+        _isSwiping = false;
     }
 
     public void Tick()
     {
-        if (_inputPause.CanInput && _rotator != null)
+        if (_rotator != null)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -48,7 +52,7 @@ public class SwipeInputHandler : MonoBehaviour, IService
             {
                 _mousePositionEnd = Input.mousePosition;
 
-                if (_isSwiping)
+                if (_isSwiping && _inputPause.CanInput && _isMoving == false)
                 {
                     SwipeDetect();
                 }
@@ -78,7 +82,16 @@ public class SwipeInputHandler : MonoBehaviour, IService
         if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.TryGetComponent(out Block block) && _tutorialService.IsActive == false)
         {
             if (block.TryGetComponent(out BlockMover mover))
+            {
+                _isMoving = true;
+                mover.Moved += OnMoveCompleted;
                 mover.SetupMove();
+
+                if(mover.IsMoving == false)
+                {
+                    _isMoving = false;
+                }
+            }
         }
 
         Clicked?.Invoke();
@@ -92,5 +105,10 @@ public class SwipeInputHandler : MonoBehaviour, IService
             return delta.x > 0 ? DirectionType.Down : DirectionType.Up;
         else
             return DirectionType.None;
+    }
+
+    private void OnMoveCompleted()
+    {
+        _isMoving = false;
     }
 }

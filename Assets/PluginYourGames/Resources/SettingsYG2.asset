@@ -15,8 +15,8 @@ MonoBehaviour:
   Authorization:
     scopes: 1
     playerPhotoSize: 0
-    authorized: 0
-    playerName: Player current
+    authorized: 1
+    playerName: "\u041C\u0430\u0440\u0447\u0435\u043D\u043A\u043E \u041D\u0438\u043A\u0438\u0442\u0430"
     uniqueID: 000
     playerPhoto: demo image
     payingStatus: 0

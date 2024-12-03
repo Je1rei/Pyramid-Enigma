@@ -1,0 +1,3 @@
+Build path: D:/Projects/unity/Pyramid Enigma/Builds/Build 03.12.2024 4
+Build number: 5
+PluginYG version: 2.0

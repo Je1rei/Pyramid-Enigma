@@ -7,7 +7,7 @@ public class InputPause : MonoBehaviour, IService
 
     public void Init()
     {
-        CanInput = true;
+        ActivateInput();
     }
 
     public void ActivateInputCooldown(float duration) 
@@ -15,6 +15,8 @@ public class InputPause : MonoBehaviour, IService
         CanInput = true;
         StartCooldown(duration); 
     }
+
+    public void ActivateInput() => CanInput = true;
 
     public void DeactivateInput() => CanInput = false;
 

@@ -1,5 +1,7 @@
 ﻿using System;
 using UnityEngine;
+using DG.Tweening;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(GridFactory), typeof(AudioSource))]
 public class Grid : MonoBehaviour
@@ -57,8 +59,13 @@ public class Grid : MonoBehaviour
 
     private void Create()
     {
-        _grid = _factory.Create(_data, this, _center);
-        TryRotateNeighborBlock();
+        InputPause inputPauser = ServiceLocator.Current.Get<InputPause>();
+        var sequence = DOTween.Sequence();
+
+        sequence.AppendCallback(() => inputPauser.DeactivateInput());
+        sequence.AppendCallback(() => _grid = _factory.Create(_data, this, _center));
+        sequence.AppendCallback(() => TryRotateNeighborBlock());
+        sequence.OnComplete(() => inputPauser.ActivateInput());
     }
 
     private void TryRotateNeighborBlock()
@@ -71,18 +78,23 @@ public class Grid : MonoBehaviour
                 {
                     Cell cell = _grid[x, y, z];
 
-                    if (cell.IsOccupied() && cell.Occupied)
+                    if (cell.IsOccupied())
                     {
-                        RotateBlock(cell.Occupied, x, y, z);
-
-                        if (cell.Occupied.TryGetComponent(out BlockMover mover))
+                        if (cell.Occupied)
                         {
-                            mover.Moved += BlocksIsEmpty;
+                            RotateBlock(cell.Occupied, x, y, z);
+
+                            if (cell.Occupied.TryGetComponent(out BlockMover mover))
+                            {
+                                mover.Moved += BlocksIsEmpty;
+                            }
                         }
                     }
                 }
             }
         }
+
+        DetectAndResolveCycles();
     }
 
     private void RotateBlock(Block block, int x, int y, int z)
@@ -110,6 +122,73 @@ public class Grid : MonoBehaviour
                     neighborBlock.UpdateForwardDirection();
                 }
             }
+        }
+    }
+
+    private void DetectAndResolveCycles()
+    {
+        Dictionary<Cell, Cell> directedGraph = new Dictionary<Cell, Cell>();
+
+        foreach (Cell cell in _grid)
+        {
+            if (cell.IsOccupied())
+            {
+                Vector3Int forwardDirection = cell.Occupied.ForwardDirection;
+                Cell neighbor = GetCell(cell.Position + forwardDirection);
+
+                if (neighbor != null && neighbor.IsOccupied())
+                {
+                    directedGraph[cell] = neighbor;
+                }
+            }
+        }
+
+        HashSet<Cell> visited = new HashSet<Cell>();
+        HashSet<Cell> stack = new HashSet<Cell>();
+
+        foreach (var node in directedGraph.Keys)
+        {
+            if (IsCyclic(node, directedGraph, visited, stack))
+            {
+                ResolveCycle(node);
+                break;
+            }
+        }
+    }
+
+    private bool IsCyclic(Cell current, Dictionary<Cell, Cell> graph, HashSet<Cell> visited, HashSet<Cell> stack)
+    {
+        if (stack.Contains(current))
+            return true;
+
+        if (visited.Contains(current))
+            return false;
+
+        visited.Add(current);
+        stack.Add(current);
+
+        if (graph.TryGetValue(current, out Cell neighbor))
+            if (IsCyclic(neighbor, graph, visited, stack))
+                return true;
+
+        stack.Remove(current);
+
+        return false;
+    }
+
+    private void ResolveCycle(Cell startCell)
+    {
+        if (startCell.Occupied != null)
+        {
+            DirectionType newDirection;
+
+            do
+            {
+                newDirection = startCell.Occupied.RandomizeDirection();
+            } while (newDirection.ToVector3Int() == startCell.Occupied.ForwardDirection);
+
+            startCell.Occupied.SetAllowedDirection(newDirection);
+            startCell.Occupied.UpdateForwardDirection();
         }
     }
 }

@@ -53,7 +53,7 @@ public class CompositeRootGameplay : CompositeRoot
         _cameraMover.Init();
         _swipeInputHandler.Init(_grid);
         _inputPauser.Init();
-        _rewardService.Init(_grid, _levelService.Current.RewardedPrefab, _cameraMover);
+        _rewardService.Init(_grid, _levelService.Current.RewardedPrefab);
         _tutorialService.Init();
 
         _rewardPanel.Init();

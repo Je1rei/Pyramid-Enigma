@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BlockMover : MonoBehaviour
 {
-    [SerializeField] private float _time = 0.5f;
+    [SerializeField] private float _time = 0.01f;
     [SerializeField] private float _distance = 1f;
     [SerializeField] private float _destroyDelay = 1f;
     [SerializeField] private float _durationRotate = 0.5f;
@@ -12,6 +12,7 @@ public class BlockMover : MonoBehaviour
 
     private Cell _cell;
     private Block _block;
+    private InputPause _inputPauser;
 
     public bool IsMoving { get; private set; } = false;
 
@@ -23,6 +24,8 @@ public class BlockMover : MonoBehaviour
         {
             _cell = _block.Cell;
         }
+
+        _inputPauser = ServiceLocator.Current.Get<InputPause>();
     }
 
     public void SetupMove()
@@ -59,10 +62,10 @@ public class BlockMover : MonoBehaviour
             else
             {
                 TryMove(targetCell);
-                TryRotate();
-                IsMoving = false;
+                TryRotate();  
             }
 
+            IsMoving = false;
             Moved?.Invoke();
         });
     }

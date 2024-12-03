@@ -9,17 +9,15 @@ public class RewardService : MonoBehaviour, IService
     private LevelService _levelService;
     private TimerService _timerService;
     private Treasure _treasure;
-    private CameraMover _cameraMover;
 
     public event Action Rewarded;
     public event Action Losed;
 
-    public void Init(Grid grid,Treasure prefab, CameraMover cameraMover)
+    public void Init(Grid grid,Treasure prefab)
     {
         _timerService = ServiceLocator.Current.Get<TimerService>();
         _wallet = ServiceLocator.Current.Get<Wallet>();
         _levelService = ServiceLocator.Current.Get<LevelService>();
-        _cameraMover = cameraMover;
 
         _grid = grid;
         _treasure = prefab;

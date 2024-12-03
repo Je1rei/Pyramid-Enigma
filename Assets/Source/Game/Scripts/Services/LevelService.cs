@@ -12,16 +12,7 @@ public class LevelService : MonoBehaviour, IService
     public int Index => _index;
     public LevelData Current => _current;
 
-    public void Init()
-    {
-        for (int i = 0; i < _levels.Length; i++)
-        {
-            if (i < YG2.saves.OpenLevels.Count)
-            {
-                _levels[i].IsOpen = YG2.saves.OpenLevels[i];
-            }
-        }
-    }
+    public void Init() { }
 
     public LevelData Load(int index)
     {
@@ -29,7 +20,7 @@ public class LevelService : MonoBehaviour, IService
             return null;
 
         _current = _levels[index];
-        _index = ++index;
+        _index = index;
 
         return _current;
     }    
@@ -38,6 +29,7 @@ public class LevelService : MonoBehaviour, IService
     {
         if (_index < _levels.GetLength(0))
         {
+            _index++;
             YG2.saves.OpenLevels[_index] = true;
             YG2.SaveProgress();
         }
