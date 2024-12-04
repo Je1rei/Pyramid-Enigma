@@ -25,11 +25,13 @@ public class PausePanel : UIPanel
     {
         Show();
         Time.timeScale = 0f;
+        AudioListener.pause = true;
     }
 
     public void OnClickUnPause()
     {
         Time.timeScale = 1f;
+        AudioListener.pause = false;
         Hide();
         _gameplayPanel.UnPause();
     }
@@ -37,6 +39,7 @@ public class PausePanel : UIPanel
     private void OnClickBackToMenu()
     {
         Time.timeScale = 1f;
+        AudioListener.pause = false;
         SceneManager.LoadScene(1);
     }
 }

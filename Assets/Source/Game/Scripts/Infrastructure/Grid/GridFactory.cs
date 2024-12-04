@@ -15,11 +15,11 @@ public class GridFactory : MonoBehaviour
     public void Init()
     {
         _cellFactory = GetComponent<CellFactory>(); 
-        _sequence = DOTween.Sequence();
     }
 
     public Cell[,,] Create(GridData data, Grid gridParent,  Vector3 center)
     {
+        _sequence = DOTween.Sequence();
         Cell[,,] grid = new Cell[data.Width, data.Length, data.Height];
 
         for (int x = 0; x < data.Width; x++)

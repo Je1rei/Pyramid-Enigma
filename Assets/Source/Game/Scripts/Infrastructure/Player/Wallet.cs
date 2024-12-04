@@ -22,7 +22,7 @@ public class Wallet : MonoBehaviour, IService
         Changed?.Invoke(_score);
         YG2.saves.score = _score;
 
-        YG2.SetLeaderboard(nameLB: "ScoreLeaderboard", score: YG2.saves.score);
+        YG2.SetLeaderboard(nameLB: "Score", score: YG2.saves.score);
         YG2.SaveProgress();
     }
 }

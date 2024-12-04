@@ -13,6 +13,7 @@ public class BlockMover : MonoBehaviour
     private Cell _cell;
     private Block _block;
     private InputPause _inputPauser;
+    private Sequence _sequence;
 
     public bool IsMoving { get; private set; } = false;
 
@@ -62,7 +63,7 @@ public class BlockMover : MonoBehaviour
             else
             {
                 TryMove(targetCell);
-                TryRotate();  
+                TryRotate();
             }
 
             IsMoving = false;
@@ -72,6 +73,7 @@ public class BlockMover : MonoBehaviour
 
     private void TryRotate()
     {
+        _sequence = DOTween.Sequence();
         Vector3Int blockDirection = _block.ForwardDirection;
         Vector3Int neighborPosition = _cell.Position + blockDirection;
 
@@ -86,9 +88,8 @@ public class BlockMover : MonoBehaviour
                     _block.SetAllowedDirection(neighborBlock.RandomizeDirection());
                     _block.UpdateForwardDirection();
 
-                    DOTween.Sequence()
-                        .Append(_block.transform.DORotateQuaternion(Quaternion.LookRotation(neighborBlock.ForwardDirection), _durationRotate))
-                        .SetEase(Ease.InOutQuad);
+                    _sequence.Append(_block.transform.DORotateQuaternion(Quaternion.LookRotation(neighborBlock.ForwardDirection), _durationRotate))
+                        .SetEase(Ease.InOutQuad).OnComplete(() => _sequence.Kill());
                 }
             }
         }

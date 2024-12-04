@@ -9,7 +9,9 @@ public class TutorialService : MonoBehaviour, IService
 
     public void Init()
     {
-        if (YG2.isFirstGameSession)
+        LevelService levelService = ServiceLocator.Current.Get<LevelService>();
+
+        if (levelService.Index == 0 )
         {
             _isActive = true;
         }

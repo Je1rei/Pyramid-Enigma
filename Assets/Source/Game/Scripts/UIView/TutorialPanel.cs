@@ -9,6 +9,12 @@ public class TutorialPanel : UIPanel
 
     private int _currentIndex;
 
+    private void OnDisable()
+    {
+        _swipeInputHandler.Clicked -= ShowNextTutorial;
+        _service.Deactivate();
+    }
+
     public void Init()
     {
         _swipeInputHandler = ServiceLocator.Current.Get<SwipeInputHandler>();

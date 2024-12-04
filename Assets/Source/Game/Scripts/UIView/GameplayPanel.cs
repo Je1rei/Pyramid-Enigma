@@ -38,7 +38,7 @@ public class GameplayPanel : UIPanel
     {
         _inputPauser = ServiceLocator.Current.Get<InputPause>();
         _timerService = ServiceLocator.Current.Get<TimerService>();
-
+        
         SetAudioService();
         Show();
         _timerService.Changed += OnChangedTime;

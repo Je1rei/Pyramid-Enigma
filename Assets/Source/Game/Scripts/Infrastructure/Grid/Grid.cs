@@ -60,7 +60,7 @@ public class Grid : MonoBehaviour
     private void Create()
     {
         InputPause inputPauser = ServiceLocator.Current.Get<InputPause>();
-        var sequence = DOTween.Sequence();
+        Sequence sequence = DOTween.Sequence();
 
         sequence.AppendCallback(() => inputPauser.DeactivateInput());
         sequence.AppendCallback(() => _grid = _factory.Create(_data, this, _center));
