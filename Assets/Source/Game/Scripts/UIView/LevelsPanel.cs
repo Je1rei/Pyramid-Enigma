@@ -20,7 +20,6 @@ public class LevelsPanel : UIPanel
         {
             if (YG2.saves.OpenLevels[i])
             {
-                Debug.Log(i);
                 _levels[i].SetUnlock();
             }
             else

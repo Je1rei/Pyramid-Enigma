@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(BlockMover), typeof(BlockShaker), typeof(TrailRenderer))]
-[RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(BlockExploder), typeof(AudioSource))]
 public class Block : MonoBehaviour
 {
     private DirectionType _allowedDirection;
@@ -17,6 +17,8 @@ public class Block : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
         _trailRenderer = GetComponent<TrailRenderer>();
         _allowedDirection = RandomizeDirection();
+
+        SetAllowedDirection(_allowedDirection);
         UpdateForwardDirection();
     }
 
@@ -25,9 +27,14 @@ public class Block : MonoBehaviour
         _audioSource.Play();
     }
 
-    public void SetCurrentCell(Cell cell) => Cell = cell;
+    public void SetCurrentCell(Cell cell)
+    {
+        Cell = cell;
+    }
 
     public void SetAllowedDirection(DirectionType allowedDirection) => _allowedDirection = allowedDirection;
+
+    public DirectionType GetAllowedDirection() => _allowedDirection;
 
     public void UpdateForwardDirection()
     {

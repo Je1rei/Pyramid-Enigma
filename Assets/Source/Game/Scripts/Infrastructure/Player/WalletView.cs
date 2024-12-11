@@ -9,7 +9,7 @@ public class WalletView : MonoBehaviour
 
     private void OnDisable()
     {
-        _wallet.Changed -= Change;
+        _wallet.ScoreChanged -= Change;
     }
 
     public void Init()
@@ -17,7 +17,7 @@ public class WalletView : MonoBehaviour
         _wallet = ServiceLocator.Current.Get<Wallet>();
 
         Change(_wallet.Score);
-        _wallet.Changed += Change;
+        _wallet.ScoreChanged += Change;
     }
 
     private void Change(int value)

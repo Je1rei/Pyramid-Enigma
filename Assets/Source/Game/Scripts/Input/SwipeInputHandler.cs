@@ -8,6 +8,7 @@ public class SwipeInputHandler : MonoBehaviour, IService
     [SerializeField] private float _minSwipeDistance = 50f;
     [SerializeField] private float _directionTolerance = 0.2f;
 
+    private ExplodeService _explosionService;
     private TutorialService _tutorialService;
     private GridRotator _rotator;
     private InputPause _inputPause;
@@ -21,6 +22,7 @@ public class SwipeInputHandler : MonoBehaviour, IService
 
     public void Init(Grid grid)
     {
+        _explosionService = ServiceLocator.Current.Get<ExplodeService>();
         _inputPause = GetComponent<InputPause>();
         _tutorialService = ServiceLocator.Current.Get<TutorialService>();
         _rotator = grid.Rotator;
@@ -56,7 +58,7 @@ public class SwipeInputHandler : MonoBehaviour, IService
                 {
                     SwipeDetect();
                 }
-                else
+                else if(_isSwiping == false)
                 {
                     HandleClick();
                 }
@@ -83,13 +85,19 @@ public class SwipeInputHandler : MonoBehaviour, IService
         {
             if (block.TryGetComponent(out BlockMover mover))
             {
+                if (mover.IsMoving)
+                    return;
+
                 _isMoving = true;
                 mover.Moved += OnMoveCompleted;
-                mover.SetupMove();
 
-                if(mover.IsMoving == false)
+                if (_explosionService.IsActive == false)
                 {
-                    _isMoving = false;
+                    mover.SetupMove();
+                }
+                else
+                {
+                    mover.Explode();
                 }
             }
         }

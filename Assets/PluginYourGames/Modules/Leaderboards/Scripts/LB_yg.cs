@@ -32,7 +32,7 @@ namespace YG
                 Message("Set Leaderboard: " + score);
                 iPlatform.SetLeaderboard(nameLB, score, extraData);
 #else
-                Message($"Set Leaderboard «{nameLB}»: {score}");
+                Message($"Set Leaderboard ï¿½{nameLB}ï¿½: {score}");
 #endif
             }
         }
@@ -51,7 +51,7 @@ namespace YG
 
                 if (secondsScore <= 0)
                 {
-                    Debug.LogError("The score must be greater than zero!");
+                    Debug.LogError("The Score must be greater than zero!");
                     return;
                 }
 
@@ -88,7 +88,7 @@ namespace YG
 #else
             if (infoYG.Leaderboards.enable)
             {
-                Message($"Get Leaderboard «{nameLB}»");
+                Message($"Get Leaderboard ï¿½{nameLB}ï¿½");
 
                 LBData lb = null;
                 LBData[] LBs = new LBData[infoYG.Leaderboards.listLBSim.Length];

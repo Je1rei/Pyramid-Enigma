@@ -8,21 +8,21 @@ public class Wallet : MonoBehaviour, IService
 
     public int Score => _score;
 
-    public event Action<int> Changed;
+    public event Action<int> ScoreChanged;
 
     public void Init()
     {
-        _score = YG2.saves.score;
-        Changed?.Invoke(_score);
+        _score = YG2.saves.Score;
+        ScoreChanged?.Invoke(_score);
     }
 
-    public void Increase(int value)
+    public void IncreaseScore(int value)
     {
         _score += value;
-        Changed?.Invoke(_score);
-        YG2.saves.score = _score;
+        ScoreChanged?.Invoke(_score);
+        YG2.saves.Score = _score;
 
-        YG2.SetLeaderboard(nameLB: "Score", score: YG2.saves.score);
+        YG2.SetLeaderboard(nameLB: "Score", score: YG2.saves.Score);
         YG2.SaveProgress();
     }
 }
@@ -31,6 +31,6 @@ namespace YG
 {
     public partial class SavesYG
     {
-        public int score = 0;
+        public int Score = 0;
     }
 }

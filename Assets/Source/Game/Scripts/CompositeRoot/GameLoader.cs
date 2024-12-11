@@ -6,6 +6,7 @@ public class GameLoader : MonoBehaviour
 {
     [SerializeField] private RewardService _rewardService;
     [SerializeField] private Wallet _wallet;
+    [SerializeField] private BombWallet _bombWallet;
     [SerializeField] private TimerService _timeService;
     [SerializeField] private SettingsService _settingsService;
     [SerializeField] private LevelService _levelService;
@@ -13,6 +14,7 @@ public class GameLoader : MonoBehaviour
     [SerializeField] private SwipeInputHandler _swipeInputHandler;
     [SerializeField] private TutorialService _tutorialService;
     [SerializeField] private InputPause _inputPauser;
+    [SerializeField] private ExplodeService _explodeService;
 
     private ServiceLocator _serviceLocator;
 
@@ -32,11 +34,13 @@ public class GameLoader : MonoBehaviour
         _serviceLocator.Register(_settingsService);
         _serviceLocator.Register(_rewardService);
         _serviceLocator.Register(_wallet);
+        _serviceLocator.Register(_bombWallet);
         _serviceLocator.Register(_timeService);
         _serviceLocator.Register(_levelService);
         _serviceLocator.Register(_audioService);
         _serviceLocator.Register(_swipeInputHandler);
         _serviceLocator.Register(_tutorialService);
         _serviceLocator.Register(_inputPauser);
+        _serviceLocator.Register(_explodeService);
     }
 }

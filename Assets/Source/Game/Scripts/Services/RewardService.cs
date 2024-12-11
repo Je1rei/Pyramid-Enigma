@@ -5,6 +5,7 @@ public class RewardService : MonoBehaviour, IService
 {
     private Grid _grid;
     private Wallet _wallet;
+    private BombWallet _bombWallet;
 
     private LevelService _levelService;
     private TimerService _timerService;
@@ -13,11 +14,12 @@ public class RewardService : MonoBehaviour, IService
     public event Action Rewarded;
     public event Action Losed;
 
-    public void Init(Grid grid,Treasure prefab)
+    public void Init(Grid grid, Treasure prefab)
     {
         _timerService = ServiceLocator.Current.Get<TimerService>();
         _wallet = ServiceLocator.Current.Get<Wallet>();
         _levelService = ServiceLocator.Current.Get<LevelService>();
+        _bombWallet = ServiceLocator.Current.Get<BombWallet>();
 
         _grid = grid;
         _treasure = prefab;
@@ -30,7 +32,8 @@ public class RewardService : MonoBehaviour, IService
     {
         _levelService.Complete();
         _timerService.Deactivate();
-        _wallet.Increase(_treasure.Value);
+        _wallet.IncreaseScore(_treasure.Value);
+        _bombWallet.IncreaseScore();
         Rewarded?.Invoke();
 
         UnSubscribe();

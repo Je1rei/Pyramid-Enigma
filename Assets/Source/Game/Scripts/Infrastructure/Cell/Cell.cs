@@ -26,13 +26,14 @@ public class Cell : MonoBehaviour
 
     public void SetOccupy(Block block)
     {
-        block.transform.SetParent(transform);
         Occupied = block;
+        block.transform.SetParent(transform);
         block.SetCurrentCell(this);
     }
 
     public void SetFree()
     {
+        Occupied.SetCurrentCell(null);
         Occupied = null;
     }
 }

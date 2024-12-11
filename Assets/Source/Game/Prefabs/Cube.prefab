@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 745797768446882565}
   - component: {fileID: 3131810772467227892}
   - component: {fileID: 3666326011964842839}
+  - component: {fileID: 7807783133291153769}
   - component: {fileID: 7144246220223316014}
   - component: {fileID: 7307940826453265542}
   - component: {fileID: 7032345033727570810}
@@ -139,6 +140,21 @@ MonoBehaviour:
   _destroyDelay: 1
   _durationRotate: 0.1
   _maxMoveDistance: 60
+--- !u!114 &7807783133291153769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1612780383773056278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7b2000488c05e446af35f8b50da662b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _duration: 0.5
+  _minScale: 0
+  _isExplodes: 0
 --- !u!114 &7144246220223316014
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,7 +269,7 @@ TrailRenderer:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_ColorSpace: 0
+      m_ColorSpace: -1
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 0

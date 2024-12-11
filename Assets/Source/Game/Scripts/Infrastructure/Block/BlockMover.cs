@@ -1,5 +1,6 @@
 ﻿using DG.Tweening;
 using System;
+using TMPro;
 using UnityEngine;
 
 public class BlockMover : MonoBehaviour
@@ -13,6 +14,10 @@ public class BlockMover : MonoBehaviour
     private Cell _cell;
     private Block _block;
     private InputPause _inputPauser;
+    private BlockShaker _shaker;
+    private BlockExploder _exploder;
+
+    private Tween _tween;
     private Sequence _sequence;
 
     public bool IsMoving { get; private set; } = false;
@@ -27,32 +32,29 @@ public class BlockMover : MonoBehaviour
         }
 
         _inputPauser = ServiceLocator.Current.Get<InputPause>();
+        _shaker = GetComponent<BlockShaker>();
+        _exploder = GetComponent<BlockExploder>();
     }
 
     public void SetupMove()
     {
-        if (IsMoving) return;
+        if (IsMoving)
+            return;
 
         if (CanMove())
-        {
             Move();
-        }
         else
-        {
-            BlockShaker shaker = GetComponent<BlockShaker>();
-            shaker.Shake();
-        }
+            _shaker.Shake();
     }
 
     private void Move()
     {
         IsMoving = true;
         _block.PlaySound();
-        _cell.SetFree();
 
         Vector3 targetPosition = GetFurthestPosition();
 
-        transform.DOMove(targetPosition, _time).SetEase(Ease.OutQuad).OnComplete(() =>
+        _tween = transform.DOMove(targetPosition, _time).SetEase(Ease.OutQuad).OnComplete(() =>
         {
             Cell targetCell = GetTargetCell(targetPosition);
 
@@ -73,26 +75,31 @@ public class BlockMover : MonoBehaviour
 
     private void TryRotate()
     {
-        _sequence = DOTween.Sequence();
+        if (_sequence == null)
+            _sequence = DOTween.Sequence();
+
         Vector3Int blockDirection = _block.ForwardDirection;
         Vector3Int neighborPosition = _cell.Position + blockDirection;
-
         Cell neighborCell = _cell.GetGrid().GetCell(neighborPosition);
 
         if (neighborCell != null && neighborCell.IsOccupied())
         {
             if (neighborCell.Occupied.TryGetComponent(out Block neighborBlock))
             {
-                if (neighborBlock.ForwardDirection == -_block.ForwardDirection)
+                DirectionType oppositeDirection = _block.GetAllowedDirection().ToOpposite();
+
+                if (neighborBlock.GetAllowedDirection() == oppositeDirection)
                 {
-                    _block.SetAllowedDirection(neighborBlock.RandomizeDirection());
+                    _block.SetAllowedDirection(oppositeDirection);
                     _block.UpdateForwardDirection();
 
-                    _sequence.Append(_block.transform.DORotateQuaternion(Quaternion.LookRotation(neighborBlock.ForwardDirection), _durationRotate))
-                        .SetEase(Ease.InOutQuad).OnComplete(() => _sequence.Kill());
+                    _sequence.Append(_block.transform.DORotateQuaternion(Quaternion.LookRotation(neighborBlock.ForwardDirection), _durationRotate)
+                        .SetEase(Ease.InOutQuad));
                 }
             }
         }
+
+        _sequence.OnComplete(() => _sequence.Kill());
     }
 
     private Vector3 GetFurthestPosition()
@@ -131,21 +138,32 @@ public class BlockMover : MonoBehaviour
 
     private bool CanMove()
     {
-        return Physics.Raycast(transform.position, transform.forward, _distance) == false;
-    }
+        bool canMove = Physics.Raycast(transform.position, transform.forward, _distance) == false;
+        Debug.Log($"CanMove: {canMove}");
 
-    private void TryMove(Cell targetCell)
-    {
-        if (targetCell != null && !targetCell.IsOccupied())
-        {
-            _cell = targetCell;
-            _cell.SetOccupy(_block);
-        }
+        return canMove;
     }
 
     private void DestroyAfterDelay()
     {
-        Invoke(nameof(DestroyBlock), _destroyDelay);
+        DOTween.To(() => 0, x => { }, 1, _destroyDelay).OnComplete(() => { DestroyBlock(); });
+    }
+
+    private void TryMove(Cell targetCell)
+    {
+        if (targetCell == null)
+        {
+            return;
+        }
+
+        if (targetCell.IsOccupied())
+        {
+            return;
+        }
+
+        _cell.SetFree();
+        _cell = targetCell;
+        _cell.SetOccupy(_block);
     }
 
     private void DestroyBlock()
@@ -155,8 +173,19 @@ public class BlockMover : MonoBehaviour
 
     private Cell GetTargetCell(Vector3 targetPosition)
     {
-        Cell targetCell = _cell.GetGrid().GetCell(Vector3Int.FloorToInt(targetPosition));
+        Vector3Int gridPosition = Vector3Int.FloorToInt(targetPosition);
+        Cell targetCell = _cell.GetGrid().GetCell(gridPosition);
 
         return targetCell != null && targetCell.IsOccupied() == false ? targetCell : null;
+    }
+
+    public void Explode()
+    {
+        if (_exploder.TryExplode() && IsMoving == false)
+        {
+            _cell.SetFree();
+            _block.SetCurrentCell(null);
+            Moved?.Invoke();
+        }
     }
 }

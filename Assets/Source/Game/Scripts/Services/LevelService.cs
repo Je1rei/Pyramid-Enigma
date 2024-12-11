@@ -23,15 +23,19 @@ public class LevelService : MonoBehaviour, IService
         _index = index;
 
         return _current;
-    }    
+    }
 
     public void Complete()
     {
         if (_index < _levels.GetLength(0))
         {
             _index++;
-            YG2.saves.OpenLevels[_index] = true;
-            YG2.SaveProgress();
+
+            if (_index <= _levels.GetLength(0))
+            {
+                YG2.saves.OpenLevels[_index] = true;
+                YG2.SaveProgress();
+            }
         }
     }
 

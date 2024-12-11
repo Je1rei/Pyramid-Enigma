@@ -3,17 +3,18 @@ using DG.Tweening;
 
 public class InputPause : MonoBehaviour, IService
 {
+    private Sequence _sequence;
+
     public bool CanInput { get; private set; }
 
     public void Init()
     {
-        ActivateInput();
+        CanInput = false;
     }
 
-    public void ActivateInputCooldown(float duration) 
+    public void ActivateInputCooldown(float duration = 0.5F)
     {
-        CanInput = true;
-        StartCooldown(duration); 
+        StartCooldown(duration);
     }
 
     public void ActivateInput() => CanInput = true;
@@ -25,11 +26,9 @@ public class InputPause : MonoBehaviour, IService
         if (CanInput == false)
             return;
 
+        _sequence = DOTween.Sequence();
         CanInput = false;
 
-        DOVirtual.DelayedCall(duration, () =>
-        {
-            CanInput = true;
-        });
+        _sequence.PrependInterval(duration).OnComplete(() => { CanInput = true; });
     }
 }

@@ -142,6 +142,8 @@ GameObject:
   - component: {fileID: 170238457}
   - component: {fileID: 170238459}
   - component: {fileID: 170238460}
+  - component: {fileID: 170238462}
+  - component: {fileID: 170238461}
   m_Layer: 0
   m_Name: GameLoader
   m_TagString: Untagged
@@ -179,6 +181,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rewardService: {fileID: 170238458}
   _wallet: {fileID: 170238457}
+  _bombWallet: {fileID: 170238461}
   _timeService: {fileID: 170238456}
   _settingsService: {fileID: 170238459}
   _levelService: {fileID: 170238455}
@@ -186,6 +189,7 @@ MonoBehaviour:
   _swipeInputHandler: {fileID: 170238453}
   _tutorialService: {fileID: 170238460}
   _inputPauser: {fileID: 170238454}
+  _explodeService: {fileID: 170238462}
 --- !u!114 &170238452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -308,6 +312,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7e0edc9880377e94e835658586a31928, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &170238461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 170238448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55b8cd04e04308543b9cb2691dc70a91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &170238462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 170238448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 738b399583fb9814c9449651261befa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2038507148

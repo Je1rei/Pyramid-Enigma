@@ -9,17 +9,21 @@ public class GridFactory : MonoBehaviour
     [SerializeField] private float _delay = 0.1f;
     [SerializeField] private float _multiplierStartPosition = 30;
 
+    private InputPause _inputPauser;
     private CellFactory _cellFactory;
     private Sequence _sequence;
 
     public void Init()
     {
-        _cellFactory = GetComponent<CellFactory>(); 
+        _inputPauser = ServiceLocator.Current.Get<InputPause>();
+        _cellFactory = GetComponent<CellFactory>();
     }
 
-    public Cell[,,] Create(GridData data, Grid gridParent,  Vector3 center)
+    public Cell[,,] Create(GridData data, Grid gridParent, Vector3 center)
     {
         _sequence = DOTween.Sequence();
+        _sequence.AppendCallback(() => { _inputPauser.DeactivateInput(); });
+
         Cell[,,] grid = new Cell[data.Width, data.Length, data.Height];
 
         for (int x = 0; x < data.Width; x++)
@@ -52,6 +56,8 @@ public class GridFactory : MonoBehaviour
                 }
             }
         }
+
+        _sequence.OnComplete(() => { _inputPauser.ActivateInput(); });
 
         return grid;
     }
