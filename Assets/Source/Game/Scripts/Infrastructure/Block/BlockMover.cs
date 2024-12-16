@@ -1,6 +1,5 @@
 ﻿using DG.Tweening;
 using System;
-using TMPro;
 using UnityEngine;
 
 public class BlockMover : MonoBehaviour
@@ -20,6 +19,8 @@ public class BlockMover : MonoBehaviour
     private Tween _tween;
     private Sequence _sequence;
 
+    private int _countEmptyCells;
+
     public bool IsMoving { get; private set; } = false;
 
     public event Action Moved;
@@ -34,6 +35,7 @@ public class BlockMover : MonoBehaviour
         _inputPauser = ServiceLocator.Current.Get<InputPause>();
         _shaker = GetComponent<BlockShaker>();
         _exploder = GetComponent<BlockExploder>();
+        _countEmptyCells = 0;
     }
 
     public void SetupMove()
@@ -47,16 +49,17 @@ public class BlockMover : MonoBehaviour
             _shaker.Shake();
     }
 
-    private void Move()
+    private void Move() 
     {
         IsMoving = true;
         _block.PlaySound();
 
-        Vector3 targetPosition = GetFurthestPosition();
+        Vector3Int gridDirection = _block.ForwardDirection;
+        Vector3 targetPosition = transform.position + (Vector3)gridDirection * _countEmptyCells; // ??????????
 
         _tween = transform.DOMove(targetPosition, _time).SetEase(Ease.OutQuad).OnComplete(() =>
         {
-            Cell targetCell = GetTargetCell(targetPosition);
+            Cell targetCell = GetTargetCell();
 
             if (targetCell == null)
             {
@@ -65,7 +68,7 @@ public class BlockMover : MonoBehaviour
             else
             {
                 TryMove(targetCell);
-                TryRotate();
+                //TryRotate();
             }
 
             IsMoving = false;
@@ -78,15 +81,16 @@ public class BlockMover : MonoBehaviour
         if (_sequence == null)
             _sequence = DOTween.Sequence();
 
-        Vector3Int blockDirection = _block.ForwardDirection;
-        Vector3Int neighborPosition = _cell.Position + blockDirection;
+        Vector3Int direction = Vector3Int.RoundToInt(transform.forward);
+        Vector3Int neighborPosition = _cell.Position + direction;
         Cell neighborCell = _cell.GetGrid().GetCell(neighborPosition);
 
         if (neighborCell != null && neighborCell.IsOccupied())
         {
-            if (neighborCell.Occupied.TryGetComponent(out Block neighborBlock))
+            if (neighborCell.IsOccupied())
             {
                 DirectionType oppositeDirection = _block.GetAllowedDirection().ToOpposite();
+                Block neighborBlock = neighborCell.Occupied;
 
                 if (neighborBlock.GetAllowedDirection() == oppositeDirection)
                 {
@@ -102,65 +106,58 @@ public class BlockMover : MonoBehaviour
         _sequence.OnComplete(() => _sequence.Kill());
     }
 
-    private Vector3 GetFurthestPosition()
+    private int CountEmptyCells()
     {
-        float offset = 0.5f;
-        float maxDistance = _distance * _maxMoveDistance;
-        RaycastHit[] hits = Physics.RaycastAll(transform.position, transform.forward, maxDistance);
+        int count = 0;
 
-        Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+        Vector3Int gridDirection = _block.ForwardDirection;
+        Vector3Int position = _cell.Position;
 
-        foreach (RaycastHit hit in hits)
+        Debug.Log($"(CountEmptyCells) gridDirection -> {gridDirection}, cellPos -> {position}");
+
+        for (int i = 1; i <= _maxMoveDistance; i++)
         {
-            if (hit.collider.gameObject == gameObject)
-                continue;
+            Vector3Int nextPosition = position + gridDirection * i;
+            Cell nextCell = _cell.GetGrid().GetCell(nextPosition);
 
-            Vector3 hitPosition = RoundToGrid(hit.point - transform.forward.normalized * offset);
-            Cell cell = _cell.GetGrid().GetCell(Vector3Int.FloorToInt(hitPosition));
+            if (nextCell != null)
+            {
+                if (nextCell.IsOccupied())
+                    break;
 
-            if (cell == null || cell.IsOccupied())
-                return hitPosition - transform.forward.normalized * _distance;
-
-            return hitPosition;
+                count++;
+            }
+            else
+            {
+                count = _maxMoveDistance;
+            }
         }
 
-        return RoundToGrid(transform.position + transform.forward * maxDistance);
-    }
-
-    private Vector3 RoundToGrid(Vector3 position)
-    {
-        return new Vector3(
-            Mathf.Round(position.x),
-            Mathf.Round(position.y),
-            Mathf.Round(position.z)
-        );
+        return count;
     }
 
     private bool CanMove()
     {
-        bool canMove = Physics.Raycast(transform.position, transform.forward, _distance) == false;
-        Debug.Log($"CanMove: {canMove}");
+        bool canMove = false;
+        _countEmptyCells = CountEmptyCells();
+
+        if (_countEmptyCells <= 0)
+            canMove = false;
+        else
+            canMove = true;
 
         return canMove;
     }
 
     private void DestroyAfterDelay()
     {
+        _block.SetCurrentCell(null);
+        _cell.SetFree();
         DOTween.To(() => 0, x => { }, 1, _destroyDelay).OnComplete(() => { DestroyBlock(); });
     }
 
     private void TryMove(Cell targetCell)
     {
-        if (targetCell == null)
-        {
-            return;
-        }
-
-        if (targetCell.IsOccupied())
-        {
-            return;
-        }
-
         _cell.SetFree();
         _cell = targetCell;
         _cell.SetOccupy(_block);
@@ -171,10 +168,14 @@ public class BlockMover : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private Cell GetTargetCell(Vector3 targetPosition)
+    private Cell GetTargetCell() //не проверяется нормально
     {
-        Vector3Int gridPosition = Vector3Int.FloorToInt(targetPosition);
+        Vector3Int gridDirection = _block.ForwardDirection;
+        Vector3Int gridPosition = _cell.Position + gridDirection * _countEmptyCells;
+
         Cell targetCell = _cell.GetGrid().GetCell(gridPosition);
+
+        Debug.Log($"(GetTargetCell) gridDirection -> {gridDirection}, gridPosition -> {gridPosition}, targetCell -> {targetCell?.Position}");
 
         return targetCell != null && targetCell.IsOccupied() == false ? targetCell : null;
     }

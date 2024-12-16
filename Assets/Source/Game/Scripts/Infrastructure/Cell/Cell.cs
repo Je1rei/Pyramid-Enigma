@@ -27,8 +27,8 @@ public class Cell : MonoBehaviour
     public void SetOccupy(Block block)
     {
         Occupied = block;
-        block.transform.SetParent(transform);
-        block.SetCurrentCell(this);
+        Occupied.SetCurrentCell(this);
+        Occupied.transform.SetParent(transform);
     }
 
     public void SetFree()

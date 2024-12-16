@@ -102,6 +102,7 @@ public class SwipeInputHandler : MonoBehaviour, IService
             }
         }
 
+        _isMoving = false;
         Clicked?.Invoke();
     }
 
