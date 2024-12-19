@@ -21,6 +21,7 @@ public class CompositeRootGameplay : CompositeRoot
     private SwipeInputHandler _swipeInputHandler;
     private TutorialService _tutorialService;
     private AudioService _audioService;
+
     private ServiceLocator _serviceLocator;
 
     private void Awake()
@@ -51,6 +52,11 @@ public class CompositeRootGameplay : CompositeRoot
         _timerService = _serviceLocator.Get<TimerService>();
         _tutorialService = _serviceLocator.Get<TutorialService>();
 
+        Initialize();
+    }
+
+    private void Initialize()
+    {
         _explosionService.Init();
         _bombWallet.Init();
         _bombWalletView.Init();

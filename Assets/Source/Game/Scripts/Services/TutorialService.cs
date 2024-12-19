@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using YG;
-
-public class TutorialService : MonoBehaviour, IService
+﻿public class TutorialService :IService
 {
     private bool _isActive;
 

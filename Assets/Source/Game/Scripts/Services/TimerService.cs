@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class TimerService : MonoBehaviour, IService
+public class TimerService : IService
 {
     private int _timeLimit;
     private float _timeRemaining;

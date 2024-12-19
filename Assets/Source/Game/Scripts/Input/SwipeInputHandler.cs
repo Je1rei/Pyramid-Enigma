@@ -16,7 +16,8 @@ public class SwipeInputHandler : MonoBehaviour, IService
     private Vector3 _mousePositionStart;
     private Vector3 _mousePositionEnd;
     private bool _isSwiping;
-    private bool _isMoving;
+
+    private int _movingBlocksCount;
 
     public event Action Clicked;
 
@@ -26,7 +27,7 @@ public class SwipeInputHandler : MonoBehaviour, IService
         _inputPause = GetComponent<InputPause>();
         _tutorialService = ServiceLocator.Current.Get<TutorialService>();
         _rotator = grid.Rotator;
-        _isMoving = false;
+        _movingBlocksCount = 0;
         _isSwiping = false;
     }
 
@@ -54,11 +55,11 @@ public class SwipeInputHandler : MonoBehaviour, IService
             {
                 _mousePositionEnd = Input.mousePosition;
 
-                if (_isSwiping && _inputPause.CanInput && _isMoving == false)
+                if (_isSwiping && _inputPause.CanInput && _movingBlocksCount == 0)
                 {
                     SwipeDetect();
                 }
-                else if(_isSwiping == false)
+                else if (_isSwiping == false)
                 {
                     HandleClick();
                 }
@@ -69,7 +70,6 @@ public class SwipeInputHandler : MonoBehaviour, IService
     private void SwipeDetect()
     {
         Vector3 delta = _mousePositionEnd - _mousePositionStart;
-
         DirectionType swipeDirection = CalculateDirection(delta);
 
         _rotator.Rotate(swipeDirection);
@@ -88,12 +88,18 @@ public class SwipeInputHandler : MonoBehaviour, IService
                 if (mover.IsMoving)
                     return;
 
-                _isMoving = true;
+                _movingBlocksCount++;
                 mover.Moved += OnMoveCompleted;
 
                 if (_explosionService.IsActive == false)
                 {
                     mover.SetupMove();
+
+                    if (mover.IsMoving == false)
+                    {
+                        _movingBlocksCount--;
+                        mover.Moved -= OnMoveCompleted;
+                    }
                 }
                 else
                 {
@@ -102,7 +108,6 @@ public class SwipeInputHandler : MonoBehaviour, IService
             }
         }
 
-        _isMoving = false;
         Clicked?.Invoke();
     }
 
@@ -116,8 +121,14 @@ public class SwipeInputHandler : MonoBehaviour, IService
             return DirectionType.None;
     }
 
-    private void OnMoveCompleted()
+    private void OnMoveCompleted(BlockMover mover)
     {
-        _isMoving = false;
+        _movingBlocksCount--;
+        mover.Moved -= OnMoveCompleted;
+
+        if(_movingBlocksCount < 0)
+        {
+            _movingBlocksCount = 0;
+        }
     }
 }

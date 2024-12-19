@@ -11,8 +11,7 @@ public class GameplayPanel : UIPanel
     [SerializeField] private Button _backButton;
     [SerializeField] private Button _resetButton;
     [SerializeField] private TMP_Text _timerText;
-
-    private float _cooldownInput = 0.5f;
+    
     private InputPause _inputPauser;
     private TimerService _timerService;
 

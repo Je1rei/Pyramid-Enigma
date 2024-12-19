@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class BlockMover : MonoBehaviour
 {
-    [SerializeField] private float _time = 0.01f;
-    [SerializeField] private float _distance = 1f;
-    [SerializeField] private float _destroyDelay = 1f;
+    [SerializeField] private float _speed = 10f;
+    [SerializeField] private float _destroyDelay = 0.1f;
     [SerializeField] private float _durationRotate = 0.5f;
     [SerializeField] private int _maxMoveDistance = 30;
+
+    private Color _moveColor;
 
     private Cell _cell;
     private Block _block;
@@ -23,9 +24,9 @@ public class BlockMover : MonoBehaviour
 
     public bool IsMoving { get; private set; } = false;
 
-    public event Action Moved;
+    public event Action<BlockMover> Moved;
 
-    private void Start()
+    public void Init()
     {
         if (TryGetComponent(out _block))
         {
@@ -36,6 +37,10 @@ public class BlockMover : MonoBehaviour
         _shaker = GetComponent<BlockShaker>();
         _exploder = GetComponent<BlockExploder>();
         _countEmptyCells = 0;
+
+        _moveColor = Color.green;
+        _shaker.Init();
+        _exploder.Init(_block.Renderer);
     }
 
     public void SetupMove()
@@ -49,31 +54,52 @@ public class BlockMover : MonoBehaviour
             _shaker.Shake();
     }
 
-    private void Move() 
+    private void Move()
     {
         IsMoving = true;
         _block.PlaySound();
+        _block.Renderer.material.color = _moveColor;
 
-        Vector3Int gridDirection = _block.ForwardDirection;
-        Vector3 targetPosition = transform.position + (Vector3)gridDirection * _countEmptyCells; // ??????????
+        Grid grid = _cell.GetGrid();
+        Vector3Int blockForwardDirection = _block.ForwardDirection;
+        Vector3 targetPosition = grid.transform.rotation * (blockForwardDirection * _countEmptyCells);
 
-        _tween = transform.DOMove(targetPosition, _time).SetEase(Ease.OutQuad).OnComplete(() =>
+        float duration = ClampDuration(targetPosition.magnitude);
+        _cell.SetFree();
+
+        if (TryGetTargetCell(out Cell targetCell))
         {
-            Cell targetCell = GetTargetCell();
+            OccupieTarget(targetCell);
+        }
 
+        _tween = transform.DOMove(transform.position + targetPosition, duration).SetEase(Ease.OutQuad).OnComplete(() =>
+        {
             if (targetCell == null)
             {
                 DestroyAfterDelay();
             }
             else
             {
-                TryMove(targetCell);
-                //TryRotate();
+                TryRotate();
             }
 
+            _block.ResetColor();
             IsMoving = false;
-            Moved?.Invoke();
+            Moved?.Invoke(this);
         });
+    }
+
+    private float ClampDuration(float magnitude)
+    {
+        const float sqrtConst = 0.5f;
+        const float minDuration = 0.1f;
+        const float maxDuration = 1f;
+
+        float distance = magnitude;
+        float baseDuration = distance / _speed;
+        float duration = Mathf.Clamp(Mathf.Pow(baseDuration, sqrtConst), minDuration, maxDuration);
+
+        return duration;
     }
 
     private void TryRotate()
@@ -81,25 +107,24 @@ public class BlockMover : MonoBehaviour
         if (_sequence == null)
             _sequence = DOTween.Sequence();
 
-        Vector3Int direction = Vector3Int.RoundToInt(transform.forward);
-        Vector3Int neighborPosition = _cell.Position + direction;
-        Cell neighborCell = _cell.GetGrid().GetCell(neighborPosition);
+        Grid grid = _cell.GetGrid();
+        Vector3Int direction = _block.ForwardDirection;
+        Vector3Int neighborPosition = _cell.Position + _block.ForwardDirection;
 
-        if (neighborCell != null && neighborCell.IsOccupied())
+        Cell cell = grid.GetCell(neighborPosition);
+
+        if (cell != null && cell.IsOccupied())
         {
-            if (neighborCell.IsOccupied())
+            DirectionType oppositeDirection = _block.GetAllowedDirection().ToOpposite();
+            Block neighborBlock = cell.Occupied;
+
+            if (neighborBlock.GetAllowedDirection() == oppositeDirection)
             {
-                DirectionType oppositeDirection = _block.GetAllowedDirection().ToOpposite();
-                Block neighborBlock = neighborCell.Occupied;
-
-                if (neighborBlock.GetAllowedDirection() == oppositeDirection)
-                {
-                    _block.SetAllowedDirection(oppositeDirection);
-                    _block.UpdateForwardDirection();
-
-                    _sequence.Append(_block.transform.DORotateQuaternion(Quaternion.LookRotation(neighborBlock.ForwardDirection), _durationRotate)
-                        .SetEase(Ease.InOutQuad));
-                }
+                _block.SetAllowedDirection(oppositeDirection);
+                _block.UpdateForwardDirection();
+                
+                _sequence.Append(_block.transform.DORotateQuaternion(Quaternion.LookRotation(grid.transform.rotation * neighborBlock.ForwardDirection), _durationRotate)
+                    .SetEase(Ease.InOutQuad));
             }
         }
 
@@ -110,10 +135,8 @@ public class BlockMover : MonoBehaviour
     {
         int count = 0;
 
-        Vector3Int gridDirection = _block.ForwardDirection;
+        Vector3Int gridDirection = _block.GetAllowedDirection().ToVector3Int();
         Vector3Int position = _cell.Position;
-
-        Debug.Log($"(CountEmptyCells) gridDirection -> {gridDirection}, cellPos -> {position}");
 
         for (int i = 1; i <= _maxMoveDistance; i++)
         {
@@ -152,32 +175,23 @@ public class BlockMover : MonoBehaviour
     private void DestroyAfterDelay()
     {
         _block.SetCurrentCell(null);
-        _cell.SetFree();
-        DOTween.To(() => 0, x => { }, 1, _destroyDelay).OnComplete(() => { DestroyBlock(); });
+        Destroy(gameObject, _destroyDelay);
     }
 
-    private void TryMove(Cell targetCell)
+    private void OccupieTarget(Cell targetCell)
     {
-        _cell.SetFree();
         _cell = targetCell;
         _cell.SetOccupy(_block);
     }
 
-    private void DestroyBlock()
-    {
-        Destroy(gameObject);
-    }
-
-    private Cell GetTargetCell() //не проверяется нормально
+    private bool TryGetTargetCell(out Cell cell)
     {
         Vector3Int gridDirection = _block.ForwardDirection;
         Vector3Int gridPosition = _cell.Position + gridDirection * _countEmptyCells;
 
-        Cell targetCell = _cell.GetGrid().GetCell(gridPosition);
+        cell = _cell.GetGrid().GetCell(gridPosition);
 
-        Debug.Log($"(GetTargetCell) gridDirection -> {gridDirection}, gridPosition -> {gridPosition}, targetCell -> {targetCell?.Position}");
-
-        return targetCell != null && targetCell.IsOccupied() == false ? targetCell : null;
+        return cell != null;
     }
 
     public void Explode()
@@ -186,7 +200,7 @@ public class BlockMover : MonoBehaviour
         {
             _cell.SetFree();
             _block.SetCurrentCell(null);
-            Moved?.Invoke();
+            Moved?.Invoke(this);
         }
     }
 }

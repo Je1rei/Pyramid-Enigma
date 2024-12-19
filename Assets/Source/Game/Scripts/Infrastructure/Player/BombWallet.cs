@@ -2,9 +2,9 @@
 using UnityEngine;
 using YG;
 
-public class BombWallet : MonoBehaviour, IService
+public class BombWallet :IService
 {
-    [SerializeField] private int _decreaseValue = 1;
+    private int _decreaseValue = 1;
     private int _bombs;
 
     public int Bombs => _bombs;

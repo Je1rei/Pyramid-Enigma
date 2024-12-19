@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class SettingsService : MonoBehaviour, IService
+﻿public class SettingsService : IService
 {
     private AudioService _audioService;
 

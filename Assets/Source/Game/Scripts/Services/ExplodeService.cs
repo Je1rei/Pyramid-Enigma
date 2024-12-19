@@ -1,8 +1,6 @@
 ﻿using System;
-using UnityEngine;
-using YG;
 
-public class ExplodeService : MonoBehaviour, IService
+public class ExplodeService : IService
 {
     private bool _isActive;
     private BombWallet _bombWallet;

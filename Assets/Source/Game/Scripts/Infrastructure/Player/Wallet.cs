@@ -1,8 +1,7 @@
 using System;
-using UnityEngine;
 using YG;
 
-public class Wallet : MonoBehaviour, IService
+public class Wallet : IService
 {
     private int _score;
 

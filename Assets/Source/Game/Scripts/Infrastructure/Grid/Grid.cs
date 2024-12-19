@@ -32,6 +32,7 @@ public class Grid : MonoBehaviour
         _rotator.Init(_center);
     }
 
+
     public Cell GetCell(Vector3Int position)
     {
         if (position.x >= 0 && position.x < _data.Width &&
@@ -44,7 +45,7 @@ public class Grid : MonoBehaviour
         return null;
     }
 
-    private void BlocksIsEmpty()
+    private void BlocksIsEmpty(BlockMover _)
     {
         foreach (Cell cell in _grid)
         {

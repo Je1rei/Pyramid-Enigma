@@ -35,13 +35,14 @@ public class GridFactory : MonoBehaviour
                     Vector3Int position = new Vector3Int(x, y, z);
                     Cell cell = _cellFactory.Create(data.CellPrefab, position, gridParent);
 
-                    Vector3 randomStartPosition = center + Random.onUnitSphere * data.CellSize * _multiplierStartPosition;
+                    Vector3 randomStartPosition =
+                        center + Random.onUnitSphere * data.CellSize * _multiplierStartPosition;
                     cell.transform.position = randomStartPosition;
 
                     Block block = Instantiate(data.BlockPrefab, cell.transform);
                     block.SetCurrentCell(cell);
-                    block.Init();
                     block.RandomizeColor(data.PaletteData.Palette);
+                    block.Init();
 
                     cell.SetOccupy(block);
                     grid[x, y, z] = cell;
@@ -49,15 +50,20 @@ public class GridFactory : MonoBehaviour
                     Vector3 targetPosition = new Vector3(x * data.CellSize, y * data.CellSize, z * data.CellSize);
                     float delay = _delay * (x + y + z);
 
-                    _sequence.Insert(delay, cell.transform.DOMove(targetPosition, _spawnDuration).SetEase(Ease.OutBack));
-                    _sequence.Insert(delay, cell.transform.DORotate(Vector3.one * _rotateAngle, _spawnDuration, RotateMode.FastBeyond360));
+                    _sequence.Insert(delay,
+                        cell.transform.DOMove(targetPosition, _spawnDuration).SetEase(Ease.OutBack));
+                    _sequence.Insert(delay,
+                        cell.transform.DORotate(Vector3.one * _rotateAngle, _spawnDuration, RotateMode.FastBeyond360));
 
                     block.TrailRenderer.enabled = true;
                 }
             }
         }
 
-        _sequence.OnComplete(() => { _inputPauser.ActivateInput(); });
+        _sequence.OnComplete(() =>
+        {
+            _inputPauser.ActivateInput();
+        });
 
         return grid;
     }

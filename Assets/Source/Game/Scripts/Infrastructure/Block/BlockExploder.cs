@@ -6,28 +6,28 @@ public class BlockExploder : MonoBehaviour
     [SerializeField] private float _duration = 0.5f;
     [SerializeField] private float _minScale = 0f;
 
-    public bool _isExplodes;
+    private bool _isExplodes;
+    private BombWallet _bombWallet;
+    private MeshRenderer _renderer;
 
-    private void OnEnable()
+    public void Init(MeshRenderer renderer)
     {
+        _renderer = renderer;
+        _bombWallet = ServiceLocator.Current.Get<BombWallet>();
         _isExplodes = false;
     }
 
     public bool TryExplode()
     {
-        BombWallet bombWallet = ServiceLocator.Current.Get<BombWallet>();
-
-        if (bombWallet.Bombs > 0 && _isExplodes == false)
+        if (_bombWallet.Bombs > 0 && _isExplodes == false)
         {
             _isExplodes = true;
-            MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
-
-            meshRenderer.material.DOFade(0, _duration);
+            _renderer.material.DOFade(0, _duration);
 
             transform.DOScale(_minScale, _duration)
                 .OnKill(() => Destroy(gameObject));
 
-            bombWallet.DecreaseScore();
+            _bombWallet.DecreaseScore();
 
             return true;
         }

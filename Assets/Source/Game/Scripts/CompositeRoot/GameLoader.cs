@@ -4,21 +4,14 @@ using YG;
 
 public class GameLoader : MonoBehaviour
 {
-    [SerializeField] private RewardService _rewardService;
-    [SerializeField] private Wallet _wallet;
-    [SerializeField] private BombWallet _bombWallet;
-    [SerializeField] private TimerService _timeService;
-    [SerializeField] private SettingsService _settingsService;
     [SerializeField] private LevelService _levelService;
     [SerializeField] private AudioService _audioService;
     [SerializeField] private SwipeInputHandler _swipeInputHandler;
-    [SerializeField] private TutorialService _tutorialService;
     [SerializeField] private InputPause _inputPauser;
-    [SerializeField] private ExplodeService _explodeService;
 
     private ServiceLocator _serviceLocator;
 
-    private void Awake()
+    private void Awake() 
     {
         _serviceLocator = new ServiceLocator();
         RegisterServices();
@@ -31,16 +24,16 @@ public class GameLoader : MonoBehaviour
 
     private void RegisterServices()
     {
-        _serviceLocator.Register(_settingsService);
-        _serviceLocator.Register(_rewardService);
-        _serviceLocator.Register(_wallet);
-        _serviceLocator.Register(_bombWallet);
-        _serviceLocator.Register(_timeService);
         _serviceLocator.Register(_levelService);
         _serviceLocator.Register(_audioService);
         _serviceLocator.Register(_swipeInputHandler);
-        _serviceLocator.Register(_tutorialService);
         _serviceLocator.Register(_inputPauser);
-        _serviceLocator.Register(_explodeService);
+        _serviceLocator.Register(new SettingsService());
+        _serviceLocator.Register(new RewardService());
+        _serviceLocator.Register(new Wallet());
+        _serviceLocator.Register(new BombWallet());
+        _serviceLocator.Register(new TimerService());
+        _serviceLocator.Register(new TutorialService());
+        _serviceLocator.Register(new ExplodeService());
     }
 }
