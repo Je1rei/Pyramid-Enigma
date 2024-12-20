@@ -54,8 +54,8 @@ public class GameplayPanel : UIPanel
 
     public void UnPause()
     {
-        _inputPauser.ActivateInput();
         Show();
+        _inputPauser.ActivateInput();
     }
 
     private void OnClickReset()

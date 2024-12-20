@@ -15,15 +15,18 @@ namespace YG
         public static IPlatformsYG2 iPlatformNoRealization;
         public static YGSendMessage sendMessage;
         public static OptionalPlatform optionalPlatform = new OptionalPlatform();
-        public static string platform { get => infoYG.Basic.platform.nameBase; }
+        public static string platform { get => PlatformSettings.currentPlatformBaseName; }
         public static bool isSDKEnabled { get => _SDKEnabled; }
         private static bool _SDKEnabled;
         public static bool isFirstGameSession;
+        public enum Device { Desktop, Mobile, Tablet, TV }
 
         private static bool syncInitSDKComplete, awakePassed;
 
         public static Action onGetSDKData;
         public static Action<bool> onPauseGame;
+        private static bool pauseGame;
+        public static bool isPauseGame { get => pauseGame; }
 
         public static bool nowAdsShow
         {
@@ -102,9 +105,10 @@ namespace YG
 #if UNITY_EDITOR
         public static async void SyncInitialization()
         {
-            await System.Threading.Tasks.Task.Delay(1000);
+            if (infoYG.Basic.simulationLoadScene)
+                await System.Threading.Tasks.Task.Delay(1000);
 #else
-            public static void SyncInitialization()
+        public static void SyncInitialization()
         {
 #endif
             if (infoYG.Basic.syncInitSDK)
@@ -129,8 +133,8 @@ namespace YG
 #if !UNITY_EDITOR
                         SceneManager.LoadScene(infoYG.Basic.loadSceneIndex);
 #else
-                        if (SceneManager.GetActiveScene().buildIndex == 0)
-                            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                        if (infoYG.Basic.simulationLoadScene)
+                            SceneManager.LoadScene(infoYG.Basic.loadSceneIndex);
 #endif
                         void LoadLastScene(Scene scene, LoadSceneMode mode)
                         {
@@ -146,13 +150,13 @@ namespace YG
 
             void LoadNextScene()
             {
-#if !UNITY_EDITOR
-                if (infoYG.Basic.loadSceneIfSDKLate)
+                if (infoYG.Basic.loadSceneIfSDKLate && infoYG.Basic.loadSceneIndex != 0)
                 {
-                    if (infoYG.Basic.loadSceneIndex != 0)
+#if UNITY_EDITOR
+                    if (infoYG.Basic.simulationLoadScene)
+#endif
                         SceneManager.LoadScene(infoYG.Basic.loadSceneIndex);
                 }
-#endif
             }
         }
 
@@ -162,13 +166,24 @@ namespace YG
                 onGetSDKData?.Invoke();
         }
 
-        public static void PauseGame(bool pause)
+        public static void PauseGame(bool pause, bool editTimeScale, bool editAudioPause, bool editCursor, bool editEventSystem)
         {
-            if (pause)
-                GameplayStop(true);
-            else
-                GameplayStart(true);
+            if (pause == pauseGame)
+                return;
 
+            if (pause)
+            {
+                GameplayStop(true);
+            }
+            else
+            {
+                if (nowAdsShow)
+                    return;
+
+                GameplayStart(true);
+            }
+
+            pauseGame = pause;
             onPauseGame?.Invoke(pause);
 
             if (infoYG.Basic.autoPauseGame)
@@ -178,7 +193,7 @@ namespace YG
                     GameObject pauseObj = new GameObject() { name = "PauseGameYG" };
                     MonoBehaviour.DontDestroyOnLoad(pauseObj);
                     PauseGameYG pauseScr = pauseObj.AddComponent<PauseGameYG>();
-                    pauseScr.Setup();
+                    pauseScr.Setup(editTimeScale, editAudioPause, editCursor, editEventSystem);
                 }
                 else
                 {
@@ -187,6 +202,8 @@ namespace YG
                 }
             }
         }
+        public static void PauseGame(bool pause) => PauseGame(pause, true, true, true, infoYG.Basic.editEventSystem);
+        public static void PauseGameNoEditEventSystem(bool pause) => PauseGame(pause, true, true, true, false);
 
         public static void Message(string message)
         {

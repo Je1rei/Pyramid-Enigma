@@ -67,7 +67,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AmbientCol: 0.272
+    - _AmbientCol: 0.1
     - _BumpScale: 1
     - _Clipped: 1
     - _ColBright: 0
@@ -85,7 +85,7 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Offset: 1.1
-    - _OtlWidth: 1
+    - _OtlWidth: 1.5
     - _Parallax: 0.02
     - _Segmented: 1
     - _ShnIntense: 0
@@ -96,7 +96,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Steps: 6.4
-    - _StpSmooth: 0.249
+    - _StpSmooth: 0.25
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:

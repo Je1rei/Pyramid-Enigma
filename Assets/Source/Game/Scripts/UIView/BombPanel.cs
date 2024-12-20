@@ -20,15 +20,22 @@ public class BombPanel : UIPanel
         _explosionService = ServiceLocator.Current.Get<ExplodeService>();
         SetAudioService();
         AddButtonListener(_toggleButton, ToggleActiveBombsImage);
+        
         _explosionService.BombIsEmpty += BombIsEmpty;
+        DeactivateExplosionService();
     }
 
+    public void DeactivateExplosionService()
+    {
+        _explosionService.Deactivate();
+        _activeBombesImage.gameObject.SetActive(false);
+    }
+    
     private void ToggleActiveBombsImage()
     {
         if(_explosionService.IsActive == true)
         {
-            _explosionService.Deactivate();
-            _activeBombesImage.gameObject.SetActive(false);
+            DeactivateExplosionService();
         }
         else
         {

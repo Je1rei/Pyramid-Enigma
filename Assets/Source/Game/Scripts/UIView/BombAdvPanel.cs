@@ -7,7 +7,8 @@ public class BombAdvPanel : UIPanel
     [SerializeField] private int _rewardValue = 10;
     [SerializeField] private Button _agreeButton;
     [SerializeField] private Button _disagreeButton;
-
+    [SerializeField]private BombPanel _bombPanel;
+    
     private InputPause _inputPauser;
 
     private string _rewardID = "1";
@@ -35,11 +36,13 @@ public class BombAdvPanel : UIPanel
 
         _inputPauser.ActivateInputCooldown();
         Hide();
+        _bombPanel.DeactivateExplosionService();
     }    
     
     private void DisagreeADV()
     {
         _inputPauser.ActivateInputCooldown();
         Hide();
+        _bombPanel.DeactivateExplosionService();
     }
 }

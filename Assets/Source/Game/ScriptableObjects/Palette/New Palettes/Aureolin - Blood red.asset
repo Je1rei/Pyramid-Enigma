@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e7c2c532cdd93fa41bf3873030cfe94d, type: 3}
-  m_Name: Coral - Fluorescent Cyan
+  m_Name: Aureolin - Blood red
   m_EditorClassIdentifier: 
   Palette:
-  - {r: 1, g: 0.5137255, b: 0.37647063, a: 0}
-  - {r: 0.909804, g: 0.8862746, b: 0.53333336, a: 0}
-  - {r: 0.4901961, g: 0.8078432, b: 0.50980395, a: 0}
-  - {r: 0.23529413, g: 0.8588236, b: 0.82745105, a: 0}
-  - {r: 0, g: 1, b: 0.9607844, a: 0}
+  - {r: 0.4431373, g: 0, b: 0, a: 0}
+  - {r: 0.6509804, g: 0.23529413, b: 0.023529414, a: 0}
+  - {r: 0.9568628, g: 0.8941177, b: 0.03529412, a: 0}
+  - {r: 0.9333334, g: 0.7294118, b: 0.043137256, a: 0}
+  - {r: 0.76470596, g: 0.43529415, b: 0.03529412, a: 0}

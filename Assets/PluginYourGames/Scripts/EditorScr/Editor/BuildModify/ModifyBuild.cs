@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
 using System.Text;
@@ -6,11 +7,13 @@ using System.Diagnostics;
 using Debug = UnityEngine.Debug;
 using UnityEditor;
 using UnityEngine;
+using YG.Insides;
 
 namespace YG.EditorScr.BuildModify
 {
     public partial class ModifyBuild
     {
+        private const string ERROR_COLOR = "#ff4f00";
         private static string BUILD_PATCH;
         private static InfoYG infoYG;
         private static string indexFile;
@@ -22,6 +25,7 @@ namespace YG.EditorScr.BuildModify
         {
             infoYG = YG2.infoYG;
             BUILD_PATCH = buildPatch;
+            List<string> errors = new List<string>();
 #if PLATFORM_WEBGL
             string indexFilePath = Path.Combine(buildPatch, "index.html");
             indexFile = File.ReadAllText(indexFilePath);
@@ -35,11 +39,23 @@ namespace YG.EditorScr.BuildModify
 
             foreach (MethodInfo method in methods)
             {
-                if (method.Name != nameof(ModifyIndex) && method.GetParameters().Length == 0)
+                try
                 {
-                    methodName = method.Name;
-                    ModifyBuild scrCopy = new ModifyBuild();
-                    method.Invoke(scrCopy, BindingFlags.Static | BindingFlags.Public, null, null, null);
+                    if (method.Name != nameof(ModifyIndex) && method.GetParameters().Length == 0)
+                    {
+                        methodName = method.Name;
+                        ModifyBuild scrCopy = new ModifyBuild();
+                        method.Invoke(scrCopy, BindingFlags.Static | BindingFlags.Public, null, null, null);
+                    }
+                }
+                catch (Exception ex)
+                {
+#if RU_YG2
+                    Debug.LogError($"(Модуль <color={ERROR_COLOR}>{methodName}</color>) При модификации файлов билда возникла ошибка!\n{ex}");
+                    //#else
+                    Debug.LogError($"(Module <color={ERROR_COLOR}>{methodName}</color>) Error occurred when modifying build files!\n{ex}");
+#endif
+                    errors.Add(methodName);
                 }
             }
 #endif
@@ -63,7 +79,29 @@ namespace YG.EditorScr.BuildModify
 #endif
             EditorApplication.delayCall += () =>
             {
-                Debug.Log($"<color=#00FF00>{InfoYG.NAME_PLUGIN} - Build complete!  Platform - {InfoYG.Inst().Basic.platform.nameBase}.  Build number: {buildNum}</color>");
+                string logBuildCompleteText = "Build complete!";
+#if RU_YG2
+                logBuildCompleteText = "Сборка завершена!";
+#endif
+                Debug.Log($"<color=#00FF00>{InfoYG.NAME_PLUGIN} - {logBuildCompleteText}  Platform - {PlatformSettings.currentPlatformBaseName}.  Build number: {buildNum}</color>");
+
+                if (errors.Count > 0)
+                {
+                    string errorModulesText = string.Empty;
+
+                    for (int i = 0; i < errors.Count; i++)
+                    {
+                        errorModulesText += errors[i];
+
+                        if (i < errors.Count - 1)
+                            errorModulesText += ", ";
+                    }
+#if RU_YG2
+                    Debug.LogError($"<color={ERROR_COLOR}>Сборка завершена с ошибкой!</color> Необходимо устранить ошибки, чтобы модули: <color={ERROR_COLOR}>{errorModulesText}</color> - работали исправно.");
+#else
+                    Debug.LogError($"<color={ERROR_COLOR}>The build was completed with an error!</color> It is necessary to eliminate errors so that the <color={ERROR_COLOR}>{errorModulesText}</color> modules work properly.");
+#endif
+                }
             };
         }
 

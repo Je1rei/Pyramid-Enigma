@@ -135,8 +135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93fba101d4debac4db95bb5e3c602e87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _time: 1
-  _distance: 1
+  _speed: 10
   _destroyDelay: 1
   _durationRotate: 0.1
   _maxMoveDistance: 60
@@ -154,7 +153,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _duration: 0.5
   _minScale: 0
-  _isExplodes: 0
 --- !u!114 &7144246220223316014
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,8 +167,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _strength: 0.1
   _duration: 0.25
-  _countVibration: 5
-  _randomAngle: 0
 --- !u!96 &7307940826453265542
 TrailRenderer:
   serializedVersion: 3
@@ -296,7 +292,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 713797111826772369, guid: 13ad0f4c38043304d8e14bddc3fdf42d, type: 2}
   m_audioClip: {fileID: 8300000, guid: b01c0a29515ddad44aeb872ef3b651c3, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 0.25
   m_Pitch: 1
   Loop: 0
   Mute: 0

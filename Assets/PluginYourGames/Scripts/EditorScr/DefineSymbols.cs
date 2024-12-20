@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEditor;
 using UnityEditor.Compilation;
 using UnityEngine;
+using YG.Insides;
 
 namespace YG.EditorScr
 {
@@ -14,7 +15,7 @@ namespace YG.EditorScr
     {
         public const string YG2_DEFINE = "PLUGIN_YG_2";
         public const string LANG_DEFINE = "RU_YG2";
-        public const string TMP_DEFINE = "TMP_YG2", TMP_PACKAGE = "com.unity.textmeshpro";
+        public const string TMP_DEFINE = "TMP_YG2", TMP_PACKAGE = "com.unity.textmeshpro", TMP_NEW_PACKAGE = "com.unity.ugui";
         public const string NJSON_DEFINE = "NJSON_YG2", NJSON_PACKAGE = "com.unity.nuget.newtonsoft-json";
         public const string NJSON_STORAGE_DEFINE = "NJSON_STORAGE_YG2";
 
@@ -54,8 +55,14 @@ namespace YG.EditorScr
             AddDefine(YG2_DEFINE);
             PlatformDefineSymbols();
             ModulesDefineSymbols();
-            DefinePackage(TMP_PACKAGE, TMP_DEFINE);
-            DefinePackage(NJSON_PACKAGE, NJSON_DEFINE);
+
+            if (UnityPackagesManager.IsPackageImported(TMP_PACKAGE) || UnityPackagesManager.IsPackageImported(TMP_NEW_PACKAGE))
+                AddDefine(TMP_DEFINE);
+            else RemoveDefine(TMP_DEFINE);
+
+            if (UnityPackagesManager.IsPackageImported(NJSON_PACKAGE))
+                AddDefine(NJSON_DEFINE);
+            else RemoveDefine(NJSON_DEFINE);
         }
 
         public static void PlatformDefineSymbols()
@@ -64,7 +71,23 @@ namespace YG.EditorScr
             InfoYG infoRes = Resources.Load<InfoYG>(InfoYG.NAME_INFOYG_FILE);
 
             if (infoRes != null && InfoYG.Inst().Basic.platform != null)
-                currentPlatform = InfoYG.Inst().Basic.platform.nameDefining + "_yg";
+                currentPlatform = PlatformSettings.currentPlatformFullName + "_yg";
+
+            if (currentPlatform == "Error_yg" || currentPlatform == "ErrorPlatform_yg" || currentPlatform == "_yg" || currentPlatform == "NewPlatform")
+            {
+                string path = AssetDatabase.GetAssetPath(InfoYG.instance.Basic.platform);
+                if (string.IsNullOrEmpty(path))
+                    return;
+
+                string folderPath = Path.GetDirectoryName(path);
+                string modulName = Path.GetFileName(folderPath);
+
+                InfoYG.instance.Basic.platform.nameFull = modulName + "Platform";
+
+                EditorUtility.SetDirty(InfoYG.instance.Basic.platform);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+            }
 
             BuildTargetGroup buildTargetGroup = EditorUserBuildSettings.selectedBuildTargetGroup;
             string definesText = PlayerSettings.GetScriptingDefineSymbols(UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(buildTargetGroup));
@@ -75,7 +98,19 @@ namespace YG.EditorScr
             List<string> defines = definesText.Split(";").ToList();
             string[] platforms = Directory.GetDirectories(InfoYG.PATCH_PC_PLATFORMS);
 
-            for (int d = 0; d < defines.Count; d++)
+            if (defines == null || defines.Count == 0)
+            {
+                Debug.LogWarning("Defines list is empty. Nothing to process.");
+                return;
+            }
+
+            if (platforms == null || platforms.Length == 0)
+            {
+                Debug.LogWarning("Platforms directory is empty. Nothing to process.");
+                return;
+            }
+
+            for (int d = defines.Count - 1; d >= 0; d--)
             {
                 if (defines[d] == currentPlatform)
                     continue;
@@ -86,16 +121,17 @@ namespace YG.EditorScr
                     platform += "Platform_yg";
 
                     if (defines[d] == platform)
+                    {
                         defines.RemoveAt(d);
+                        break;
+                    }
                 }
             }
 
-            definesText = string.Empty;
-            foreach (string d in defines)
-                definesText += d + ";";
-
+            definesText = string.Join(";", defines);
             PlayerSettings.SetScriptingDefineSymbols(UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(buildTargetGroup), definesText);
         }
+
 
         public static void ModulesDefineSymbols()
         {
@@ -134,6 +170,7 @@ namespace YG.EditorScr
             for (int i = 0; i < modules.Length; i++)
             {
                 bool foundLastModule = false;
+
                 for (int j = 0; j < folderNames.Length; j++)
                 {
                     if (modules[i] == folderNames[j])
@@ -142,10 +179,23 @@ namespace YG.EditorScr
                         break;
                     }
                 }
+
                 if (!foundLastModule)
                 {
                     mismatch = true;
                     RemoveDefine(modules[i] + "_yg");
+                }
+
+                if (!mismatch)
+                {
+                    BuildTargetGroup buildTargetGroup = EditorUserBuildSettings.selectedBuildTargetGroup;
+                    string definesText = PlayerSettings.GetScriptingDefineSymbols(UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(buildTargetGroup));
+                    List<string> defines = definesText.Split(";").ToList();
+
+                    if (!defines.Contains(modules[i] + "_yg"))
+                    {
+                        mismatch = true;
+                    }
                 }
             }
 
@@ -171,14 +221,6 @@ namespace YG.EditorScr
                 AddDefine(folderName + "_yg");
         }
 
-        private static void DefinePackage(string packageName, string defineSymbols)
-        {
-            if (UnityPackagesManager.IsPackageImported(packageName))
-                AddDefine(defineSymbols);
-            else
-                RemoveDefine(defineSymbols);
-        }
-
         public static bool CheckDefine(string define)
         {
             BuildTargetGroup buildTargetGroup = EditorUserBuildSettings.selectedBuildTargetGroup;
@@ -193,7 +235,7 @@ namespace YG.EditorScr
 
         public static void AddDefine(string define)
         {
-            if (define == string.Empty || define == " " || define.Contains(" "))
+            if (string.IsNullOrEmpty(define) || define == " " || define.Contains(" "))
                 return;
 
             BuildTargetGroup buildTargetGroup = EditorUserBuildSettings.selectedBuildTargetGroup;
@@ -207,6 +249,9 @@ namespace YG.EditorScr
 
         public static void RemoveDefine(string define)
         {
+            if (string.IsNullOrEmpty(define) || define == " " || define.Contains(" "))
+                return;
+
             BuildTargetGroup buildTargetGroup = EditorUserBuildSettings.selectedBuildTargetGroup;
             string defines = PlayerSettings.GetScriptingDefineSymbols(UnityEditor.Build.NamedBuildTarget.FromBuildTargetGroup(buildTargetGroup));
 

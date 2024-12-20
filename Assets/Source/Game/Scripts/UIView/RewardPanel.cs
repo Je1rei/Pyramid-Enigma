@@ -5,15 +5,18 @@ using YG;
 
 public class RewardPanel : UIPanel
 {
+    [SerializeField] private ReceivedPrizePanel _receivedPrizePanel;
     [SerializeField] private GameplayPanel _gameplayPanel;
     [SerializeField] private Button _backToMenuButton;
+    [SerializeField] private Button _rewardAdButton;
     [SerializeField] private Button _nextLevelButton;
 
     private RewardService _rewardService;
-
+    
     private void OnEnable()
     {
         AddButtonListener(_backToMenuButton, OnClickBackToMenu);
+        AddButtonListener(_rewardAdButton, OnClickAdReward);
         AddButtonListener(_nextLevelButton, OnClickNextLevel);
     }
 
@@ -42,6 +45,12 @@ public class RewardPanel : UIPanel
         }
     }
 
+    private void OnClickAdReward()
+    {
+        Hide();
+        _receivedPrizePanel.RewardAd();
+    }
+    
     private void OnClickBackToMenu()
     {
         SceneManager.LoadScene(1);
@@ -65,3 +74,5 @@ public class RewardPanel : UIPanel
         }
     }
 }
+
+

@@ -1,4 +1,4 @@
-using System;
+Ôªøusing System;
 using UnityEngine;
 using YG.Insides;
 
@@ -42,15 +42,19 @@ namespace YG
             {
                 [Tooltip(Langs.t_progressBar_round)]
                 public bool round = true;
-                [Range(0, 100), Tooltip(Langs.t_progressBar_width)]
+                [Range(1, 20), NestedYG(nameof(round))]
+                public int roundAngle = 10;
+                [Range(1, 100), Tooltip(Langs.t_progressBar_width)]
                 public int width = 30;
+                [Range(1, 100)]
+                public int height = 24;
                 [Tooltip(Langs.t_progressBar_color1)]
                 public Color color1 = new Color(0.25f, 0.6392f, 1f, 1f);
                 [Tooltip(Langs.t_progressBar_color2)]
                 public Color color2 = new Color(1f, 0.831f, 0.149f, 0.7f);
             }
 #if RU_YG2
-            [HeaderYG("—Ú‡Ì‰‡ÚÌ˚È", 10)]
+            [HeaderYG("–°—Ç–∞–Ω–¥–∞—Ä—Ç–Ω—ã–π", 10)]
 #else
             [HeaderYG("Default", 10)]
 #endif
