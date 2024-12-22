@@ -7,7 +7,7 @@
         false,
         false
     ],
-    "idSave": 239,
+    "idSave": 323,
     "Bombs": 10,
     "Score": 15,
     "OpenLevels": [
@@ -22,7 +22,7 @@
         true,
         true,
         true,
-        false
+        true
     ],
-    "Volume": 0.20867055654525758
+    "Volume": 0.25
 }

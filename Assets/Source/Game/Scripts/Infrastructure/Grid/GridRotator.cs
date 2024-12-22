@@ -3,7 +3,7 @@ using DG.Tweening;
 
 public class GridRotator : MonoBehaviour
 {
-    [SerializeField] private float _duration = 0.5f;
+    [SerializeField] private float _duration = 0.25f;
     [SerializeField] private int _endAngleRotation = 90;
 
     private Vector3 _center;

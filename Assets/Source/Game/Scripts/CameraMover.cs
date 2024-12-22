@@ -6,8 +6,8 @@ public class CameraMover : MonoBehaviour
     [SerializeField] private float _angleX = 33f;
     [SerializeField] private float _angleY = -140f;
     [SerializeField] private Grid _grid;
-
-    private float _multiplier = 4f;
+    [SerializeField] private float _multiplier = 3f;
+    
     private Vector3 _targetPosition;
     private Vector3 _gridCenter;
 

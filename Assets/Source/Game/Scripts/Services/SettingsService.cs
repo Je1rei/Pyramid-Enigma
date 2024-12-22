@@ -26,6 +26,6 @@ namespace YG
 {
     public partial class SavesYG
     {
-        public float Volume;
+        public float Volume = 0.25f;
     }
 }
