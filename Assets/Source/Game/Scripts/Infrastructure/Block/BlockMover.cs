@@ -78,10 +78,6 @@ public class BlockMover : MonoBehaviour
             {
                 DestroyAfterDelay();
             }
-            else
-            {
-                TryRotate();
-            }
 
             _block.ResetColor();
             IsMoving = false;
@@ -100,35 +96,6 @@ public class BlockMover : MonoBehaviour
         float duration = Mathf.Clamp(Mathf.Pow(baseDuration, sqrtConst), minDuration, maxDuration);
 
         return duration;
-    }
-
-    private void TryRotate()
-    {
-        if (_sequence == null)
-            _sequence = DOTween.Sequence();
-
-        Grid grid = _cell.GetGrid();
-        Vector3Int direction = _block.ForwardDirection;
-        Vector3Int neighborPosition = _cell.Position + _block.ForwardDirection;
-
-        Cell cell = grid.GetCell(neighborPosition);
-
-        if (cell != null && cell.IsOccupied())
-        {
-            DirectionType oppositeDirection = _block.GetAllowedDirection().ToOpposite();
-            Block neighborBlock = cell.Occupied;
-
-            if (neighborBlock.GetAllowedDirection() == oppositeDirection)
-            {
-                _block.SetAllowedDirection(oppositeDirection);
-                _block.UpdateForwardDirection();
-                
-                _sequence.Append(_block.transform.DORotateQuaternion(Quaternion.LookRotation(grid.transform.rotation * neighborBlock.ForwardDirection), _durationRotate)
-                    .SetEase(Ease.InOutQuad));
-            }
-        }
-
-        _sequence.OnComplete(() => _sequence.Kill());
     }
 
     private int CountEmptyCells()

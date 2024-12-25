@@ -5,6 +5,7 @@ using UnityEngine;
 public class GridData : ScriptableObject
 {
     [NonSerialized] public float CellSize = 1f;
+    public Grid GridPrefab;
     public Block BlockPrefab;
     public Cell CellPrefab;
 

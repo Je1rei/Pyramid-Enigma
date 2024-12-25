@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b805d873cb530354c80959c078d2a375, type: 3}
   m_Name: "1\u04451"
   m_EditorClassIdentifier: 
+  GridPrefab: {fileID: 6157838628567805997, guid: 802721d0601a9c94f9ceb7014a29fe2e, type: 3}
   BlockPrefab: {fileID: 3131810772467227892, guid: 7651637ab259b164483083e5902c26b1, type: 3}
   CellPrefab: {fileID: 3315523507370816485, guid: 18434c3be06decd49ad00f9c5c7403c1, type: 3}
   Width: 1
   Height: 1
   Length: 1
-  PaletteData: {fileID: 11400000, guid: a0d4fa912c77f5d43847f683f2c43987, type: 2}
+  PaletteData: {fileID: 11400000, guid: d1457e7c93bf7b944a4b41dbe7550760, type: 2}

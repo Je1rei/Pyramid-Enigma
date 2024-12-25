@@ -4,7 +4,7 @@ using YG;
 
 public class BombAdvPanel : UIPanel
 {
-    [SerializeField] private int _rewardValue = 10;
+    [SerializeField] private int _rewardValue = 3;
     [SerializeField] private Button _agreeButton;
     [SerializeField] private Button _disagreeButton;
     [SerializeField]private BombPanel _bombPanel;

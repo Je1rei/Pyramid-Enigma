@@ -8,7 +8,7 @@
     {
         LevelService levelService = ServiceLocator.Current.Get<LevelService>();
 
-        if (levelService.Index == 0 )
+        if (levelService.ID == 0 )
         {
             _isActive = true;
         }

@@ -1,12 +1,18 @@
-﻿using UnityEngine;
+﻿using System.Diagnostics;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using YG;
+using Debug = UnityEngine.Debug;
 
 public class LevelsPanel : UIPanel
 {
     [SerializeField] private MainMenuPanel _mainMenu;
     [SerializeField] private Level[] _levels;
+
+    [SerializeField] private LevelPage[] _levelPages;
+    [SerializeField] private Button[] _pageButtons;
+
     [SerializeField] private Button _backButton;
 
     private LevelService _levelService;
@@ -18,7 +24,9 @@ public class LevelsPanel : UIPanel
 
         for (int i = 0; i < _levels.Length; i++)
         {
-            if (YG2.saves.OpenLevels[i])
+            LevelData levelData = _levelService.Load(i);
+            
+            if (levelData != null && YG2.saves.OpenedLevels.Contains(levelData.ID))
             {
                 _levels[i].SetUnlock();
             }
@@ -31,7 +39,14 @@ public class LevelsPanel : UIPanel
             AddButtonListener(_levels[i].Button, () => OnClickLevel(levelIndex));
         }
 
+        for (int i = 0; i < _pageButtons.GetLength(0); i++)
+        {
+            int index = i;
+            AddButtonListener(_pageButtons[index], () => SwitchPage(index));
+        }
+
         AddButtonListener(_backButton, OnClickBack);
+        SwitchPage(0);
     }
 
     private void OnDisable()
@@ -48,7 +63,6 @@ public class LevelsPanel : UIPanel
 
         if (levelData != null)
         {
-            SetAudioService();
             Hide();
             SceneManager.LoadScene(2);
         }
@@ -56,8 +70,21 @@ public class LevelsPanel : UIPanel
 
     private void OnClickBack()
     {
-        SetAudioService();
         _mainMenu.Show();
         Hide();
+    }
+
+    private void SwitchPage(int index)
+    {
+        foreach (LevelPage page in _levelPages)
+            page.Hide();
+        
+        if (index >= 0 && index < _levelPages.GetLength(0))
+        {
+            _levelPages[index].Show();
+        }
+
+        for (int i = 0; i < _pageButtons.GetLength(0); i++)
+            _pageButtons[i].interactable = i != index;
     }
 }

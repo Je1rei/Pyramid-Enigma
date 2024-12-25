@@ -148,7 +148,7 @@ MonoBehaviour:
     labelAdvSimLabel: 0
   Leaderboards:
     enable: 1
-    saveScoreAnonymousPlayers: 1
+    saveScoreAnonymousPlayers: 0
     listLBSim:
     - technoName: Score
       entries: 
@@ -189,7 +189,7 @@ MonoBehaviour:
     setLanguageMod: 1
   RewardedAdv:
     rewardedAfterClosing: 1
-    skipInterAdvAfterReward: 0
+    skipInterAdvAfterReward: 1
     labelAdvSimLabel: 0
   Storage:
     saveLocal: 1

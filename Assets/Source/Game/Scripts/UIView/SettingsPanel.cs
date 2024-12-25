@@ -37,6 +37,7 @@ public class SettingsPanel : UIPanel
 
     private void OnDisable()
     {
+        _languageButton.onClick.RemoveAllListeners();   
         _backButton.onClick.RemoveAllListeners();
         _authButton.onClick.RemoveAllListeners();
         _leaderboardButton.onClick.RemoveAllListeners();

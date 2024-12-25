@@ -16,18 +16,16 @@ public class GridRotator : MonoBehaviour
         DOTween.KillAll();
     }
 
-    public void Init(Vector3 center)
+    public void Init(Vector3 center, DirectionType direction)
     {
         _center = transform.position + center;
+        Rotate(direction);
     }
 
     public void Rotate(DirectionType direction)
     {
         IsRotating = true;
         Vector3 rotateDirection = direction.ToVector3Int();
-
-        float fixedZRotation = transform.eulerAngles.z;
-
         Vector3 rotationAxis = rotateDirection.normalized;
 
         float currentAngle = 0f;

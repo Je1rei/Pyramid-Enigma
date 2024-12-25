@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2874c2345708474d8c2329061f11614, type: 3}
   m_Name: Level_4
   m_EditorClassIdentifier: 
-  IsOpen: 1
+  ID: 4
   GridData: {fileID: 11400000, guid: aab79aa0deada2e4ca2de8f3ceeb4f82, type: 2}
   RewardedPrefab: {fileID: 7517226035916756559, guid: 34499ccb3dbe436439379dfecc884bd2, type: 3}
   TimeLimit: 48

@@ -12,6 +12,9 @@ public class Cell : MonoBehaviour
         Position = position;
         _grid = grid;
         transform.SetParent(grid.transform);
+
+        Block block = GetComponentInChildren<Block>();
+        SetOccupy(block);
     }
 
     public Grid GetGrid()

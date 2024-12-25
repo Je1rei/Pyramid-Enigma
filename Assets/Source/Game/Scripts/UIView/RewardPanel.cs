@@ -59,7 +59,7 @@ public class RewardPanel : UIPanel
     private void OnClickNextLevel()
     {
         LevelService levelService = ServiceLocator.Current.Get<LevelService>();
-        int tempIndex = levelService.Index;
+        int tempIndex = levelService.ID;
         LevelData leveldata = levelService.Load(tempIndex);
 
         if (leveldata != null)

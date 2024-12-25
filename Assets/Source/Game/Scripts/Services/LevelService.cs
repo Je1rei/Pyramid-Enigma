@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using YG;
 
@@ -6,13 +7,17 @@ public class LevelService : MonoBehaviour, IService
 {
     [SerializeField] private LevelData[] _levels;
 
-    private LevelData _current;
-    private int _index;
+    public int LevelCount => _levels.Length;
 
-    public int Index => _index;
+    private LevelData _current;
+    private int _id;
+
+    public int ID => _id;
     public LevelData Current => _current;
 
-    public void Init() { }
+    public void Init()
+    {
+    }
 
     public LevelData Load(int index)
     {
@@ -20,20 +25,20 @@ public class LevelService : MonoBehaviour, IService
             return null;
 
         _current = _levels[index];
-        _index = index;
+        _id = index;
 
         return _current;
     }
 
     public void Complete()
     {
-        if (_index < _levels.GetLength(0))
+        if (_id < _levels.GetLength(0) - 1)
         {
-            _index++;
+            _id++;
 
-            if (_index <= _levels.GetLength(0))
+            if (_id <= _levels.GetLength(0))
             {
-                YG2.saves.OpenLevels[_index] = true;
+                YG2.saves.OpenedLevels.Add(_levels[_id].ID);
                 YG2.SaveProgress();
             }
         }
@@ -50,11 +55,11 @@ namespace YG
 {
     public partial class SavesYG
     {
-        public List<bool> OpenLevels = new List<bool>(new bool[12]);
+        public List<int> OpenedLevels = new List<int>();
 
         public void Init()
         {
-            OpenLevels[0] = true;
+            OpenedLevels.Add(1);
         }
     }
 }

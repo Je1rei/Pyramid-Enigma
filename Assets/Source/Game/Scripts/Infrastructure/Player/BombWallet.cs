@@ -17,7 +17,7 @@ public class BombWallet :IService
         CountChanged?.Invoke(_bombs);
     }
 
-    public void IncreaseScore(int rewardValue = 5)
+    public void IncreaseScore(int rewardValue = 1)
     {
         _bombs += rewardValue;
         CountChanged?.Invoke(_bombs);

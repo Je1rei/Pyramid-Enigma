@@ -11,7 +11,7 @@ public class ReceivedPrizePanel : UIPanel
     [SerializeField] private TMP_Text _prizeText;
     
     private string _rewardID = "1";
-    private int _rewardValue = 10;
+    private int _rewardValue = 3;
 
     private void OnEnable()
     {

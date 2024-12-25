@@ -13,6 +13,7 @@ public class Grid : MonoBehaviour
     private Vector3 _center;
     private Sequence _sequence;
 
+    
     public GridRotator Rotator => _rotator;
     public GridData Data => _data;
     public Vector3 Center => _center;
@@ -28,11 +29,8 @@ public class Grid : MonoBehaviour
 
         _factory.Init();
         Create();
-
-        _rotator.Init(_center);
     }
-
-
+    
     public Cell GetCell(Vector3Int position)
     {
         if (position.x >= 0 && position.x < _data.Width &&
@@ -62,55 +60,17 @@ public class Grid : MonoBehaviour
     {
         _sequence = DOTween.Sequence();
 
-        _sequence.AppendCallback(() => _grid = _factory.Create(_data, this, _center));
-        _sequence.AppendCallback(() => TryRotateNeighborBlock());
+        _sequence.AppendCallback(() => _grid = _factory.Create(_data, this, _rotator, _center));
+        _sequence.AppendCallback(() => Subscribe());
     }
 
-    private void TryRotateNeighborBlock()
+    private void Subscribe() 
     {
-        for (int x = 0; x < _data.Width; x++)
+        foreach (var cell in _grid)
         {
-            for (int y = 0; y < _data.Height; y++)
+            if (cell.IsOccupied() && cell.Occupied.TryGetComponent(out BlockMover mover))
             {
-                for (int z = 0; z < _data.Length; z++)
-                {
-                    Cell cell = _grid[x, y, z];
-
-                    if (cell.IsOccupied())
-                    {
-                        if (cell.Occupied)
-                        {
-                            RotateBlock(cell.Occupied, x, y, z);
-
-                            if (cell.Occupied.TryGetComponent(out BlockMover mover))
-                            {
-                                mover.Moved += BlocksIsEmpty;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private void RotateBlock(Block block, int x, int y, int z)
-    {
-        Vector3Int blockDirection = block.ForwardDirection;
-        Vector3Int neighborPosition = new Vector3Int(x, y, z) + blockDirection;
-
-        Cell neighborCell = GetCell(neighborPosition);
-
-        if (neighborCell != null && neighborCell.IsOccupied())
-        {
-            if (neighborCell.Occupied.TryGetComponent(out Block neighborBlock))
-            {
-                DirectionType oppositeDirection = block.GetAllowedDirection().ToOpposite();
-
-                if (neighborBlock.GetAllowedDirection() == oppositeDirection)
-                {
-                    block.SetAllowedDirection(oppositeDirection);
-                    block.UpdateForwardDirection();
-                }
+                mover.Moved += BlocksIsEmpty;
             }
         }
     }
