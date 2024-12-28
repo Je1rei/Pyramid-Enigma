@@ -6,25 +6,21 @@ public class BlockMover : MonoBehaviour
 {
     [SerializeField] private float _speed = 10f;
     [SerializeField] private float _destroyDelay = 0.1f;
-    [SerializeField] private float _durationRotate = 0.5f;
     [SerializeField] private int _maxMoveDistance = 30;
 
+    private int _countEmptyCells;
     private Color _moveColor;
-
     private Cell _cell;
     private Block _block;
-    private InputPause _inputPauser;
     private BlockShaker _shaker;
     private BlockExploder _exploder;
 
     private Tween _tween;
     private Sequence _sequence;
-
-    private int _countEmptyCells;
-
+    
+    public event Action<BlockMover> Released;
+    
     public bool IsMoving { get; private set; } = false;
-
-    public event Action<BlockMover> Moved;
 
     public void Init()
     {
@@ -32,8 +28,7 @@ public class BlockMover : MonoBehaviour
         {
             _cell = _block.Cell;
         }
-
-        _inputPauser = ServiceLocator.Current.Get<InputPause>();
+        
         _shaker = GetComponent<BlockShaker>();
         _exploder = GetComponent<BlockExploder>();
         _countEmptyCells = 0;
@@ -46,14 +41,30 @@ public class BlockMover : MonoBehaviour
     public void SetupMove()
     {
         if (IsMoving)
+        {
             return;
+        }
 
         if (CanMove())
+        {
             Move();
+        }
         else
+        {
             _shaker.Shake();
+        }
     }
-
+    
+    public void Explode()
+    {
+        if (_exploder.TryExplode() && IsMoving == false)
+        {
+            _cell.SetFree();
+            _block.SetCurrentCell(null);
+            Released?.Invoke(this);
+        }
+    }
+    
     private void Move()
     {
         IsMoving = true;
@@ -81,7 +92,7 @@ public class BlockMover : MonoBehaviour
 
             _block.ResetColor();
             IsMoving = false;
-            Moved?.Invoke(this);
+            Released?.Invoke(this);
         });
     }
 
@@ -113,7 +124,9 @@ public class BlockMover : MonoBehaviour
             if (nextCell != null)
             {
                 if (nextCell.IsOccupied())
+                {
                     break;
+                }
 
                 count++;
             }
@@ -132,9 +145,13 @@ public class BlockMover : MonoBehaviour
         _countEmptyCells = CountEmptyCells();
 
         if (_countEmptyCells <= 0)
+        {
             canMove = false;
+        }
         else
+        {
             canMove = true;
+        }
 
         return canMove;
     }
@@ -159,15 +176,5 @@ public class BlockMover : MonoBehaviour
         cell = _cell.GetGrid().GetCell(gridPosition);
 
         return cell != null;
-    }
-
-    public void Explode()
-    {
-        if (_exploder.TryExplode() && IsMoving == false)
-        {
-            _cell.SetFree();
-            _block.SetCurrentCell(null);
-            Moved?.Invoke(this);
-        }
     }
 }

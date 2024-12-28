@@ -4,10 +4,10 @@ using YG;
 public class Wallet : IService
 {
     private int _score;
-
-    public int Score => _score;
-
+    
     public event Action<int> ScoreChanged;
+    
+    public int Score => _score;
 
     public void Init()
     {

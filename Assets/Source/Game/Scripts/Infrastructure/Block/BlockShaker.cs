@@ -8,9 +8,9 @@ public class BlockShaker : MonoBehaviour
 
     private Color _shakeColor = Color.red;
     private Vector3 _initialPosition;
-    private Tween _tween;
-
     private Block _block;
+
+    private Tween _tween;
 
     public void Init()
     {

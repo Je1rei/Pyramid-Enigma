@@ -20,7 +20,7 @@ public class BlockExploder : MonoBehaviour
     
     public bool TryExplode()
     {
-        if (_bombWallet.Bombs > 0 && _isExplodes == false)
+        if (_bombWallet.Value > 0 && _isExplodes == false)
         {
             _isExplodes = true;
             

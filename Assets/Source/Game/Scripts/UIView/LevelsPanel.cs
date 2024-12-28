@@ -1,9 +1,7 @@
-﻿using System.Diagnostics;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using YG;
-using Debug = UnityEngine.Debug;
 
 public class LevelsPanel : UIPanel
 {
@@ -12,7 +10,6 @@ public class LevelsPanel : UIPanel
 
     [SerializeField] private LevelPage[] _levelPages;
     [SerializeField] private Button[] _pageButtons;
-
     [SerializeField] private Button _backButton;
 
     private LevelService _levelService;

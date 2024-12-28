@@ -2,12 +2,12 @@
 
 public class ExplodeService : IService
 {
-    private bool _isActive;
     private BombWallet _bombWallet;
-
-    public bool IsActive => _isActive;
+    private bool _isActive;
 
     public event Action BombIsEmpty;
+
+    public bool IsActive => _isActive;
 
     public void Init()
     {
@@ -20,15 +20,21 @@ public class ExplodeService : IService
 
     public void Activate()
     {
-        if (_bombWallet.Bombs > 0)
+        if (_bombWallet.Value > 0)
+        {
             _isActive = true;
+        }
         else
-            FailActivate(_bombWallet.Bombs);
+        {
+            FailActivate(_bombWallet.Value);
+        }
     }
 
     private void FailActivate(int value)
     {
-        if(value <= 0)
+        if (value <= 0)
+        {
             BombIsEmpty?.Invoke();
+        }
     }
 }

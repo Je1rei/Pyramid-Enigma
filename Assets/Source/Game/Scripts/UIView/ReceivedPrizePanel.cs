@@ -1,16 +1,16 @@
-﻿using System;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using YG;
 
 public class ReceivedPrizePanel : UIPanel
 {
+    private const string RewardID = "1";
+    
     [SerializeField] private RewardPanel _rewardPanel;
     [SerializeField] private Button _backButton;
     [SerializeField] private TMP_Text _prizeText;
     
-    private string _rewardID = "1";
     private int _rewardValue = 3;
 
     private void OnEnable()
@@ -21,7 +21,7 @@ public class ReceivedPrizePanel : UIPanel
 
     public void RewardAd()
     {
-        YG2.RewardedAdvShow(_rewardID, () =>
+        YG2.RewardedAdvShow(RewardID, () =>
         {
             ServiceLocator.Current.Get<BombWallet>().IncreaseScore(_rewardValue);
         });

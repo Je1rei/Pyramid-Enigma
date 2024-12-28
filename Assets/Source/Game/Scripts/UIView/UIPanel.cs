@@ -11,7 +11,9 @@ public abstract class UIPanel : MonoBehaviour
     public void Show()
     {
         if (this != null)
+        {
             gameObject.SetActive(true);
+        }
     }
 
     public void Hide()

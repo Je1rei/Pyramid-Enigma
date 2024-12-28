@@ -5,7 +5,7 @@ using UnityEngine;
 public class Block : MonoBehaviour
 {
     [SerializeField] private DirectionType _allowedDirection;
-    
+
     private TrailRenderer _trailRenderer;
     private MeshRenderer _meshRenderer;
     private Color _initColor;
@@ -24,7 +24,7 @@ public class Block : MonoBehaviour
         _trailRenderer = GetComponent<TrailRenderer>();
         _meshRenderer = GetComponent<MeshRenderer>();
         _initColor = _meshRenderer.material.color;
-        
+
         UpdateForwardDirection();
 
         _mover.Init();
@@ -40,8 +40,6 @@ public class Block : MonoBehaviour
         Cell = cell;
     }
 
-    public void SetAllowedDirection(DirectionType allowedDirection) => _allowedDirection = allowedDirection;
-
     public DirectionType GetAllowedDirection() => _allowedDirection;
 
     public void UpdateForwardDirection()
@@ -56,7 +54,9 @@ public class Block : MonoBehaviour
         Color randomColor = palette[Random.Range(0, palette.Length)];
 
         if (TryGetComponent(out Renderer renderer))
+        {
             renderer.material.color = randomColor;
+        }
     }
 
     public void ResetColor() => _meshRenderer.material.color = _initColor;

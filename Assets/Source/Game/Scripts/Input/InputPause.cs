@@ -24,7 +24,9 @@ public class InputPause : MonoBehaviour, IService
     public void StartCooldown(float duration)
     {
         if (CanInput == false)
+        {
             return;
+        }
 
         _sequence = DOTween.Sequence();
         CanInput = false;

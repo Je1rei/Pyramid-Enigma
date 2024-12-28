@@ -16,11 +16,6 @@ public class CameraMover : MonoBehaviour
         SetupCameraPosition();
     }
 
-    public float GetDistance()
-    {
-        return Vector3.Distance(_cameraTransform.position, _gridCenter);
-    }
-
     private void SetupCameraPosition()
     {
          _gridCenter = _grid.Center;

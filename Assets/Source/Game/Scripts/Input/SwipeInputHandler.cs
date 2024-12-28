@@ -1,5 +1,4 @@
-﻿using DG.Tweening;
-using System;
+﻿using System;
 using UnityEngine;
 
 [RequireComponent(typeof(InputPause))]
@@ -27,6 +26,7 @@ public class SwipeInputHandler : MonoBehaviour, IService
         _inputPause = GetComponent<InputPause>();
         _tutorialService = ServiceLocator.Current.Get<TutorialService>();
         _rotator = grid.Rotator;
+
         _movingBlocksCount = 0;
         _isSwiping = false;
     }
@@ -81,15 +81,18 @@ public class SwipeInputHandler : MonoBehaviour, IService
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.TryGetComponent(out Block block) && _tutorialService.IsActive == false)
+        if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.TryGetComponent(out Block block) &&
+            _tutorialService.IsActive == false)
         {
             if (block.TryGetComponent(out BlockMover mover))
             {
                 if (mover.IsMoving)
+                {
                     return;
+                }
 
                 _movingBlocksCount++;
-                mover.Moved += OnMoveCompleted;
+                mover.Released += OnMoveCompleted;
 
                 if (_explosionService.IsActive == false)
                 {
@@ -98,7 +101,7 @@ public class SwipeInputHandler : MonoBehaviour, IService
                     if (mover.IsMoving == false)
                     {
                         _movingBlocksCount--;
-                        mover.Moved -= OnMoveCompleted;
+                        mover.Released -= OnMoveCompleted;
                     }
                 }
                 else
@@ -114,19 +117,25 @@ public class SwipeInputHandler : MonoBehaviour, IService
     private DirectionType CalculateDirection(Vector3 delta)
     {
         if (Mathf.Abs(delta.y) > Mathf.Abs(delta.x) + _directionTolerance)
+        {
             return delta.y > 0 ? DirectionType.Left : DirectionType.Right;
+        }
         else if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y) + _directionTolerance)
+        {
             return delta.x > 0 ? DirectionType.Down : DirectionType.Up;
+        }
         else
+        {
             return DirectionType.None;
+        }
     }
 
     private void OnMoveCompleted(BlockMover mover)
     {
         _movingBlocksCount--;
-        mover.Moved -= OnMoveCompleted;
+        mover.Released -= OnMoveCompleted;
 
-        if(_movingBlocksCount < 0)
+        if (_movingBlocksCount < 0)
         {
             _movingBlocksCount = 0;
         }

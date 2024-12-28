@@ -142,13 +142,13 @@ MonoBehaviour:
       hi: 
   InterstitialAdv:
     showFirstAdv: 1
-    interAdvInterval: 0
+    interAdvInterval: 60
     postponeCallByFail: 0
     postponeCallTimer: 10
     labelAdvSimLabel: 0
   Leaderboards:
     enable: 1
-    saveScoreAnonymousPlayers: 0
+    saveScoreAnonymousPlayers: 1
     listLBSim:
     - technoName: Score
       entries: 
@@ -187,6 +187,10 @@ MonoBehaviour:
         extraData: 
   Localization:
     setLanguageMod: 1
+  Metrica:
+    enable: 1
+    metricaCounterID: 99322485
+    log: 1
   RewardedAdv:
     rewardedAfterClosing: 1
     skipInterAdvAfterReward: 1

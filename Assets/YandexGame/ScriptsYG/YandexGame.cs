@@ -573,7 +573,7 @@ namespace YG
             YG2.MetricaSend(eventName);
 #endif
         }
-        public static void Send(string eventName, IDictionary<string, string> eventParams)
+        public static void Send(string eventName, Dictionary<string, string> eventParams)
         {
 #if Metrica_yg
             YG2.MetricaSend(eventName, eventParams);

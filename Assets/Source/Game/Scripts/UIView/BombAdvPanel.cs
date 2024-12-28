@@ -4,14 +4,14 @@ using YG;
 
 public class BombAdvPanel : UIPanel
 {
+    private const string RewardID = "1";
+    
     [SerializeField] private int _rewardValue = 3;
     [SerializeField] private Button _agreeButton;
     [SerializeField] private Button _disagreeButton;
     [SerializeField]private BombPanel _bombPanel;
-    
-    private InputPause _inputPauser;
 
-    private string _rewardID = "1";
+    private InputPause _inputPauser;
 
     private void OnEnable()
     {
@@ -29,7 +29,7 @@ public class BombAdvPanel : UIPanel
 
     private void AgreeADV()
     {
-        YG2.RewardedAdvShow(_rewardID, () =>
+        YG2.RewardedAdvShow(RewardID, () =>
         {
             ServiceLocator.Current.Get<BombWallet>().IncreaseScore(_rewardValue);
         });

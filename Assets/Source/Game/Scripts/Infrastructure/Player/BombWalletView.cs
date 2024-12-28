@@ -16,7 +16,7 @@ public class BombWalletView : MonoBehaviour
     {
         _wallet = ServiceLocator.Current.Get<BombWallet>();
 
-        Change(_wallet.Bombs);
+        Change(_wallet.Value);
         _wallet.CountChanged += Change;
     }
 

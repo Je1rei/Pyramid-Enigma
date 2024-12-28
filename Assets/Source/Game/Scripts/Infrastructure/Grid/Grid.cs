@@ -13,12 +13,11 @@ public class Grid : MonoBehaviour
     private Vector3 _center;
     private Sequence _sequence;
 
+    public event Action BlocksReleased;
     
     public GridRotator Rotator => _rotator;
     public GridData Data => _data;
     public Vector3 Center => _center;
-
-    public event Action AllBlocksMoved;
 
     public void Init(GridData data)
     {
@@ -43,7 +42,7 @@ public class Grid : MonoBehaviour
         return null;
     }
 
-    private void BlocksIsEmpty(BlockMover _)
+    private void BlocksIsReleased(BlockMover _)
     {
         foreach (Cell cell in _grid)
         {
@@ -53,7 +52,7 @@ public class Grid : MonoBehaviour
             }
         }
 
-        AllBlocksMoved?.Invoke();
+        BlocksReleased?.Invoke();
     }
 
     private void Create()
@@ -64,13 +63,13 @@ public class Grid : MonoBehaviour
         _sequence.AppendCallback(() => Subscribe());
     }
 
-    private void Subscribe() 
+    private void Subscribe()
     {
         foreach (var cell in _grid)
         {
             if (cell.IsOccupied() && cell.Occupied.TryGetComponent(out BlockMover mover))
             {
-                mover.Moved += BlocksIsEmpty;
+                mover.Released += BlocksIsReleased;
             }
         }
     }

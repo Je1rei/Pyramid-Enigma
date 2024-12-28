@@ -23,7 +23,7 @@ public class RewardService : IService
         _grid = grid;
         _treasure = prefab;
 
-        _grid.AllBlocksMoved += Reward;
+        _grid.BlocksReleased += Reward;
         _timerService.Ended += Lose;
     }
 
@@ -48,9 +48,13 @@ public class RewardService : IService
     private void UnSubscribe()
     {
         if (_grid != null)
-            _grid.AllBlocksMoved -= Reward;
+        {
+            _grid.BlocksReleased -= Reward;
+        }
 
         if (_timerService != null)
+        {
             _timerService.Ended -= Lose;
+        }
     }
 }

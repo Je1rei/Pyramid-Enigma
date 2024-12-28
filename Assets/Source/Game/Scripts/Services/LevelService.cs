@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using YG;
 
@@ -7,22 +6,18 @@ public class LevelService : MonoBehaviour, IService
 {
     [SerializeField] private LevelData[] _levels;
 
-    public int LevelCount => _levels.Length;
-
     private LevelData _current;
     private int _id;
 
     public int ID => _id;
     public LevelData Current => _current;
 
-    public void Init()
-    {
-    }
-
     public LevelData Load(int index)
     {
         if (index < 0 || index >= _levels.Length)
+        {
             return null;
+        }
 
         _current = _levels[index];
         _id = index;

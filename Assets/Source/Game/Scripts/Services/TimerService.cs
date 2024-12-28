@@ -23,26 +23,23 @@ public class TimerService : IService
     public void Tick()
     {
         if (_isActive)
-            UpdateTimer();
+        {
+            _timeRemaining -= Time.deltaTime;
+
+            if (_timeRemaining <= 0)
+            {
+                _timeRemaining = 0;
+                _isActive = false;
+                Ended?.Invoke();
+            }
+
+            Changed?.Invoke((int)_timeRemaining);
+        }
     }
 
     private void Setup()
     {
         _timeRemaining = _timeLimit;
         _isActive = true;
-    }
-
-    private void UpdateTimer()
-    {
-        _timeRemaining -= Time.deltaTime;
-
-        if (_timeRemaining <= 0)
-        {
-            _timeRemaining = 0;
-            _isActive = false;
-            Ended?.Invoke();
-        }
-
-        Changed?.Invoke((int)_timeRemaining);
     }
 }

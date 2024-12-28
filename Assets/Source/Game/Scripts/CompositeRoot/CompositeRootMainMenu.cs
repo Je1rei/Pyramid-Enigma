@@ -29,6 +29,5 @@ public class CompositeRootMainMenu : CompositeRoot
         _audioService.Init(_uiAudioSource);
 
         _settingsService.Init();
-        _levelService.Init();
     }
 }

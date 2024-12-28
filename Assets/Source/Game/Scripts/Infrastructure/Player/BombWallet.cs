@@ -1,39 +1,38 @@
 ﻿using System;
-using UnityEngine;
 using YG;
 
 public class BombWallet :IService
 {
     private int _decreaseValue = 1;
-    private int _bombs;
+    private int _value;
 
-    public int Bombs => _bombs;
+    public int Value => _value;
 
     public event Action<int> CountChanged;
 
     public void Init()
     {
-        _bombs = YG2.saves.Bombs;
-        CountChanged?.Invoke(_bombs);
+        _value = YG2.saves.Bombs;
+        CountChanged?.Invoke(_value);
     }
 
     public void IncreaseScore(int rewardValue = 1)
     {
-        _bombs += rewardValue;
-        CountChanged?.Invoke(_bombs);
+        _value += rewardValue;
+        CountChanged?.Invoke(_value);
 
-        YG2.saves.Bombs = _bombs;
+        YG2.saves.Bombs = _value;
         YG2.SaveProgress();
     }
 
     public void DecreaseScore()
     {
-        if (_bombs > 0)
+        if (_value > 0)
         {
-            _bombs -= _decreaseValue;
-            CountChanged?.Invoke(_bombs);
+            _value -= _decreaseValue;
+            CountChanged?.Invoke(_value);
 
-            YG2.saves.Bombs = _bombs;
+            YG2.saves.Bombs = _value;
             YG2.SaveProgress();
         }
     }

@@ -29,7 +29,7 @@ public class SettingsPanel : UIPanel
         AddButtonListener(_leaderboardButton, OnClickLeaderboard);
         _musicVolumeSlider.onValueChanged.AddListener(_settingsService.SetVolume);
 
-        if (YandexGame.auth == true)
+        if (YandexGame.auth)
         {
             _authButton.gameObject.SetActive(false);
         }
@@ -37,7 +37,7 @@ public class SettingsPanel : UIPanel
 
     private void OnDisable()
     {
-        _languageButton.onClick.RemoveAllListeners();   
+        _languageButton.onClick.RemoveAllListeners();
         _backButton.onClick.RemoveAllListeners();
         _authButton.onClick.RemoveAllListeners();
         _leaderboardButton.onClick.RemoveAllListeners();

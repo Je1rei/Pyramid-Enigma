@@ -23,7 +23,9 @@ public class GameplayPanel : UIPanel
         AddButtonListener(_resetButton, OnClickReset);
 
         if (_timerService != null)
+        {
             _timerService.Changed += OnChangedTime;
+        }
     }
 
     private void OnDisable()

@@ -47,8 +47,6 @@ public class GridFactory : MonoBehaviour
 
         if (cells.Length != data.Width * data.Height * data.Length)
         {
-            Debug.LogError("Количество клеток в префабе не соответствует размеру сетки из данных GridData!");
-
             return null;
         }
 
