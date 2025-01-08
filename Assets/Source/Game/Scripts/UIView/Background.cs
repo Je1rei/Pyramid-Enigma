@@ -1,3 +1,6 @@
 using UnityEngine;
 
-public class Background : MonoBehaviour { }
+namespace Source.Game.Scripts
+{
+    public class Background : MonoBehaviour { }
+}

@@ -1,25 +1,28 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class LeaderboardPanel : UIPanel
+namespace Source.Game.Scripts
 {
-    [SerializeField] private SettingsPanel _settingsPanel;
-    [SerializeField] private Button _backButton;
-
-    private void OnEnable()
+    public class LeaderboardPanel : UIPanel
     {
-        SetAudioService();
-        AddButtonListener(_backButton, OnClickBack);
-    }
+        [SerializeField] private SettingsPanel _settingsPanel;
+        [SerializeField] private Button _backButton;
 
-    private void OnDisable()
-    {
-        _backButton.onClick.RemoveAllListeners();
-    }
+        private void OnEnable()
+        {
+            SetAudioService();
+            AddButtonListener(_backButton, OnClickBack);
+        }
 
-    private void OnClickBack()
-    {
-        _settingsPanel.Show();
-        Hide();
+        private void OnDisable()
+        {
+            _backButton.onClick.RemoveAllListeners();
+        }
+
+        private void OnClickBack()
+        {
+            _settingsPanel.Show();
+            Hide();
+        }
     }
 }

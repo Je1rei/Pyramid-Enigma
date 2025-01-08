@@ -1,22 +1,25 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Level : MonoBehaviour
+namespace Source.Game.Scripts
 {
-    [SerializeField] private Image _lockedImage;
-    [SerializeField] private Button _button;
-
-    public Button Button => _button;
-
-    public void SetLock()
+    public class Level : MonoBehaviour
     {
-        _lockedImage.gameObject.SetActive(true);
-        _button.interactable = false;
-    }
+        [SerializeField] private Image _lockedImage;
+        [SerializeField] private Button _button;
 
-    public void SetUnlock()
-    {
-        _lockedImage.gameObject.SetActive(false);
-        _button.interactable = true;
+        public Button Button => _button;
+
+        public void SetLock()
+        {
+            _lockedImage.gameObject.SetActive(true);
+            _button.interactable = false;
+        }
+
+        public void SetUnlock()
+        {
+            _lockedImage.gameObject.SetActive(false);
+            _button.interactable = true;
+        }
     }
 }

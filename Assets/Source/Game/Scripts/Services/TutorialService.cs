@@ -1,18 +1,21 @@
-﻿public class TutorialService :IService
+﻿namespace Source.Game.Scripts
 {
-    private bool _isActive;
-
-    public bool IsActive => _isActive;
-
-    public void Init()
+    public class TutorialService :IService
     {
-        LevelService levelService = ServiceLocator.Current.Get<LevelService>();
+        private bool _isActive;
 
-        if (levelService.ID == 0 )
+        public bool IsActive => _isActive;
+
+        public void Init()
         {
-            _isActive = true;
-        }
-    }
+            LevelService levelService = ServiceLocator.Current.Get<LevelService>();
 
-    public void Deactivate() => _isActive = false;
+            if (levelService.ID == 0 )
+            {
+                _isActive = true;
+            }
+        }
+
+        public void Deactivate() => _isActive = false;
+    }
 }

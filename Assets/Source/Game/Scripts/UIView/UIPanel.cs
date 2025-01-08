@@ -2,31 +2,34 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class UIPanel : MonoBehaviour
+namespace Source.Game.Scripts
 {
-    private AudioService _audioService;
-
-    protected void SetAudioService() => _audioService = ServiceLocator.Current.Get<AudioService>();
-
-    public void Show()
+    public abstract class UIPanel : MonoBehaviour
     {
-        if (this != null)
+        private AudioService _audioService;
+
+        protected void SetAudioService() => _audioService = ServiceLocator.Current.Get<AudioService>();
+
+        public void Show()
         {
-            gameObject.SetActive(true);
+            if (this != null)
+            {
+                gameObject.SetActive(true);
+            }
         }
-    }
 
-    public void Hide()
-    {
-        gameObject.SetActive(false);
-    }
-
-    protected void AddButtonListener(Button button, Action onClickAction)
-    {
-        button.onClick.AddListener(() =>
+        public void Hide()
         {
-            _audioService.PlaySound();
-            onClickAction?.Invoke();
-        });
+            gameObject.SetActive(false);
+        }
+
+        protected void AddButtonListener(Button button, Action onClickAction)
+        {
+            button.onClick.AddListener(() =>
+            {
+                _audioService.PlaySound();
+                onClickAction?.Invoke();
+            });
+        }
     }
 }

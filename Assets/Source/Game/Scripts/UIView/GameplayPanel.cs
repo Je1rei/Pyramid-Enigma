@@ -3,70 +3,75 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class GameplayPanel : UIPanel
+namespace Source.Game.Scripts
 {
-    [SerializeField] private RectTransform _parentBackground;
-    [SerializeField] private TutorialPanel _tutorialPanel;
-    [SerializeField] private PausePanel _pausePanel;
-    [SerializeField] private Button _backButton;
-    [SerializeField] private Button _resetButton;
-    [SerializeField] private TMP_Text _timerText;
+    public class GameplayPanel : UIPanel
+    {
+        [SerializeField] private RectTransform _parentBackground;
+        [SerializeField] private TutorialPanel _tutorialPanel;
+        [SerializeField] private PausePanel _pausePanel;
+        [SerializeField] private Button _backButton;
+        [SerializeField] private Button _resetButton;
+        [SerializeField] private TMP_Text _timerText;
     
-    private InputPause _inputPauser;
-    private TimerService _timerService;
-
-    private void OnEnable()
-    {
-        Time.timeScale = 1f;
-
-        AddButtonListener(_backButton, Pause);
-        AddButtonListener(_resetButton, OnClickReset);
-
-        if (_timerService != null)
-        {
-            _timerService.Changed += OnChangedTime;
-        }
-    }
-
-    private void OnDisable()
-    {
-        _backButton.onClick.RemoveAllListeners();
-        _resetButton.onClick.RemoveAllListeners();
-        _timerService.Changed -= OnChangedTime;
-    }
-
-    public void Init()
-    {
-        _inputPauser = ServiceLocator.Current.Get<InputPause>();
-        _timerService = ServiceLocator.Current.Get<TimerService>();
+        private InputPause _inputPauser;
+        private TimerService _timerService;
+        private SceneLoaderService _loaderService;
         
-        SetAudioService();
-        Show();
-        _timerService.Changed += OnChangedTime;
-        _tutorialPanel.Init();
-        ServiceLocator.Current.Get<LevelService>().CreateBackground(_parentBackground);
-    }
+        private void OnEnable()
+        {
+            Time.timeScale = 1f;
 
-    public void Pause()
-    {
-        _inputPauser.DeactivateInput();
-        Hide();
-        _pausePanel.Pause();
-    }
+            AddButtonListener(_backButton, Pause);
+            AddButtonListener(_resetButton, OnClickReset);
 
-    public void UnPause()
-    {
-        Show();
-        _inputPauser.ActivateInput();
-    }
+            if (_timerService != null)
+            {
+                _timerService.Changed += OnChangedTime;
+            }
+        }
 
-    private void OnClickReset()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().path);
-    }
+        private void OnDisable()
+        {
+            _backButton.onClick.RemoveAllListeners();
+            _resetButton.onClick.RemoveAllListeners();
+            _timerService.Changed -= OnChangedTime;
+        }
 
-    private void OnChangedTime(int value)
-    {
-        _timerText.text = value.ToString();
+        public void Init()
+        {
+            _loaderService = ServiceLocator.Current.Get<SceneLoaderService>();
+            _inputPauser = ServiceLocator.Current.Get<InputPause>();
+            _timerService = ServiceLocator.Current.Get<TimerService>();
+        
+            SetAudioService();
+            Show();
+            _timerService.Changed += OnChangedTime;
+            _tutorialPanel.Init();
+            ServiceLocator.Current.Get<LevelService>().CreateBackground(_parentBackground);
+        }
+
+        public void Pause()
+        {
+            _inputPauser.DeactivateInput();
+            Hide();
+            _pausePanel.Pause();
+        }
+
+        public void UnPause()
+        {
+            Show();
+            _inputPauser.ActivateInput();
+        }
+
+        private void OnClickReset()
+        {
+            SceneManager.LoadScene(_loaderService.GamePlayScene);
+        }
+
+        private void OnChangedTime(int value)
+        {
+            _timerText.text = value.ToString();
+        }
     }
 }

@@ -1,45 +1,48 @@
 ﻿using System;
 using UnityEngine;
 
-public class TimerService : IService
+namespace Source.Game.Scripts
 {
-    private int _timeLimit;
-    private float _timeRemaining;
-    private bool _isActive;
-
-    public event Action<int> Changed;
-    public event Action Ended;
-
-    public void Deactivate() => _isActive = false;
-
-    public void Init(int timeLimit)
+    public class TimerService : IService
     {
-        _isActive = false;
-        _timeLimit = timeLimit;
+        private int _timeLimit;
+        private float _timeRemaining;
+        private bool _isActive;
 
-        Setup();
-    }
+        public event Action<int> Changed;
+        public event Action Ended;
 
-    public void Tick()
-    {
-        if (_isActive)
+        public void Deactivate() => _isActive = false;
+
+        public void Init(int timeLimit)
         {
-            _timeRemaining -= Time.deltaTime;
+            _isActive = false;
+            _timeLimit = timeLimit;
 
-            if (_timeRemaining <= 0)
-            {
-                _timeRemaining = 0;
-                _isActive = false;
-                Ended?.Invoke();
-            }
-
-            Changed?.Invoke((int)_timeRemaining);
+            Setup();
         }
-    }
 
-    private void Setup()
-    {
-        _timeRemaining = _timeLimit;
-        _isActive = true;
+        public void Tick()
+        {
+            if (_isActive)
+            {
+                _timeRemaining -= Time.deltaTime;
+
+                if (_timeRemaining <= 0)
+                {
+                    _timeRemaining = 0;
+                    _isActive = false;
+                    Ended?.Invoke();
+                }
+
+                Changed?.Invoke((int)_timeRemaining);
+            }
+        }
+
+        private void Setup()
+        {
+            _timeRemaining = _timeLimit;
+            _isActive = true;
+        }
     }
 }

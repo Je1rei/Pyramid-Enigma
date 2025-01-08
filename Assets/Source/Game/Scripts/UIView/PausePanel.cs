@@ -2,44 +2,51 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class PausePanel : UIPanel
+namespace Source.Game.Scripts
 {
-    [SerializeField] private GameplayPanel _gameplayPanel;
-    [SerializeField] private Button _backToMenuButton;
-    [SerializeField] private Button _continueButton;
-
-    private void OnEnable()
+    public class PausePanel : UIPanel
     {
-        SetAudioService();
-        AddButtonListener(_continueButton, OnClickUnPause);
-        AddButtonListener(_backToMenuButton, OnClickBackToMenu);
-    }
+        [SerializeField] private GameplayPanel _gameplayPanel;
+        [SerializeField] private Button _backToMenuButton;
+        [SerializeField] private Button _continueButton;
 
-    private void OnDisable()
-    {
-        _continueButton.onClick.RemoveAllListeners();
-        _backToMenuButton.onClick.RemoveAllListeners();
-    }
+        private SceneLoaderService _loaderService;
+        
+        private void OnEnable()
+        {
+            SetAudioService();
+            AddButtonListener(_continueButton, OnClickUnPause);
+            AddButtonListener(_backToMenuButton, OnClickBackToMenu);
 
-    public void Pause()
-    {
-        Show();
-        Time.timeScale = 0f;
-        AudioListener.pause = true;
-    }
+            _loaderService = ServiceLocator.Current.Get<SceneLoaderService>();
+        }
 
-    public void OnClickUnPause()
-    {
-        Time.timeScale = 1f;
-        AudioListener.pause = false;
-        Hide();
-        _gameplayPanel.UnPause();
-    }
+        private void OnDisable()
+        {
+            _continueButton.onClick.RemoveAllListeners();
+            _backToMenuButton.onClick.RemoveAllListeners();
+        }
 
-    private void OnClickBackToMenu()
-    {
-        Time.timeScale = 1f;
-        AudioListener.pause = false;
-        SceneManager.LoadScene(1);
+        public void Pause()
+        {
+            Show();
+            Time.timeScale = 0f;
+            AudioListener.pause = true;
+        }
+
+        public void OnClickUnPause()
+        {
+            Time.timeScale = 1f;
+            AudioListener.pause = false;
+            Hide();
+            _gameplayPanel.UnPause();
+        }
+
+        private void OnClickBackToMenu()
+        {
+            Time.timeScale = 1f;
+            AudioListener.pause = false;
+            SceneManager.LoadScene(_loaderService.MainMenuScene);
+        }
     }
 }

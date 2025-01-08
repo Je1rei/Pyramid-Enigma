@@ -1,143 +1,146 @@
 ﻿using System;
 using UnityEngine;
 
-[RequireComponent(typeof(InputPause))]
-public class SwipeInputHandler : MonoBehaviour, IService
+namespace Source.Game.Scripts
 {
-    [SerializeField] private float _minSwipeDistance = 50f;
-    [SerializeField] private float _directionTolerance = 0.2f;
-
-    private ExplodeService _explosionService;
-    private TutorialService _tutorialService;
-    private GridRotator _rotator;
-    private InputPause _inputPause;
-
-    private Vector3 _mousePositionStart;
-    private Vector3 _mousePositionEnd;
-    private bool _isSwiping;
-
-    private int _movingBlocksCount;
-
-    public event Action Clicked;
-
-    public void Init(Grid grid)
+    [RequireComponent(typeof(InputPause))]
+    public class SwipeInputHandler : MonoBehaviour, IService
     {
-        _explosionService = ServiceLocator.Current.Get<ExplodeService>();
-        _inputPause = GetComponent<InputPause>();
-        _tutorialService = ServiceLocator.Current.Get<TutorialService>();
-        _rotator = grid.Rotator;
+        [SerializeField] private float _minSwipeDistance = 50f;
+        [SerializeField] private float _directionTolerance = 0.2f;
 
-        _movingBlocksCount = 0;
-        _isSwiping = false;
-    }
+        private ExplodeService _explosionService;
+        private TutorialService _tutorialService;
+        private GridRotator _rotator;
+        private InputPause _inputPause;
 
-    public void Tick()
-    {
-        if (_rotator != null)
+        private Vector3 _mousePositionStart;
+        private Vector3 _mousePositionEnd;
+        private bool _isSwiping;
+
+        private int _movingBlocksCount;
+
+        public event Action Clicked;
+
+        public void Init(Grid grid)
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                _mousePositionStart = Input.mousePosition;
-                _isSwiping = false;
-            }
+            _explosionService = ServiceLocator.Current.Get<ExplodeService>();
+            _inputPause = GetComponent<InputPause>();
+            _tutorialService = ServiceLocator.Current.Get<TutorialService>();
+            _rotator = grid.Rotator;
 
-            if (Input.GetMouseButton(0))
-            {
-                _mousePositionEnd = Input.mousePosition;
-
-                if ((_mousePositionEnd - _mousePositionStart).magnitude > _minSwipeDistance)
-                {
-                    _isSwiping = true;
-                }
-            }
-
-            if (Input.GetMouseButtonUp(0))
-            {
-                _mousePositionEnd = Input.mousePosition;
-
-                if (_isSwiping && _inputPause.CanInput && _movingBlocksCount == 0)
-                {
-                    SwipeDetect();
-                }
-                else if (_isSwiping == false)
-                {
-                    HandleClick();
-                }
-            }
+            _movingBlocksCount = 0;
+            _isSwiping = false;
         }
-    }
 
-    private void SwipeDetect()
-    {
-        Vector3 delta = _mousePositionEnd - _mousePositionStart;
-        DirectionType swipeDirection = CalculateDirection(delta);
-
-        _rotator.Rotate(swipeDirection);
-
-        _inputPause.StartCooldown(_rotator.Duration);
-    }
-
-    private void HandleClick()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.TryGetComponent(out Block block) &&
-            _tutorialService.IsActive == false)
+        public void Tick()
         {
-            if (block.TryGetComponent(out BlockMover mover))
+            if (_rotator != null)
             {
-                if (mover.IsMoving)
+                if (Input.GetMouseButtonDown(0))
                 {
-                    return;
+                    _mousePositionStart = Input.mousePosition;
+                    _isSwiping = false;
                 }
 
-                _movingBlocksCount++;
-                mover.Released += OnMoveCompleted;
-
-                if (_explosionService.IsActive == false)
+                if (Input.GetMouseButton(0))
                 {
-                    mover.SetupMove();
+                    _mousePositionEnd = Input.mousePosition;
 
-                    if (mover.IsMoving == false)
+                    if ((_mousePositionEnd - _mousePositionStart).magnitude > _minSwipeDistance)
                     {
-                        _movingBlocksCount--;
-                        mover.Released -= OnMoveCompleted;
+                        _isSwiping = true;
                     }
                 }
-                else
+
+                if (Input.GetMouseButtonUp(0))
                 {
-                    mover.Explode();
+                    _mousePositionEnd = Input.mousePosition;
+
+                    if (_isSwiping && _inputPause.CanInput && _movingBlocksCount == 0)
+                    {
+                        SwipeDetect();
+                    }
+                    else if (_isSwiping == false)
+                    {
+                        HandleClick();
+                    }
                 }
             }
         }
 
-        Clicked?.Invoke();
-    }
+        private void SwipeDetect()
+        {
+            Vector3 delta = _mousePositionEnd - _mousePositionStart;
+            DirectionType swipeDirection = CalculateDirection(delta);
 
-    private DirectionType CalculateDirection(Vector3 delta)
-    {
-        if (Mathf.Abs(delta.y) > Mathf.Abs(delta.x) + _directionTolerance)
-        {
-            return delta.y > 0 ? DirectionType.Left : DirectionType.Right;
-        }
-        else if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y) + _directionTolerance)
-        {
-            return delta.x > 0 ? DirectionType.Down : DirectionType.Up;
-        }
-        else
-        {
-            return DirectionType.None;
-        }
-    }
+            _rotator.Rotate(swipeDirection);
 
-    private void OnMoveCompleted(BlockMover mover)
-    {
-        _movingBlocksCount--;
-        mover.Released -= OnMoveCompleted;
+            _inputPause.StartCooldown(_rotator.Duration);
+        }
 
-        if (_movingBlocksCount < 0)
+        private void HandleClick()
         {
-            _movingBlocksCount = 0;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.TryGetComponent(out Block block) &&
+                _tutorialService.IsActive == false)
+            {
+                if (block.TryGetComponent(out BlockMover mover))
+                {
+                    if (mover.IsMoving)
+                    {
+                        return;
+                    }
+
+                    _movingBlocksCount++;
+                    mover.Released += OnMoveCompleted;
+
+                    if (_explosionService.IsActive == false)
+                    {
+                        mover.SetupMove();
+
+                        if (mover.IsMoving == false)
+                        {
+                            _movingBlocksCount--;
+                            mover.Released -= OnMoveCompleted;
+                        }
+                    }
+                    else
+                    {
+                        mover.Explode();
+                    }
+                }
+            }
+
+            Clicked?.Invoke();
+        }
+
+        private DirectionType CalculateDirection(Vector3 delta)
+        {
+            if (Mathf.Abs(delta.y) > Mathf.Abs(delta.x) + _directionTolerance)
+            {
+                return delta.y > 0 ? DirectionType.Left : DirectionType.Right;
+            }
+            else if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y) + _directionTolerance)
+            {
+                return delta.x > 0 ? DirectionType.Down : DirectionType.Up;
+            }
+            else
+            {
+                return DirectionType.None;
+            }
+        }
+
+        private void OnMoveCompleted(BlockMover mover)
+        {
+            _movingBlocksCount--;
+            mover.Released -= OnMoveCompleted;
+
+            if (_movingBlocksCount < 0)
+            {
+                _movingBlocksCount = 0;
+            }
         }
     }
 }

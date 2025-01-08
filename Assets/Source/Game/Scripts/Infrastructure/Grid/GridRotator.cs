@@ -1,48 +1,44 @@
-﻿using UnityEngine;
-using DG.Tweening;
+﻿using DG.Tweening;
+using UnityEngine;
 
-public class GridRotator : MonoBehaviour
+namespace Source.Game.Scripts
 {
-    [SerializeField] private float _duration = 0.25f;
-    [SerializeField] private int _endAngleRotation = 90;
-
-    private Vector3 _center;
-
-    public bool IsRotating { get; private set; } = false;
-    public float Duration => _duration;
-
-    private void OnDestroy()
+    public class GridRotator : MonoBehaviour
     {
-        DOTween.KillAll();
-    }
+        [SerializeField] private float _duration = 0.25f;
+        [SerializeField] private int _endAngleRotation = 90;
 
-    public void Init(Vector3 center, DirectionType direction)
-    {
-        _center = transform.position + center;
-        Rotate(direction);
-    }
+        private Vector3 _center;
 
-    public void Rotate(DirectionType direction)
-    {
-        IsRotating = true;
-        Vector3 rotateDirection = direction.ToVector3Int();
-        Vector3 rotationAxis = rotateDirection.normalized;
+        public bool IsRotating { get; private set; } = false;
+        public float Duration => _duration;
 
-        float currentAngle = 0f;
-        float targetAngle = _endAngleRotation;
-
-        DOTween.To(() => currentAngle, x =>
+        public void Init(Vector3 center, DirectionType direction)
         {
-            if (this != null && transform != null)
-            {
-                float deltaAngle = x - currentAngle;
-                currentAngle = x;
+            _center = transform.position + center;
+            Rotate(direction);
+        }
 
-                transform.RotateAround(_center, rotationAxis, deltaAngle);
-            }
+        public void Rotate(DirectionType direction)
+        {
+            IsRotating = true;
+            Vector3 rotateDirection = direction.ToVector3Int();
+            Vector3 rotationAxis = rotateDirection.normalized;
 
-        }, targetAngle, _duration)
-        .SetEase(Ease.InOutQuad)
-        .OnComplete(() => IsRotating = false);
+            float currentAngle = 0f;
+            float targetAngle = _endAngleRotation;
+
+            DOVirtual.Float(currentAngle, targetAngle, _duration, x =>
+                {
+                    if (this != null && transform != null)
+                    {
+                        float deltaAngle = x - currentAngle;
+                        currentAngle = x;
+                        transform.RotateAround(_center, rotationAxis, deltaAngle);
+                    }
+                })
+                .SetEase(Ease.InOutQuad)
+                .OnComplete(() => IsRotating = false);
+        }
     }
 }

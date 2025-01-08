@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 
-public class Treasure: MonoBehaviour
+namespace Source.Game.Scripts
 {
-    [SerializeField] private int _value = 1;
+    public class Treasure: MonoBehaviour
+    {
+        [SerializeField] private int _value = 1;
 
-    public int Value => _value;
+        public int Value => _value;
+    }
 }

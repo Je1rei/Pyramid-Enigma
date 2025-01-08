@@ -1,60 +1,63 @@
 ﻿using System;
 
-public class RewardService : IService
+namespace Source.Game.Scripts
 {
-    private Grid _grid;
-    private Wallet _wallet;
-    private BombWallet _bombWallet;
-
-    private LevelService _levelService;
-    private TimerService _timerService;
-    private Treasure _treasure;
-
-    public event Action Rewarded;
-    public event Action Losed;
-
-    public void Init(Grid grid, Treasure prefab)
+    public class RewardService : IService
     {
-        _timerService = ServiceLocator.Current.Get<TimerService>();
-        _wallet = ServiceLocator.Current.Get<Wallet>();
-        _levelService = ServiceLocator.Current.Get<LevelService>();
-        _bombWallet = ServiceLocator.Current.Get<BombWallet>();
+        private Grid _grid;
+        private Wallet _wallet;
+        private BombWallet _bombWallet;
 
-        _grid = grid;
-        _treasure = prefab;
+        private LevelService _levelService;
+        private TimerService _timerService;
+        private Treasure _treasure;
 
-        _grid.BlocksReleased += Reward;
-        _timerService.Ended += Lose;
-    }
+        public event Action Rewarded;
+        public event Action Losed;
 
-    public void Reward()
-    {
-        _levelService.Complete();
-        _timerService.Deactivate();
-        _wallet.IncreaseScore(_treasure.Value);
-        _bombWallet.IncreaseScore();
-        Rewarded?.Invoke();
-
-        UnSubscribe();
-    }
-
-    public void Lose()
-    {
-        _timerService.Deactivate();
-        Losed?.Invoke();
-        UnSubscribe();
-    }
-
-    private void UnSubscribe()
-    {
-        if (_grid != null)
+        public void Init(Grid grid, Treasure prefab)
         {
-            _grid.BlocksReleased -= Reward;
+            _timerService = ServiceLocator.Current.Get<TimerService>();
+            _wallet = ServiceLocator.Current.Get<Wallet>();
+            _levelService = ServiceLocator.Current.Get<LevelService>();
+            _bombWallet = ServiceLocator.Current.Get<BombWallet>();
+
+            _grid = grid;
+            _treasure = prefab;
+
+            _grid.BlocksReleased += Reward;
+            _timerService.Ended += Lose;
         }
 
-        if (_timerService != null)
+        public void Reward()
         {
-            _timerService.Ended -= Lose;
+            _levelService.Complete();
+            _timerService.Deactivate();
+            _wallet.Increase(_treasure.Value);
+            _bombWallet.Increase();
+            Rewarded?.Invoke();
+
+            UnSubscribe();
+        }
+
+        public void Lose()
+        {
+            _timerService.Deactivate();
+            Losed?.Invoke();
+            UnSubscribe();
+        }
+
+        private void UnSubscribe()
+        {
+            if (_grid != null)
+            {
+                _grid.BlocksReleased -= Reward;
+            }
+
+            if (_timerService != null)
+            {
+                _timerService.Ended -= Lose;
+            }
         }
     }
 }

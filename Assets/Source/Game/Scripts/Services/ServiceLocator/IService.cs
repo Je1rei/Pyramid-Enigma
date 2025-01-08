@@ -1,1 +1,4 @@
-﻿public interface IService { }
+﻿namespace Source.Game.Scripts
+{
+    public interface IService { }
+}

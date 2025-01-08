@@ -1,42 +1,42 @@
 ﻿using DG.Tweening;
 using UnityEngine;
 
-public class BlockExploder : MonoBehaviour
+namespace Source.Game.Scripts
 {
-    [SerializeField] private float _duration = 0.5f;
-    [SerializeField] private float _minScale = 0f;
+    public class BlockExploder : MonoBehaviour
+    {
+        [SerializeField] private float _duration = 0.5f;
+        [SerializeField] private float _minScale = 0f;
     
-    private Color _explosionColor = Color.red;
-    private bool _isExplodes;
-    private BombWallet _bombWallet;
-    private MeshRenderer _renderer;
+        private Color _explosionColor = Color.red;
+        private bool _isExplodes;
+        private BombWallet _bombWallet;
+        private MeshRenderer _renderer;
 
-    public void Init(MeshRenderer renderer)
-    {
-        _renderer = renderer;
-        _bombWallet = ServiceLocator.Current.Get<BombWallet>();
-        _isExplodes = false;
-    }
-    
-    public bool TryExplode()
-    {
-        if (_bombWallet.Value > 0 && _isExplodes == false)
+        public void Init(MeshRenderer renderer)
         {
-            _isExplodes = true;
-            
-            _renderer.material.DOColor(_explosionColor, _duration )
-                .OnComplete(() => _renderer.material.DOFade(0, _duration ));
-            
-            transform.DOScale(_minScale , _duration )
-                .OnComplete(() => transform.DOScale(_minScale, _duration ))
-                .OnKill(() => Destroy(gameObject));
-
-            _bombWallet.DecreaseScore();
-
-            return true;
+            _renderer = renderer;
+            _bombWallet = ServiceLocator.Current.Get<BombWallet>();
+            _isExplodes = false;
         }
-
-        return false;
-    }
     
+        public bool TryExplode()
+        {
+            if (_bombWallet.Value > 0 && _isExplodes == false)
+            {
+                _isExplodes = true;
+
+                _renderer.material.DOColor(_explosionColor, _duration);
+            
+                transform.DOScale(_minScale , _duration )
+                    .OnKill(() => Destroy(gameObject));
+
+                _bombWallet.Decrease();
+
+                return true;
+            }
+
+            return false;
+        }
+    }
 }

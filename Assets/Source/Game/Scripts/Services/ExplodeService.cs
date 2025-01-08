@@ -1,40 +1,43 @@
 ﻿using System;
 
-public class ExplodeService : IService
+namespace Source.Game.Scripts
 {
-    private BombWallet _bombWallet;
-    private bool _isActive;
-
-    public event Action BombIsEmpty;
-
-    public bool IsActive => _isActive;
-
-    public void Init()
+    public class ExplodeService : IService
     {
-        _bombWallet = ServiceLocator.Current.Get<BombWallet>();
-        _isActive = false;
-        _bombWallet.CountChanged += FailActivate;
-    }
+        private BombWallet _bombWallet;
+        private bool _isActive;
 
-    public void Deactivate() => _isActive = false;
+        public event Action BombIsEmpty;
 
-    public void Activate()
-    {
-        if (_bombWallet.Value > 0)
+        public bool IsActive => _isActive;
+
+        public void Init()
         {
-            _isActive = true;
+            _bombWallet = ServiceLocator.Current.Get<BombWallet>();
+            _isActive = false;
+            _bombWallet.Changed += FailActivate;
         }
-        else
-        {
-            FailActivate(_bombWallet.Value);
-        }
-    }
 
-    private void FailActivate(int value)
-    {
-        if (value <= 0)
+        public void Deactivate() => _isActive = false;
+
+        public void Activate()
         {
-            BombIsEmpty?.Invoke();
+            if (_bombWallet.Value > 0)
+            {
+                _isActive = true;
+            }
+            else
+            {
+                FailActivate(_bombWallet.Value);
+            }
+        }
+
+        private void FailActivate(int value)
+        {
+            if (value <= 0)
+            {
+                BombIsEmpty?.Invoke();
+            }
         }
     }
 }

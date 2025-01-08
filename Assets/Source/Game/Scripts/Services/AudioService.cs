@@ -1,26 +1,29 @@
 ﻿using UnityEngine;
 using YG;
 
-public class AudioService : MonoBehaviour, IService
+namespace Source.Game.Scripts
 {
-    [SerializeField] private AudioSource _mainAudioSource;
-
-    private AudioSource _uiAudioSource;
-
-    public void Init(AudioSource uiAudioSource)
+    public class AudioService : MonoBehaviour, IService
     {
-        _uiAudioSource = uiAudioSource;
-        SetVolume(YG2.saves.Volume);
-    }
+        [SerializeField] private AudioSource _mainAudioSource;
 
-    public void PlaySound()
-    {
-        _uiAudioSource.Play();
-    }
+        private AudioSource _uiAudioSource;
 
-    public void SetVolume(float value)
-    {
-        AudioListener.volume = value;
-        YG2.saves.Volume = value;
+        public void Init(AudioSource uiAudioSource)
+        {
+            _uiAudioSource = uiAudioSource;
+            SetVolume(YG2.saves.Volume);
+        }
+
+        public void PlaySound()
+        {
+            _uiAudioSource.Play();
+        }
+
+        public void SetVolume(float value)
+        {
+            AudioListener.volume = value;
+            YG2.saves.Volume = value;
+        }
     }
 }

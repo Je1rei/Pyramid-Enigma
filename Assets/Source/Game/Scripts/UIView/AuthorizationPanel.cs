@@ -2,36 +2,39 @@
 using UnityEngine.UI;
 using YG;
 
-public class AuthorizationPanel: UIPanel
+namespace Source.Game.Scripts
 {
-    [SerializeField] private SettingsPanel _settingsPanel;
-    [SerializeField] private Button _agreeButton;
-    [SerializeField] private Button _backButton;
-
-    private void OnEnable()
+    public class AuthorizationPanel: UIPanel
     {
-        SetAudioService();
+        [SerializeField] private SettingsPanel _settingsPanel;
+        [SerializeField] private Button _agreeButton;
+        [SerializeField] private Button _backButton;
 
-        AddButtonListener(_agreeButton, OnClickAgree);
-        AddButtonListener(_backButton, OnClickBack);
-    }
+        private void OnEnable()
+        {
+            SetAudioService();
 
-    private void OnDisable()
-    {
-        _agreeButton.onClick.RemoveAllListeners();
-        _backButton.onClick.RemoveAllListeners();
-    }
+            AddButtonListener(_agreeButton, OnClickAgree);
+            AddButtonListener(_backButton, OnClickBack);
+        }
 
-    private void OnClickAgree()
-    {
-        YG2.OpenAuthDialog();
-        _settingsPanel.Show();
-        Hide();
-    }
+        private void OnDisable()
+        {
+            _agreeButton.onClick.RemoveAllListeners();
+            _backButton.onClick.RemoveAllListeners();
+        }
 
-    private void OnClickBack()
-    {
-        _settingsPanel.Show();
-        Hide();
+        private void OnClickAgree()
+        {
+            YG2.OpenAuthDialog();
+            _settingsPanel.Show();
+            Hide();
+        }
+
+        private void OnClickBack()
+        {
+            _settingsPanel.Show();
+            Hide();
+        }
     }
 }

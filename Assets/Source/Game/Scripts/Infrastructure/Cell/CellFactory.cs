@@ -1,12 +1,15 @@
 ﻿    using UnityEngine;
 
-    public class CellFactory : MonoBehaviour
+    namespace Source.Game.Scripts
     {
-        public Cell Create(Cell prefab, Vector3Int position, Grid grid)
+        public class CellFactory : MonoBehaviour
         {
-            Cell cell = Instantiate(prefab);
-            cell.Init(position, grid);
+            public Cell Create(Cell prefab, Vector3Int position, Grid grid)
+            {
+                Cell cell = Instantiate(prefab);
+                cell.Init(position, grid);
 
-            return cell;
+                return cell;
+            }
         }
     }

@@ -137,6 +137,7 @@ GameObject:
   - component: {fileID: 170238454}
   - component: {fileID: 170238453}
   - component: {fileID: 170238455}
+  - component: {fileID: 170238456}
   m_Layer: 0
   m_Name: GameLoader
   m_TagString: Untagged
@@ -176,6 +177,7 @@ MonoBehaviour:
   _audioService: {fileID: 170238452}
   _swipeInputHandler: {fileID: 170238453}
   _inputPauser: {fileID: 170238454}
+  _loaderService: {fileID: 170238456}
 --- !u!114 &170238452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -258,6 +260,20 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b6ee67e3d9e640d40aad168ac493423f, type: 2}
   - {fileID: 11400000, guid: f6b6c6d6085974142a26477d8f851778, type: 2}
   - {fileID: 11400000, guid: 50eb14e95e52d7e4ebaf90dfa0984335, type: 2}
+--- !u!114 &170238456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 170238448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fd36646359244f39ada54fbcc2f06e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mainMenuScene: 1
+  _gamePlayScene: 2
 --- !u!1 &2038507148
 GameObject:
   m_ObjectHideFlags: 0

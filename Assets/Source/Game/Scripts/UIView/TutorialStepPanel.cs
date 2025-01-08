@@ -1,1 +1,4 @@
-﻿public class TutorialStepPanel : UIPanel { }
+﻿namespace Source.Game.Scripts
+{
+    public class TutorialStepPanel : UIPanel { }
+}

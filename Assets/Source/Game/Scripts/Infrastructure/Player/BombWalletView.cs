@@ -1,27 +1,8 @@
-﻿using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class BombWalletView : MonoBehaviour
+namespace Source.Game.Scripts
 {
-    [SerializeField] private TMP_Text _text;
-
-    private BombWallet _wallet;
-
-    private void OnDisable()
+    public class BombWalletView : BaseWalletView
     {
-        _wallet.CountChanged -= Change;
-    }
-
-    public void Init()
-    {
-        _wallet = ServiceLocator.Current.Get<BombWallet>();
-
-        Change(_wallet.Value);
-        _wallet.CountChanged += Change;
-    }
-
-    private void Change(int value)
-    {
-        _text.text = value.ToString();
     }
 }

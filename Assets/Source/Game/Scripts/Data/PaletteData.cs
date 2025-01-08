@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "PaletteData", menuName = "ScriptableObjects/PaletteData", order = 3)]
-public class PaletteData : ScriptableObject
+namespace Source.Game.Scripts
 {
-    public Color[] Palette;
+    [CreateAssetMenu(fileName = "PaletteData", menuName = "ScriptableObjects/PaletteData", order = 3)]
+    public class PaletteData : ScriptableObject
+    {
+        public Color[] Palette;
+    }
 }

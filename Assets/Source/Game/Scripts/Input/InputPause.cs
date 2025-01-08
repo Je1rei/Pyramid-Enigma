@@ -1,36 +1,39 @@
-﻿using UnityEngine;
-using DG.Tweening;
+﻿using DG.Tweening;
+using UnityEngine;
 
-public class InputPause : MonoBehaviour, IService
+namespace Source.Game.Scripts
 {
-    private Sequence _sequence;
-
-    public bool CanInput { get; private set; }
-
-    public void Init()
+    public class InputPause : MonoBehaviour, IService
     {
-        CanInput = false;
-    }
+        private Sequence _sequence;
 
-    public void ActivateInputCooldown(float duration = 0.5F)
-    {
-        StartCooldown(duration);
-    }
+        public bool CanInput { get; private set; }
 
-    public void ActivateInput() => CanInput = true;
-
-    public void DeactivateInput() => CanInput = false;
-
-    public void StartCooldown(float duration)
-    {
-        if (CanInput == false)
+        public void Init()
         {
-            return;
+            CanInput = false;
         }
 
-        _sequence = DOTween.Sequence();
-        CanInput = false;
+        public void ActivateInputCooldown(float duration = 0.5F)
+        {
+            StartCooldown(duration);
+        }
 
-        _sequence.PrependInterval(duration).OnComplete(() => { CanInput = true; });
+        public void ActivateInput() => CanInput = true;
+
+        public void DeactivateInput() => CanInput = false;
+
+        public void StartCooldown(float duration)
+        {
+            if (CanInput == false)
+            {
+                return;
+            }
+
+            Sequence sequence = DOTween.Sequence();
+            CanInput = false;
+
+            sequence.PrependInterval(duration).OnComplete(() => { CanInput = true; });
+        }
     }
 }

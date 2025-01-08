@@ -1,31 +1,26 @@
-﻿public class SettingsService : IService
+﻿namespace Source.Game.Scripts
 {
-    private AudioService _audioService;
-
-    private readonly string[] _languages = new string[] { "ru", "en", "tr" };
-
-    public void Init()
+    public class SettingsService : IService
     {
-        _audioService = ServiceLocator.Current.Get<AudioService>();
-    }
+        private AudioService _audioService;
 
-    public void SetVolume(float value)
-    {
-        _audioService.SetVolume(value);
-    }
+        private readonly string[] _languages = new string[] { "ru", "en", "tr" };
 
-    public string[] GetLanguages()
-    {
-        string[] languages = _languages;
+        public void Init()
+        {
+            _audioService = ServiceLocator.Current.Get<AudioService>();
+        }
 
-        return languages;
-    }
-}
+        public void SetVolume(float value)
+        {
+            _audioService.SetVolume(value);
+        }
 
-namespace YG
-{
-    public partial class SavesYG
-    {
-        public float Volume = 0.25f;
+        public string[] GetLanguages()
+        {
+            string[] languages = _languages;
+
+            return languages;
+        }
     }
 }

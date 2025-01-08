@@ -1,1 +1,4 @@
-﻿public class LevelPage : UIPanel { }
+﻿namespace Source.Game.Scripts
+{
+    public class LevelPage : UIPanel { }
+}

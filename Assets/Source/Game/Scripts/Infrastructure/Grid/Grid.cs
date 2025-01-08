@@ -1,75 +1,77 @@
 ﻿using System;
-using UnityEngine;
 using DG.Tweening;
+using UnityEngine;
 
-[RequireComponent(typeof(GridFactory), typeof(AudioSource))]
-public class Grid : MonoBehaviour
+namespace Source.Game.Scripts
 {
-    private GridData _data;
-    private GridFactory _factory;
-    private GridRotator _rotator;
-
-    private Cell[,,] _grid;
-    private Vector3 _center;
-    private Sequence _sequence;
-
-    public event Action BlocksReleased;
-    
-    public GridRotator Rotator => _rotator;
-    public GridData Data => _data;
-    public Vector3 Center => _center;
-
-    public void Init(GridData data)
+    [RequireComponent(typeof(GridFactory), typeof(AudioSource))]
+    public class Grid : MonoBehaviour
     {
-        _data = data;
-        _rotator = GetComponent<GridRotator>();
-        _factory = GetComponent<GridFactory>();
-        _center = Vector3.zero.CalculateCenter(_data.Width, _data.Height, _data.Length, _data.CellSize);
+        private GridData _data;
+        private GridFactory _factory;
+        private GridRotator _rotator;
 
-        _factory.Init();
-        Create();
-    }
+        private Cell[,,] _grid;
+        private Vector3 _center;
+
+        public event Action BlocksReleased;
     
-    public Cell GetCell(Vector3Int position)
-    {
-        if (position.x >= 0 && position.x < _data.Width &&
-            position.y >= 0 && position.y < _data.Height &&
-            position.z >= 0 && position.z < _data.Length)
+        public GridRotator Rotator => _rotator;
+        public GridData Data => _data;
+        public Vector3 Center => _center;
+
+        public void Init(GridData data)
         {
-            return _grid[position.x, position.y, position.z];
+            _data = data;
+            _rotator = GetComponent<GridRotator>();
+            _factory = GetComponent<GridFactory>();
+            _center = Vector3.zero.CalculateCenter(_data.Width, _data.Height, _data.Length, _data.CellSize);
+
+            _factory.Init();
+            Create();
         }
-
-        return null;
-    }
-
-    private void BlocksIsReleased(BlockMover _)
-    {
-        foreach (Cell cell in _grid)
+    
+        public Cell GetCell(Vector3Int position)
         {
-            if (cell.IsOccupied())
+            if (position.x >= 0 && position.x < _data.Width &&
+                position.y >= 0 && position.y < _data.Height &&
+                position.z >= 0 && position.z < _data.Length)
             {
-                return;
+                return _grid[position.x, position.y, position.z];
             }
+
+            return null;
         }
 
-        BlocksReleased?.Invoke();
-    }
-
-    private void Create()
-    {
-        _sequence = DOTween.Sequence();
-
-        _sequence.AppendCallback(() => _grid = _factory.Create(_data, this, _rotator, _center));
-        _sequence.AppendCallback(() => Subscribe());
-    }
-
-    private void Subscribe()
-    {
-        foreach (var cell in _grid)
+        private void BlocksIsReleased(BlockMover _)
         {
-            if (cell.IsOccupied() && cell.Occupied.TryGetComponent(out BlockMover mover))
+            foreach (Cell cell in _grid)
             {
-                mover.Released += BlocksIsReleased;
+                if (cell.IsOccupied())
+                {
+                    return;
+                }
+            }
+
+            BlocksReleased?.Invoke();
+        }
+
+        private void Create()
+        {
+            Sequence sequence = DOTween.Sequence();
+
+            sequence.AppendCallback(() => _grid = _factory.Create(_data, this, _rotator, _center));
+            sequence.AppendCallback(() => Subscribe());
+        }
+
+        private void Subscribe()
+        {
+            foreach (var cell in _grid)
+            {
+                if (cell.IsOccupied() && cell.Occupied.TryGetComponent(out BlockMover mover))
+                {
+                    mover.Released += BlocksIsReleased;
+                }
             }
         }
     }

@@ -3,76 +3,79 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using YG;
 
-public class RewardPanel : UIPanel
+namespace Source.Game.Scripts
 {
-    [SerializeField] private ReceivedPrizePanel _receivedPrizePanel;
-    [SerializeField] private GameplayPanel _gameplayPanel;
-    [SerializeField] private Button _backToMenuButton;
-    [SerializeField] private Button _rewardAdButton;
-    [SerializeField] private Button _nextLevelButton;
-
-    private RewardService _rewardService;
-    
-    private void OnEnable()
+    public class RewardPanel : UIPanel
     {
-        AddButtonListener(_backToMenuButton, OnClickBackToMenu);
-        AddButtonListener(_rewardAdButton, OnClickAdReward);
-        AddButtonListener(_nextLevelButton, OnClickNextLevel);
-    }
+        [SerializeField] private ReceivedPrizePanel _receivedPrizePanel;
+        [SerializeField] private GameplayPanel _gameplayPanel;
+        [SerializeField] private Button _backToMenuButton;
+        [SerializeField] private Button _rewardAdButton;
+        [SerializeField] private Button _nextLevelButton;
 
-    private void OnDisable()
-    {
-        _backToMenuButton.onClick.RemoveAllListeners();
-        _nextLevelButton.onClick.RemoveAllListeners();
-
-        _rewardService.Rewarded -= Reward;
-    }
-
-    public void Init()
-    {
-        SetAudioService();
-        _rewardService = ServiceLocator.Current.Get<RewardService>();
-
-        _rewardService.Rewarded += Reward;
-    }
-
-    private void Reward()
-    {
-        if (this != null)
+        private RewardService _rewardService;
+        private SceneLoaderService _loaderService;
+        
+        private void OnEnable()
         {
-            Show();
-            _gameplayPanel.Hide();
+            AddButtonListener(_backToMenuButton, OnClickBackToMenu);
+            AddButtonListener(_rewardAdButton, OnClickAdReward);
+            AddButtonListener(_nextLevelButton, OnClickNextLevel);
         }
-    }
 
-    private void OnClickAdReward()
-    {
-        Hide();
-        _receivedPrizePanel.RewardAd();
-    }
-    
-    private void OnClickBackToMenu()
-    {
-        SceneManager.LoadScene(1);
-    }
-
-    private void OnClickNextLevel()
-    {
-        LevelService levelService = ServiceLocator.Current.Get<LevelService>();
-        int tempIndex = levelService.ID;
-        LevelData leveldata = levelService.Load(tempIndex);
-
-        if (leveldata != null)
+        private void OnDisable()
         {
-            YG2.InterstitialAdvShow();
+            _backToMenuButton.onClick.RemoveAllListeners();
+            _nextLevelButton.onClick.RemoveAllListeners();
 
-            SceneManager.LoadScene(2);
+            _rewardService.Rewarded -= Reward;
         }
-        else
+
+        public void Init()
         {
-            _nextLevelButton.gameObject.SetActive(false);
+            SetAudioService();
+            _loaderService = ServiceLocator.Current.Get<SceneLoaderService>();
+            _rewardService = ServiceLocator.Current.Get<RewardService>();
+
+            _rewardService.Rewarded += Reward;
+        }
+
+        private void Reward()
+        {
+            if (this != null)
+            {
+                Show();
+                _gameplayPanel.Hide();
+            }
+        }
+
+        private void OnClickAdReward()
+        {
+            Hide();
+            _receivedPrizePanel.RewardAd();
+        }
+    
+        private void OnClickBackToMenu()
+        {
+            SceneManager.LoadScene(_loaderService.MainMenuScene);
+        }
+
+        private void OnClickNextLevel()
+        {
+            LevelService levelService = ServiceLocator.Current.Get<LevelService>();
+            int tempIndex = levelService.ID;
+            LevelData leveldata = levelService.Load(tempIndex);
+
+            if (leveldata != null)
+            {
+                YG2.InterstitialAdvShow();
+
+                SceneManager.LoadScene(_loaderService.GamePlayScene);
+            }
+            else
+            {
+                _nextLevelButton.gameObject.SetActive(false);
+            }
         }
     }
 }
-
-

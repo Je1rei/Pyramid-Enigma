@@ -3,38 +3,41 @@ using UnityEngine;
 using UnityEngine.UI;
 using YG;
 
-public class ReceivedPrizePanel : UIPanel
+namespace Source.Game.Scripts
 {
-    private const string RewardID = "1";
-    
-    [SerializeField] private RewardPanel _rewardPanel;
-    [SerializeField] private Button _backButton;
-    [SerializeField] private TMP_Text _prizeText;
-    
-    private int _rewardValue = 3;
-
-    private void OnEnable()
+    public class ReceivedPrizePanel : UIPanel
     {
-        SetAudioService();
-        AddButtonListener(_backButton, OnClickBackToGameplay);
-    }
+        private const string RewardID = "1";
+    
+        [SerializeField] private RewardPanel _rewardPanel;
+        [SerializeField] private Button _backButton;
+        [SerializeField] private TMP_Text _prizeText;
+    
+        private readonly int _rewardValue = 3;
 
-    public void RewardAd()
-    {
-        YG2.RewardedAdvShow(RewardID, () =>
+        private void OnEnable()
         {
-            ServiceLocator.Current.Get<BombWallet>().IncreaseScore(_rewardValue);
-        });
+            SetAudioService();
+            AddButtonListener(_backButton, OnClickBackToGameplay);
+        }
 
-        ServiceLocator.Current.Get<InputPause>().ActivateInputCooldown();
-        Show();
+        public void RewardAd()
+        {
+            YG2.RewardedAdvShow(RewardID, () =>
+            {
+                ServiceLocator.Current.Get<BombWallet>().Increase(_rewardValue);
+            });
 
-        _prizeText.text += _rewardValue;
-    }
+            ServiceLocator.Current.Get<InputPause>().ActivateInputCooldown();
+            Show();
 
-    private void OnClickBackToGameplay()
-    {
-        Hide();
-        _rewardPanel.Show();
+            _prizeText.text += _rewardValue;
+        }
+
+        private void OnClickBackToGameplay()
+        {
+            Hide();
+            _rewardPanel.Show();
+        }
     }
 }

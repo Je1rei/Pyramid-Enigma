@@ -1,10 +1,13 @@
-﻿public enum DirectionType
+﻿namespace Source.Game.Scripts
 {
-    None,
-    Forward,
-    Back,
-    Left,
-    Right,
-    Up,
-    Down
+    public enum DirectionType
+    {
+        None,
+        Forward,
+        Back,
+        Left,
+        Right,
+        Up,
+        Down
+    }
 }
