@@ -1,4 +1,6 @@
-﻿public class SettingsService : IService
+﻿using UnityEngine;
+
+public class SettingsService : IService
 {
     private AudioService _audioService;
 

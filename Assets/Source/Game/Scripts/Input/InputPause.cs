@@ -24,7 +24,7 @@ public class InputPause : MonoBehaviour, IService
     public void StartCooldown(float duration)
     {
         if (CanInput == false)
-        {
+        {                         
             return;
         }
 

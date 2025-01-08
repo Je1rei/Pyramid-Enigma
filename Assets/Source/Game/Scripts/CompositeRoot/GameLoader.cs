@@ -15,9 +15,9 @@ public class GameLoader : MonoBehaviour
     {
         _serviceLocator = new ServiceLocator();
         RegisterServices();
-        YG2.saves.Init();
-        YG2.GameReadyAPI();
-
+        
+        Debug.Log("CompositeRoot Bootstrap");
+        
         DontDestroyOnLoad(gameObject);
         SceneManager.LoadScene(1);
     }

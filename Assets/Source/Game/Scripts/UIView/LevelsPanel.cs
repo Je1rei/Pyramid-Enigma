@@ -7,12 +7,14 @@ public class LevelsPanel : UIPanel
 {
     [SerializeField] private MainMenuPanel _mainMenu;
     [SerializeField] private Level[] _levels;
-
-    [SerializeField] private LevelPage[] _levelPages;
-    [SerializeField] private Button[] _pageButtons;
     [SerializeField] private Button _backButton;
 
+    [SerializeField] private LevelPage[] _levelPages;
+    [SerializeField] private Button _previousPageButton;
+    [SerializeField] private Button _nextPageButton;
+
     private LevelService _levelService;
+    private int _currentPageIndex;
 
     private void OnEnable()
     {
@@ -22,7 +24,7 @@ public class LevelsPanel : UIPanel
         for (int i = 0; i < _levels.Length; i++)
         {
             LevelData levelData = _levelService.Load(i);
-            
+
             if (levelData != null && YG2.saves.OpenedLevels.Contains(levelData.ID))
             {
                 _levels[i].SetUnlock();
@@ -35,13 +37,9 @@ public class LevelsPanel : UIPanel
             int levelIndex = i;
             AddButtonListener(_levels[i].Button, () => OnClickLevel(levelIndex));
         }
-
-        for (int i = 0; i < _pageButtons.GetLength(0); i++)
-        {
-            int index = i;
-            AddButtonListener(_pageButtons[index], () => SwitchPage(index));
-        }
-
+        
+        AddButtonListener(_previousPageButton, OnClickPreviousPage);
+        AddButtonListener(_nextPageButton, OnClickNextPage);
         AddButtonListener(_backButton, OnClickBack);
         SwitchPage(0);
     }
@@ -51,6 +49,8 @@ public class LevelsPanel : UIPanel
         foreach (Level level in _levels)
             level.Button.onClick.RemoveAllListeners();
 
+        _previousPageButton.onClick.RemoveAllListeners();
+        _nextPageButton.onClick.RemoveAllListeners();
         _backButton.onClick.RemoveAllListeners();
     }
 
@@ -71,17 +71,33 @@ public class LevelsPanel : UIPanel
         Hide();
     }
 
+    private void OnClickPreviousPage()
+    {
+        if (_currentPageIndex > 0)
+        {
+            SwitchPage(_currentPageIndex - 1);
+        }
+    }
+
+    private void OnClickNextPage()
+    {
+        if (_currentPageIndex < _levelPages.Length - 1)
+        {
+            SwitchPage(_currentPageIndex + 1);
+        }
+    }
+
     private void SwitchPage(int index)
     {
+        if (index < 0 || index >= _levelPages.Length) return;
+        
         foreach (LevelPage page in _levelPages)
             page.Hide();
         
-        if (index >= 0 && index < _levelPages.GetLength(0))
-        {
-            _levelPages[index].Show();
-        }
-
-        for (int i = 0; i < _pageButtons.GetLength(0); i++)
-            _pageButtons[i].interactable = i != index;
+        _levelPages[index].Show();
+        _currentPageIndex = index;
+        
+        _previousPageButton.interactable = _currentPageIndex > 0;
+        _nextPageButton.interactable = _currentPageIndex < _levelPages.Length - 1;
     }
 }

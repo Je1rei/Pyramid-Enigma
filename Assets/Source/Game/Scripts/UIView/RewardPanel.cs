@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using YG;
@@ -10,9 +11,10 @@ public class RewardPanel : UIPanel
     [SerializeField] private Button _backToMenuButton;
     [SerializeField] private Button _rewardAdButton;
     [SerializeField] private Button _nextLevelButton;
+    [SerializeField] private TMP_Text _textScore;
 
     private RewardService _rewardService;
-    
+
     private void OnEnable()
     {
         AddButtonListener(_backToMenuButton, OnClickBackToMenu);
@@ -41,6 +43,7 @@ public class RewardPanel : UIPanel
         if (this != null)
         {
             Show();
+            _textScore.text += _rewardService.Value.ToString();
             _gameplayPanel.Hide();
         }
     }
@@ -50,7 +53,7 @@ public class RewardPanel : UIPanel
         Hide();
         _receivedPrizePanel.RewardAd();
     }
-    
+
     private void OnClickBackToMenu()
     {
         SceneManager.LoadScene(1);
@@ -74,5 +77,3 @@ public class RewardPanel : UIPanel
         }
     }
 }
-
-

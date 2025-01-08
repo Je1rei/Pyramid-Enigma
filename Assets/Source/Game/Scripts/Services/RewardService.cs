@@ -13,6 +13,8 @@ public class RewardService : IService
     public event Action Rewarded;
     public event Action Losed;
 
+    public int Value => _treasure.Value;
+
     public void Init(Grid grid, Treasure prefab)
     {
         _timerService = ServiceLocator.Current.Get<TimerService>();

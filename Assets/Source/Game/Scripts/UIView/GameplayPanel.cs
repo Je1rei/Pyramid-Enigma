@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class GameplayPanel : UIPanel
 {
-    [SerializeField] private RectTransform _parentBackground;
+    [SerializeField] private Transform _parentBackground;
     [SerializeField] private TutorialPanel _tutorialPanel;
     [SerializeField] private PausePanel _pausePanel;
     [SerializeField] private Button _backButton;

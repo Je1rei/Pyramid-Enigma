@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2874c2345708474d8c2329061f11614, type: 3}
+  m_Name: Level_39
+  m_EditorClassIdentifier: 
+  ID: 39
+  GridData: {fileID: 11400000, guid: f3f32d6d51f78414b817f8bb0375b2cf, type: 2}
+  RewardedPrefab: {fileID: 7517226035916756559, guid: 9bd3c3a34be6022439ee771cb6a1a3cf, type: 3}
+  TimeLimit: 45
+  Background: {fileID: 2739680675103838179, guid: 56439ad69404eca48851d136a2aa8aaa, type: 3}

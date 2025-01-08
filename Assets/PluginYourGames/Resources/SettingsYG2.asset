@@ -181,6 +181,42 @@ MonoBehaviour:
         photo: 
         uniqueID: 
         extraData: 
+      - rank: 5
+        name: 
+        score: 956
+        photo: 
+        uniqueID: 
+        extraData: 
+      - rank: 5
+        name: 
+        score: 956
+        photo: 
+        uniqueID: 
+        extraData: 
+      - rank: 5
+        name: 
+        score: 956
+        photo: 
+        uniqueID: 
+        extraData: 
+      - rank: 5
+        name: 
+        score: 956
+        photo: 
+        uniqueID: 
+        extraData: 
+      - rank: 5
+        name: 
+        score: 956
+        photo: 
+        uniqueID: 
+        extraData: 
+      - rank: 5
+        name: 
+        score: 956
+        photo: 
+        uniqueID: 
+        extraData: 
       currentPlayer:
         rank: 0
         score: 1515
@@ -205,7 +241,7 @@ MonoBehaviour:
     autoApplySettings: 1
     autoPauseGame: 1
     editEventSystem: 1
-    autoGRA: 0
+    autoGRA: 1
     logInEditor: 1
     archivingBuild: 1
     syncInitSDK: 0
@@ -221,7 +257,7 @@ MonoBehaviour:
     testFailAds: 0
   Templates:
     logoImageFormat: 0
-    backgroundImgFormat: 0
+    backgroundImgFormat: 2
     gradientBackgroundByLoadGame:
       radial: 0
       angleInclination: 140

@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ID: 24
   GridData: {fileID: 11400000, guid: cf66e2932ba9fe645b3b3d342fadac61, type: 2}
-  RewardedPrefab: {fileID: 7517226035916756559, guid: 34499ccb3dbe436439379dfecc884bd2, type: 3}
+  RewardedPrefab: {fileID: 7517226035916756559, guid: e56972cbb6b387f468917204dc377186, type: 3}
   TimeLimit: 70
   Background: {fileID: 2739680675103838179, guid: a9b08443f18044d4091fcd359fcd6ab8, type: 3}

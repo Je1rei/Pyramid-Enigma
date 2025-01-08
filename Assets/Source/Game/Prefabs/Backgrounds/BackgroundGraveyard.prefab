@@ -64,6 +64,7 @@ GameObject:
   - component: {fileID: 1506581493383880206}
   - component: {fileID: 5419805046239661690}
   - component: {fileID: 3700857616700411055}
+  - component: {fileID: 5795156531522946102}
   m_Layer: 5
   m_Name: Layer_4
   m_TagString: Untagged
@@ -128,6 +129,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5795156531522946102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4405799196207143061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7633455f5b6f40eda8e34cb0f9a46faa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scrollSpeed: 1
+  _moveAmount: 100
 --- !u!1 &6549537488194781038
 GameObject:
   m_ObjectHideFlags: 0
@@ -139,6 +154,7 @@ GameObject:
   - component: {fileID: 2349585233936507804}
   - component: {fileID: 2981252631310359667}
   - component: {fileID: 8154202018314310450}
+  - component: {fileID: 7910721250614979900}
   m_Layer: 5
   m_Name: Layer_3
   m_TagString: Untagged
@@ -203,6 +219,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7910721250614979900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6549537488194781038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7633455f5b6f40eda8e34cb0f9a46faa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scrollSpeed: 1
+  _moveAmount: 100
 --- !u!1 &8581957299760648521
 GameObject:
   m_ObjectHideFlags: 0
@@ -214,6 +244,7 @@ GameObject:
   - component: {fileID: 5188679847674689883}
   - component: {fileID: 1955377947542169686}
   - component: {fileID: 6593912360019691536}
+  - component: {fileID: 2429967496846449793}
   m_Layer: 5
   m_Name: Layer_1
   m_TagString: Untagged
@@ -278,6 +309,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2429967496846449793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8581957299760648521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7633455f5b6f40eda8e34cb0f9a46faa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scrollSpeed: 1
+  _moveAmount: 400
 --- !u!1 &8613678985737722201
 GameObject:
   m_ObjectHideFlags: 0
@@ -289,6 +334,7 @@ GameObject:
   - component: {fileID: 3723789557621999666}
   - component: {fileID: 3500550907440307674}
   - component: {fileID: 3720586784426949737}
+  - component: {fileID: 1065767729933484162}
   m_Layer: 5
   m_Name: Layer_2
   m_TagString: Untagged
@@ -353,6 +399,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1065767729933484162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8613678985737722201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7633455f5b6f40eda8e34cb0f9a46faa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scrollSpeed: 1
+  _moveAmount: 100
 --- !u!1 &8805135009758528554
 GameObject:
   m_ObjectHideFlags: 0
@@ -364,6 +424,7 @@ GameObject:
   - component: {fileID: 5061554923592145644}
   - component: {fileID: 6157271377733953826}
   - component: {fileID: 3675585877772001495}
+  - component: {fileID: 5423340143742142995}
   m_Layer: 5
   m_Name: Layer_0
   m_TagString: Untagged
@@ -428,3 +489,17 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5423340143742142995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8805135009758528554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7633455f5b6f40eda8e34cb0f9a46faa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scrollSpeed: 1
+  _moveAmount: 10

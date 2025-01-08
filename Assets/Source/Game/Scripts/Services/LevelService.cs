@@ -39,7 +39,7 @@ public class LevelService : MonoBehaviour, IService
         }
     }
 
-    public void CreateBackground(RectTransform parent)
+    public void CreateBackground(Transform parent)
     {
         Background background = Instantiate(_current.Background, parent);
         background.transform.SetAsFirstSibling();

@@ -7,7 +7,7 @@ public class CameraMover : MonoBehaviour
     [SerializeField] private float _angleY = -140f;
     [SerializeField] private Grid _grid;
     [SerializeField] private float _multiplier = 3f;
-    
+
     private Vector3 _targetPosition;
     private Vector3 _gridCenter;
 
@@ -18,7 +18,7 @@ public class CameraMover : MonoBehaviour
 
     private void SetupCameraPosition()
     {
-         _gridCenter = _grid.Center;
+        _gridCenter = _grid.Center;
 
         float gridSize = Mathf.Max(_grid.Data.Width, _grid.Data.Height, _grid.Data.Length) * _grid.Data.CellSize;
         float distance = gridSize * _multiplier;

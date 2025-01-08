@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using YG;
 
 public class CompositeRootMainMenu : CompositeRoot
 {
@@ -15,11 +16,13 @@ public class CompositeRootMainMenu : CompositeRoot
     {
         _serviceLocator = ServiceLocator.Current;
         Compose();
+        Debug.Log("CompositeRoot Main Menu");
+        YG2.saves.Init();
     }
 
     public override void Compose()
     {
-        _wallet = _serviceLocator.Get<Wallet>();    
+        _wallet = _serviceLocator.Get<Wallet>();
         _levelService = _serviceLocator.Get<LevelService>();
         _audioService = _serviceLocator.Get<AudioService>();
         _settingsService = _serviceLocator.Get<SettingsService>();

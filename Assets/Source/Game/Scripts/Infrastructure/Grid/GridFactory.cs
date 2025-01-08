@@ -12,7 +12,7 @@ public class GridFactory : MonoBehaviour
     private float _minPositionMultiplier = -0.1f;
     private float _maxPositionMultiplier = 0.1f;
 
-    private DirectionType _randomDirection;
+    private DirectionType[] _randomDirections;
     private InputPause _inputPauser;
     private CellFactory _cellFactory;
     private Sequence _sequence;
@@ -21,7 +21,7 @@ public class GridFactory : MonoBehaviour
     {
         _inputPauser = ServiceLocator.Current.Get<InputPause>();
         _cellFactory = GetComponent<CellFactory>();
-        _randomDirection = RandomizeDirection();
+        _randomDirections = RandomizeDirection(Random.Range(1, 6));
     }
 
     public Cell[,,] Create(GridData data, Grid gridParent, GridRotator rotator, Vector3 center)
@@ -33,10 +33,10 @@ public class GridFactory : MonoBehaviour
 
         _sequence.OnComplete(() =>
         {
-            rotator.Init(gridParent.Center, _randomDirection);
+            rotator.Init(gridParent.Center, _randomDirections);
             _inputPauser.ActivateInput();
         });
-
+        
         return predefinedGrid;
     }
 
@@ -100,12 +100,17 @@ public class GridFactory : MonoBehaviour
         return grid;
     }
 
-    private DirectionType RandomizeDirection()
+    private DirectionType[] RandomizeDirection(int rotations = 1)
     {
-        DirectionType[] direction = { DirectionType.Left, DirectionType.Right, DirectionType.Up, DirectionType.Down };
-
-        int randomIndex = Random.Range(0, direction.Length);
-
-        return direction[randomIndex];
+        DirectionType[] directions = { DirectionType.Left, DirectionType.Right, DirectionType.Up, DirectionType.Down };
+        DirectionType[] randomizedDirections = new DirectionType[rotations];
+        
+        for (int i = 0; i < rotations; i++)
+        {
+            int randomIndex = Random.Range(0, directions.Length);
+            randomizedDirections[i] = directions[randomIndex];
+        }
+        
+        return randomizedDirections;
     }
 }
