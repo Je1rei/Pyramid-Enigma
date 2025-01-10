@@ -19,6 +19,7 @@ namespace Source.Game.Scripts
             _serviceLocator = new ServiceLocator();
             RegisterServices();
             YG2.GameReadyAPI();
+            YG2.saves.Init();
 
             DontDestroyOnLoad(gameObject);
             SceneManager.LoadScene(_loaderService.MainMenuScene);
